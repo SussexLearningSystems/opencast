@@ -92,6 +92,8 @@ public class LtiLaunchAuthenticationHandler
   /** list of keys that will be highly */
   protected List<String> highlyTrustedKeys = new ArrayList<String>();
 
+  protected String customContextIdParam = "custom_context_id_param";
+
   /**
    * Constructs a new LTI authentication handler, using the supplied user details service for performing user lookups.
    *
@@ -109,10 +111,15 @@ public class LtiLaunchAuthenticationHandler
    * @param highlyTrustedkeys
    */
   public LtiLaunchAuthenticationHandler(UserDetailsService userDetailsService, SecurityService securityService,
-          List<String> highlyTrustedkeys) {
+          List<String> highlyTrustedkeys, String customContextIdParam) {
     this.userDetailsService = userDetailsService;
     this.securityService = securityService;
     this.highlyTrustedKeys = highlyTrustedkeys;
+    this.customContextIdParam = customContextIdParam;
+    for (String key : this.highlyTrustedKeys) {
+      logger.info("*** Found key: {}", key);
+    }
+    logger.info("*** CustomContextIdParam: {}", this.customContextIdParam);
   }
 
   /**

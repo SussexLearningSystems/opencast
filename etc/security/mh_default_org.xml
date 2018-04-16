@@ -474,6 +474,7 @@
             <value>CONSUMERKEY</value>
           </list>
         </constructor-arg>
+        <constructor-arg index="3" value="testing123" />
         -->
 
       </bean>
