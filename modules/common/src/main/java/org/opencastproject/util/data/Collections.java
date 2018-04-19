@@ -195,8 +195,9 @@ public final class Collections {
   @Deprecated
   public static <A> Option<A> find(Collection<A> as, Predicate<A> p) {
     for (A x : as) {
-      if (p.apply(x))
+      if (p.apply(x)) {
         return some(x);
+      }
     }
     return Option.none();
   }
@@ -209,8 +210,9 @@ public final class Collections {
   @Deprecated
   public static <A> boolean exists(Collection<A> as, Predicate<A> p) {
     for (A a : as) {
-      if (p.apply(a))
+      if (p.apply(a)) {
         return true;
+      }
     }
     return false;
   }
@@ -227,8 +229,9 @@ public final class Collections {
     @SuppressWarnings("unchecked")
     final M filtered = (M) buildFrom(as);
     for (A a : as) {
-      if (p.apply(a))
+      if (p.apply(a)) {
         filtered.add(a);
+      }
     }
     return filtered;
   }
@@ -255,15 +258,17 @@ public final class Collections {
   /** Make a string from a collection separating each element by <code>sep</code>. */
   public static String mkString(Collection<?> as, String sep) {
     final StringBuilder b = new StringBuilder();
-    for (Object a : as)
+    for (Object a : as) {
       b.append(a).append(sep);
+    }
     return b.substring(0, Math.max(b.length() - sep.length(), 0));
   }
 
   /** Append source collection <code>as</code> to <code>target</code>. */
   public static <A, T extends Collection<A>, S extends Iterable<? extends A>> T appendTo(T target, S as) {
-    for (A a : as)
+    for (A a : as) {
       target.add(a);
+    }
     return target;
   }
 
@@ -271,8 +276,9 @@ public final class Collections {
   @SafeVarargs
   public static <A, T extends Collection<A>, S extends Iterable<? extends A>> T appendToM(T target, S... as) {
     for (S s : as) {
-      for (A a : s)
+      for (A a : s) {
         target.add(a);
+      }
     }
     return target;
   }
@@ -287,20 +293,24 @@ public final class Collections {
   /** Concatenates two iterables into a new list. */
   public static <A, M extends Iterable<? extends A>> List<A> concat(M as, M bs) {
     List<A> x = new ArrayList<>();
-    for (A a : as)
+    for (A a : as) {
       x.add(a);
-    for (A b : bs)
+    }
+    for (A b : bs) {
       x.add(b);
+    }
     return x;
   }
 
   /** Concatenates two lists. */
   public static <A> List<A> concat(List<? extends A> as, List<? extends A> bs) {
     List<A> x = new ArrayList<>();
-    for (A a : as)
+    for (A a : as) {
       x.add(a);
-    for (A b : bs)
+    }
+    for (A b : bs) {
       x.add(b);
+    }
     return x;
   }
 
@@ -440,8 +450,9 @@ public final class Collections {
   /** Create a set from a list. */
   public static <A> Set<A> toSet(List<A> as) {
     Set<A> r = new HashSet<>(as.size());
-    for (A a : as)
+    for (A a : as) {
       r.add(a);
+    }
     return r;
   }
 

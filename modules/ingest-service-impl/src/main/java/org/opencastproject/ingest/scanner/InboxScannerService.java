@@ -281,11 +281,13 @@ public class InboxScannerService implements ArtifactInstaller, ManagedService {
    */
   public static String getCfg(Dictionary d, String key) throws ConfigurationException {
     Object p = d.get(key);
-    if (p == null)
+    if (p == null) {
       throw new ConfigurationException(key, "does not exist");
+    }
     String ps = p.toString();
-    if (StringUtils.isBlank(ps))
+    if (StringUtils.isBlank(ps)) {
       throw new ConfigurationException(key, "is blank");
+    }
     return ps;
   }
 
@@ -293,8 +295,9 @@ public class InboxScannerService implements ArtifactInstaller, ManagedService {
     HashMap<String, String> config = new HashMap<String, String>();
     for (Enumeration<String> e = d.keys(); e.hasMoreElements();) {
       String dKey = (String) e.nextElement();
-      if (dKey.startsWith(key))
+      if (dKey.startsWith(key)) {
         config.put(dKey.substring(key.length() + 1), (String) d.get(dKey));
+      }
     }
     return config;
   }

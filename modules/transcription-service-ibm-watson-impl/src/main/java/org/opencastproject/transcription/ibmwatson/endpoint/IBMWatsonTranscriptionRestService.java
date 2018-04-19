@@ -132,10 +132,11 @@ public class IBMWatsonTranscriptionRestService extends AbstractJobProducerEndpoi
       String event = (String) jsonObj.get("event");
       logger.info("Transcription notification for mp {} is {}", mpId, event);
 
-      if (IBMWatsonTranscriptionService.JobEvent.COMPLETED_WITH_RESULTS.equals(event))
+      if (IBMWatsonTranscriptionService.JobEvent.COMPLETED_WITH_RESULTS.equals(event)) {
         service.transcriptionDone(mpId, jsonObj);
-      else if (IBMWatsonTranscriptionService.JobEvent.FAILED.equals(event))
+      } else if (IBMWatsonTranscriptionService.JobEvent.FAILED.equals(event)) {
         service.transcriptionError(mpId, jsonObj);
+      }
 
       // return Response.ok().build();
       return Response.ok().type(MediaType.APPLICATION_JSON).build();

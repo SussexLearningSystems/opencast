@@ -127,13 +127,15 @@ public class TimelinePreviewsRestEndpoint extends AbstractJobProducerEndpoint {
   public Response createTimelinePreviews(@FormParam("track") String trackAsXml, @FormParam("imageCount") int imageCount)
           throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(trackAsXml))
+    if (StringUtils.isBlank(trackAsXml)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("track must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(trackAsXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("mediapackage element must be of type track").build();
+    }
 
     try {
       Job job = service.createTimelinePreviewImages((Track) sourceTrack, imageCount);
@@ -158,10 +160,11 @@ public class TimelinePreviewsRestEndpoint extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

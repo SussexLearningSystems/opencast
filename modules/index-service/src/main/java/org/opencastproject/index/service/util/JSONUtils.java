@@ -117,15 +117,18 @@ public final class JSONUtils {
    *           - if the separator is not set
    */
   public static JValue jsonArrayFromString(String list, String separator) {
-    if (StringUtils.isEmpty(separator))
+    if (StringUtils.isEmpty(separator)) {
       throw new IllegalArgumentException("The separator must be defined!");
+    }
 
-    if (StringUtils.isBlank(list))
+    if (StringUtils.isBlank(list)) {
       return arr();
+    }
 
     List<JValue> values = new ArrayList<JValue>();
-    for (String value : list.split(separator))
+    for (String value : list.split(separator)) {
       values.add(v(value));
+    }
 
     return arr(values);
   }
@@ -139,8 +142,9 @@ public final class JSONUtils {
    * @throws IllegalArgumentException
    */
   public static String formatIsoDate(Date date) {
-    if (date == null)
+    if (date == null) {
       throw new IllegalArgumentException("The given date must not be null.");
+    }
     return DateTimeSupport.toUTC(date.getTime());
   }
 
@@ -215,8 +219,9 @@ public final class JSONUtils {
    * @return A {@link JValue} representing the period with a start and end property
    */
   public static JValue formatPeriod(Date start, Date end) {
-    if (start == null || end == null)
+    if (start == null || end == null) {
       throw new IllegalArgumentException("The given start or end date from the period must not be null!");
+    }
 
     return obj(f("start", v(formatIsoDate(start))), f("end", v(formatIsoDate(end))));
   }
@@ -232,8 +237,9 @@ public final class JSONUtils {
   public static JSONObject fromMap(Map<String, String> map) throws JSONException {
     JSONObject json = new JSONObject();
 
-    if (map == null)
+    if (map == null) {
       return json;
+    }
 
     for (Entry<String, String> entry : map.entrySet()) {
       json.put(entry.getKey(), entry.getValue());
@@ -249,8 +255,9 @@ public final class JSONUtils {
    * @return the map
    */
   public static Map<String, String> toMap(JSONObject json) {
-    if (json == null)
+    if (json == null) {
       return Collections.emptyMap();
+    }
 
     HashMap<String, String> map = new HashMap<String, String>();
     for (Iterator<String> iterator = json.keys(); iterator.hasNext();) {

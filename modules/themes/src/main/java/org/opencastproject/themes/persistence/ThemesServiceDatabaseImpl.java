@@ -154,8 +154,9 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
     try {
       em = emf.createEntityManager();
       ThemeDto themeDto = getThemeDto(id, em);
-      if (themeDto == null)
+      if (themeDto == null) {
         throw new NotFoundException("No theme with id=" + id + " exists");
+      }
 
       return themeDto.toTheme(userDirectoryService);
     } catch (NotFoundException e) {
@@ -164,8 +165,9 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
       logger.error("Could not get theme: {}", ExceptionUtils.getStackTrace(e));
       throw new ThemesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -186,8 +188,9 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
       logger.error("Could not get themes: {}", ExceptionUtils.getStackTrace(e));
       throw new ThemesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -201,8 +204,9 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
       tx.begin();
 
       ThemeDto themeDto = null;
-      if (theme.getId().isSome())
+      if (theme.getId().isSome()) {
         themeDto = getThemeDto(theme.getId().get(), em);
+      }
 
       if (themeDto == null) {
         // no theme stored, create new entity
@@ -260,8 +264,9 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
     try {
       em = emf.createEntityManager();
       ThemeDto themeDto = getThemeDto(id, em);
-      if (themeDto == null)
+      if (themeDto == null) {
         throw new NotFoundException("No theme with id=" + id + " exists");
+      }
 
       tx = em.getTransaction();
       tx.begin();
@@ -272,12 +277,14 @@ public class ThemesServiceDatabaseImpl extends AbstractIndexProducer implements 
       throw e;
     } catch (Exception e) {
       logger.error("Could not delete theme '{}': {}", id, ExceptionUtils.getStackTrace(e));
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new ThemesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

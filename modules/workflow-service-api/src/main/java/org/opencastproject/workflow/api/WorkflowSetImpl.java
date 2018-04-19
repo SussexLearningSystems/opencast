@@ -83,10 +83,12 @@ public class WorkflowSetImpl implements WorkflowSet {
    *          the item to add
    */
   public void addItem(WorkflowInstance item) {
-    if (item == null)
+    if (item == null) {
       throw new IllegalArgumentException("Parameter item cannot be null");
-    if (resultSet == null)
+    }
+    if (resultSet == null) {
       resultSet = new ArrayList<WorkflowInstance>();
+    }
     resultSet.add((WorkflowInstanceImpl) item);
   }
 

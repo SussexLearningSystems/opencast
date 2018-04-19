@@ -140,8 +140,9 @@ public class EmailSchedulerConflictNotifier implements ConflictNotifier, Managed
     }
     String adminBaseUrl = securityService.getOrganization().getProperties()
             .get(OpencastConstants.ADMIN_URL_ORG_PROPERTY);
-    if (StringUtils.isBlank(adminBaseUrl))
+    if (StringUtils.isBlank(adminBaseUrl)) {
       adminBaseUrl = serverUrl;
+    }
 
     String eventDetailsUrl = UrlSupport.concat(adminBaseUrl,
             "admin-ng/index.html#/events/events?modal=event-details&tab=general&resourceId=");

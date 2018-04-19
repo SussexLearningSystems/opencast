@@ -561,8 +561,9 @@ public class ZipUtilTest {
     names.add(nestedSrcDirName + File.separator + nestedSrcFileName);
 
     String[] filenames = srcDir.list();
-    for (int i = 0; i < filenames.length; i++)
+    for (int i = 0; i < filenames.length; i++) {
       filenames[i] = srcDir.getCanonicalPath() + File.separator + filenames[i];
+    }
 
     File test = ZipUtil.zip(filenames, destFile.getCanonicalPath(), true, ZipUtil.NO_COMPRESSION);
     Assert.assertTrue(test.exists());
@@ -596,8 +597,9 @@ public class ZipUtilTest {
     names.add(nestedSrcDirName + File.separator + nestedSrcFileName);
 
     String[] filenames = srcDir.list();
-    for (int i = 0; i < filenames.length; i++)
+    for (int i = 0; i < filenames.length; i++) {
       filenames[i] = srcDir.getCanonicalPath() + File.separator + filenames[i];
+    }
 
     File test = ZipUtil.zip(filenames, destFile, true, ZipUtil.NO_COMPRESSION);
     Assert.assertTrue(test.exists());
@@ -1014,8 +1016,9 @@ public class ZipUtilTest {
         logger.warn("This test needs more than 4GB of disk free space: {}", bigFile.getUsableSpace());
         logger.warn("Skipping...");
       }
-    } else
+    } else {
       logger.warn("Couldn't create the File descriptor");
+    }
   }
 
 }

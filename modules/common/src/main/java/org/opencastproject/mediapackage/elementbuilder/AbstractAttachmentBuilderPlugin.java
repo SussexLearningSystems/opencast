@@ -96,8 +96,9 @@ public abstract class AbstractAttachmentBuilderPlugin extends AbstractElementBui
    */
   @Override
   public boolean accept(MediaPackageElement.Type type, MediaPackageElementFlavor flavor) {
-    if (this.flavor != null && !this.flavor.equals(flavor))
+    if (this.flavor != null && !this.flavor.equals(flavor)) {
       return false;
+    }
     return type == null || MediaPackageElement.Type.Attachment.toString().equalsIgnoreCase(type.toString());
   }
 
@@ -114,20 +115,23 @@ public abstract class AbstractAttachmentBuilderPlugin extends AbstractElementBui
       if (nodeName.contains(":")) {
         nodeName = nodeName.substring(nodeName.indexOf(":") + 1);
       }
-      if (!MediaPackageElement.Type.Attachment.toString().equalsIgnoreCase(nodeName))
+      if (!MediaPackageElement.Type.Attachment.toString().equalsIgnoreCase(nodeName)) {
         return false;
+      }
       // Check flavor
       if (this.flavor != null) {
         String nodeFlavor = (String) xpath.evaluate("@type", elementNode, XPathConstants.STRING);
-        if (!flavor.eq(nodeFlavor))
+        if (!flavor.eq(nodeFlavor)) {
           return false;
+        }
       }
       // Check mime type
       if (mimeTypes != null && mimeTypes.size() > 0) {
         String nodeMimeType = (String) xpath.evaluate("mimetype", elementNode, XPathConstants.STRING);
         MimeType mimeType = MimeTypes.parseMimeType(nodeMimeType);
-        if (!mimeTypes.contains(mimeType))
+        if (!mimeTypes.contains(mimeType)) {
           return false;
+        }
       }
 
       return true;
@@ -179,32 +183,37 @@ public abstract class AbstractAttachmentBuilderPlugin extends AbstractElementBui
 
       // size
       String attachmentSize = xpath.evaluate("size/text()", elementNode).trim();
-      if (!"".equals(attachmentSize))
+      if (!"".equals(attachmentSize)) {
         size = Long.parseLong(attachmentSize);
+      }
 
       // checksum
       String checksumValue = (String) xpath.evaluate("checksum/text()", elementNode, XPathConstants.STRING);
       String checksumType = (String) xpath.evaluate("checksum/@type", elementNode, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(checksumValue) && checksumType != null)
+      if (StringUtils.isNotEmpty(checksumValue) && checksumType != null) {
         checksum = Checksum.create(checksumType.trim(), checksumValue.trim());
+      }
 
       // mimetype
       String mimeTypeValue = (String) xpath.evaluate("mimetype/text()", elementNode, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(mimeTypeValue))
+      if (StringUtils.isNotEmpty(mimeTypeValue)) {
         mimeType = MimeTypes.parseMimeType(mimeTypeValue);
+      }
 
       // create the attachment
       AttachmentImpl attachment = (AttachmentImpl) AttachmentImpl.fromURI(uri);
 
-      if (StringUtils.isNotEmpty(id))
+      if (StringUtils.isNotEmpty(id)) {
         attachment.setIdentifier(id);
+      }
 
       // Add url
       attachment.setURI(uri);
 
       // Add reference
-      if (StringUtils.isNotEmpty(reference))
+      if (StringUtils.isNotEmpty(reference)) {
         attachment.referTo(MediaPackageReferenceImpl.fromString(reference));
+      }
 
       // Add type/flavor information
       if (StringUtils.isNotEmpty(attachmentFlavor)) {
@@ -217,21 +226,25 @@ public abstract class AbstractAttachmentBuilderPlugin extends AbstractElementBui
       }
 
       // Set the size
-      if (size > 0)
+      if (size > 0) {
         attachment.setSize(size);
+      }
 
       // Set checksum
-      if (checksum != null)
+      if (checksum != null) {
         attachment.setChecksum(checksum);
+      }
 
       // Set mimetype
-      if (mimeType != null)
+      if (mimeType != null) {
         attachment.setMimeType(mimeType);
+      }
 
       // Set the description
       String description = xpath.evaluate("description/text()", elementNode);
-      if (StringUtils.isNotEmpty(description))
+      if (StringUtils.isNotEmpty(description)) {
         attachment.setElementDescription(description.trim());
+      }
 
       // Set tags
       NodeList tagNodes = (NodeList) xpath.evaluate("tags/tag", elementNode, XPathConstants.NODESET);

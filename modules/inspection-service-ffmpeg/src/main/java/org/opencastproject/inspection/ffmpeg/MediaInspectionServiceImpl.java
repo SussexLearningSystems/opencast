@@ -120,8 +120,9 @@ public class MediaInspectionServiceImpl extends AbstractJobProducer implements M
   @Override
   @SuppressWarnings("rawtypes")
   public void updated(Dictionary properties) throws ConfigurationException {
-    if (properties == null)
+    if (properties == null) {
       return;
+    }
 
     inspectJobLoad = LoadUtil.getConfiguredLoadValue(properties, INSPECT_JOB_LOAD_KEY, DEFAULT_INSPECT_JOB_LOAD,
             serviceRegistry);

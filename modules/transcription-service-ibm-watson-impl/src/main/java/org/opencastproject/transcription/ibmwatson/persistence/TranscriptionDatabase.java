@@ -58,8 +58,9 @@ public class TranscriptionDatabase {
           long trackDuration) throws TranscriptionDatabaseException {
     TranscriptionJobControlDto dto = TranscriptionJobControlDto.store(emf.createEntityManager(), mpId, trackId, jobId,
             jobStatus, trackDuration);
-    if (dto != null)
+    if (dto != null) {
       return dto.toTranscriptionJobControl();
+    }
     return null;
   }
 
@@ -73,8 +74,9 @@ public class TranscriptionDatabase {
 
   public TranscriptionJobControl findByJob(String jobId) throws TranscriptionDatabaseException {
     TranscriptionJobControlDto dto = TranscriptionJobControlDto.findByJob(emf.createEntityManager(), jobId);
-    if (dto != null)
+    if (dto != null) {
       return dto.toTranscriptionJobControl();
+    }
     return null;
   }
 

@@ -95,21 +95,24 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
    */
   private String checkPartSyntax(String part) {
     // Parts may not be null
-    if (part == null)
+    if (part == null) {
       throw new IllegalArgumentException("Flavor parts may not be null!");
+    }
 
     // Parts may not contain the flavor separator character
-    if (part.contains(SEPARATOR))
+    if (part.contains(SEPARATOR)) {
       throw new IllegalArgumentException(
               format("Invalid flavor part \"%s\". Flavor parts may not contain '%s'!", part, SEPARATOR));
+    }
 
     // Parts may not contain leading and trailing blanks, and may only consist of lowercase letters
     String adaptedPart = part.trim().toLowerCase();
 
     // Parts may not be empty
-    if (adaptedPart.isEmpty())
+    if (adaptedPart.isEmpty()) {
       throw new IllegalArgumentException(
               format("Invalid flavor part \"%s\". Flavor parts may not be blank or empty!", part));
+    }
 
     return adaptedPart;
   }
@@ -185,10 +188,12 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
    *           if any of the arguments is <code>null</code>
    */
   public void addEquivalent(String type, String subtype) throws IllegalArgumentException {
-    if (type == null)
+    if (type == null) {
       throw new IllegalArgumentException("Type must not be null!");
-    if (subtype == null)
+    }
+    if (subtype == null) {
       throw new IllegalArgumentException("Subtype must not be null!");
+    }
 
     equivalents.add(new ElementTypeEquivalent(type, subtype));
   }
@@ -215,12 +220,14 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
    * @return <code>true</code> if this mime type is an equivalent
    */
   public boolean isEquivalentTo(String type, String subtype) {
-    if (this.type.equalsIgnoreCase(type) && this.subtype.equalsIgnoreCase(subtype))
+    if (this.type.equalsIgnoreCase(type) && this.subtype.equalsIgnoreCase(subtype)) {
       return true;
+    }
     if (equivalents != null) {
       for (ElementTypeEquivalent equivalent : equivalents) {
-        if (equivalent.matches(type, subtype))
+        if (equivalent.matches(type, subtype)) {
           return true;
+        }
       }
     }
     return false;
@@ -262,11 +269,13 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
    *           if the string <code>s</code> does not contain a <i>dash</i> to divide the type from subtype.
    */
   public static MediaPackageElementFlavor parseFlavor(String s) throws IllegalArgumentException {
-    if (s == null)
+    if (s == null) {
       throw new IllegalArgumentException("Unable to create element flavor from 'null'");
+    }
     String[] parts = s.split(SEPARATOR);
-    if (parts.length != 2)
+    if (parts.length != 2) {
       throw new IllegalArgumentException(format("Unable to create element flavor from \"%s\"", s));
+    }
     return new MediaPackageElementFlavor(parts[0], parts[1]);
   }
 
@@ -322,25 +331,33 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (!(obj instanceof ElementTypeEquivalent))
+      }
+      if (!(obj instanceof ElementTypeEquivalent)) {
         return false;
+      }
       ElementTypeEquivalent other = (ElementTypeEquivalent) obj;
-      if (!getOuterType().equals(other.getOuterType()))
+      if (!getOuterType().equals(other.getOuterType())) {
         return false;
+      }
       if (innerSubtype == null) {
-        if (other.innerSubtype != null)
+        if (other.innerSubtype != null) {
           return false;
-      } else if (!innerSubtype.equals(other.innerSubtype))
+        }
+      } else if (!innerSubtype.equals(other.innerSubtype)) {
         return false;
+      }
       if (innerType == null) {
-        if (other.innerType != null)
+        if (other.innerType != null) {
           return false;
-      } else if (!innerType.equals(other.innerType))
+        }
+      } else if (!innerType.equals(other.innerType)) {
         return false;
+      }
       return true;
     }
 
@@ -371,20 +388,26 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
   }
 
   public boolean matches(MediaPackageElementFlavor other) {
-    if (other == null)
+    if (other == null) {
       return false;
-    if (this == other)
+    }
+    if (this == other) {
       return true;
+    }
     if (subtype == null) {
-      if (other.subtype != null && !isWildcard(other.subtype))
+      if (other.subtype != null && !isWildcard(other.subtype)) {
         return false;
-    } else if (!subtype.equals(other.subtype) && (!isWildcard(subtype) && !isWildcard(other.subtype)))
+      }
+    } else if (!subtype.equals(other.subtype) && (!isWildcard(subtype) && !isWildcard(other.subtype))) {
       return false;
+    }
     if (type == null) {
-      if (other.type != null && !isWildcard(other.type))
+      if (other.type != null && !isWildcard(other.type)) {
         return false;
-    } else if (!type.equals(other.type) && (!isWildcard(type) && !isWildcard(other.type)))
+      }
+    } else if (!type.equals(other.type) && (!isWildcard(type) && !isWildcard(other.type))) {
       return false;
+    }
     return true;
   }
 
@@ -399,23 +422,30 @@ public class MediaPackageElementFlavor implements Cloneable, Comparable<MediaPac
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (!(obj instanceof MediaPackageElementFlavor))
+    }
+    if (!(obj instanceof MediaPackageElementFlavor)) {
       return false;
+    }
     MediaPackageElementFlavor other = (MediaPackageElementFlavor) obj;
     if (subtype == null) {
-      if (other.subtype != null)
+      if (other.subtype != null) {
         return false;
-    } else if (!subtype.equals(other.subtype))
+      }
+    } else if (!subtype.equals(other.subtype)) {
       return false;
+    }
     if (type == null) {
-      if (other.type != null)
+      if (other.type != null) {
         return false;
-    } else if (!type.equals(other.type))
+      }
+    } else if (!type.equals(other.type)) {
       return false;
+    }
     return true;
   }
 

@@ -53,8 +53,11 @@ public final class OcDublinCoreUtil {
   private static Function<String, Date> decodeDate = new Function<String, Date>() {
     @Override public Date apply(String s) {
       final Date d = EncodingSchemeUtils.decodeDate(s);
-      if (d != null) return d;
-      else throw new Error(s + " is not a W3C-DTF encoded date");
+      if (d != null) {
+        return d;
+      } else {
+        throw new Error(s + " is not a W3C-DTF encoded date");
+      }
     }
   };
 
@@ -126,62 +129,167 @@ public final class OcDublinCoreUtil {
   public static DublinCoreCatalog toCatalog(final OcDublinCore source) {
     // completeness assured by unit test
     final DublinCoreCatalog target = DublinCores.mkOpencastEpisode().getCatalog();
-    for (String a : source.getAbstract()) target.set(DublinCore.PROPERTY_ABSTRACT, a);
-    for (String a : source.getAccessRights()) target.set(DublinCore.PROPERTY_ACCESS_RIGHTS, a);
-    for (String a : source.getAccrualMethod()) target.set(DublinCore.PROPERTY_ACCRUAL_METHOD, a);
-    for (String a : source.getAccrualPeriodicity()) target.set(DublinCore.PROPERTY_ACCRUAL_PERIODICITY, a);
-    for (String a : source.getAccrualPolicy()) target.set(DublinCore.PROPERTY_ACCRUAL_POLICY, a);
-    for (String a : source.getAlternative()) target.set(DublinCore.PROPERTY_ALTERNATIVE, a);
-    for (String a : source.getAudience()) target.set(DublinCore.PROPERTY_AUDIENCE, a);
-    for (String a : source.getAvailable()) target.set(DublinCore.PROPERTY_AVAILABLE, a);
-    for (String a : source.getBibliographicCitation()) target.set(DublinCore.PROPERTY_BIBLIOGRAPHIC_CITATION, a);
-    for (String a : source.getConformsTo()) target.set(DublinCore.PROPERTY_CONFORMS_TO, a);
-    for (String a : source.getContributor()) target.set(DublinCore.PROPERTY_CONTRIBUTOR, a);
-    for (String a : source.getCoverage()) target.set(DublinCore.PROPERTY_COVERAGE, a);
+    for (String a : source.getAbstract()) {
+      target.set(DublinCore.PROPERTY_ABSTRACT, a);
+    }
+    for (String a : source.getAccessRights()) {
+      target.set(DublinCore.PROPERTY_ACCESS_RIGHTS, a);
+    }
+    for (String a : source.getAccrualMethod()) {
+      target.set(DublinCore.PROPERTY_ACCRUAL_METHOD, a);
+    }
+    for (String a : source.getAccrualPeriodicity()) {
+      target.set(DublinCore.PROPERTY_ACCRUAL_PERIODICITY, a);
+    }
+    for (String a : source.getAccrualPolicy()) {
+      target.set(DublinCore.PROPERTY_ACCRUAL_POLICY, a);
+    }
+    for (String a : source.getAlternative()) {
+      target.set(DublinCore.PROPERTY_ALTERNATIVE, a);
+    }
+    for (String a : source.getAudience()) {
+      target.set(DublinCore.PROPERTY_AUDIENCE, a);
+    }
+    for (String a : source.getAvailable()) {
+      target.set(DublinCore.PROPERTY_AVAILABLE, a);
+    }
+    for (String a : source.getBibliographicCitation()) {
+      target.set(DublinCore.PROPERTY_BIBLIOGRAPHIC_CITATION, a);
+    }
+    for (String a : source.getConformsTo()) {
+      target.set(DublinCore.PROPERTY_CONFORMS_TO, a);
+    }
+    for (String a : source.getContributor()) {
+      target.set(DublinCore.PROPERTY_CONTRIBUTOR, a);
+    }
+    for (String a : source.getCoverage()) {
+      target.set(DublinCore.PROPERTY_COVERAGE, a);
+    }
     target.set(DublinCore.PROPERTY_CREATED, encodeCreated(source.getCreated()));
-    for (String a : source.getCreator()) target.set(DublinCore.PROPERTY_CREATOR, a);
-    for (Date a : source.getDate()) target.set(DublinCore.PROPERTY_DATE, encodeDate(a));
-    for (Date a : source.getDateAccepted()) target.set(DublinCore.PROPERTY_DATE_ACCEPTED, encodeDateAccepted(a));
-    for (Date a : source.getDateCopyrighted())
+    for (String a : source.getCreator()) {
+      target.set(DublinCore.PROPERTY_CREATOR, a);
+    }
+    for (Date a : source.getDate()) {
+      target.set(DublinCore.PROPERTY_DATE, encodeDate(a));
+    }
+    for (Date a : source.getDateAccepted()) {
+      target.set(DublinCore.PROPERTY_DATE_ACCEPTED, encodeDateAccepted(a));
+    }
+    for (Date a : source.getDateCopyrighted()) {
       target.set(DublinCore.PROPERTY_DATE_COPYRIGHTED, encodeDateCopyrighted(a));
-    for (Date a : source.getDateSubmitted()) target.set(DublinCore.PROPERTY_DATE_SUBMITTED, encodeDateSubmitted(a));
-    for (String a : source.getDescription()) target.set(DublinCore.PROPERTY_DESCRIPTION, a);
-    for (String a : source.getEducationLevel()) target.set(DublinCore.PROPERTY_EDUCATION_LEVEL, a);
-    for (Long a : source.getExtent()) target.set(DublinCore.PROPERTY_EXTENT, encodeExtent(a));
-    for (String a : source.getFormat()) target.set(DublinCore.PROPERTY_FORMAT, a);
-    for (String a : source.getHasFormat()) target.set(DublinCore.PROPERTY_HAS_FORMAT, a);
-    for (String a : source.getHasPart()) target.set(DublinCore.PROPERTY_HAS_PART, a);
-    for (String a : source.getHasVersion()) target.set(DublinCore.PROPERTY_HAS_VERSION, a);
-    for (String a : source.getIdentifier()) target.set(DublinCore.PROPERTY_IDENTIFIER, a);
-    for (String a : source.getInstructionalMethod()) target.set(DublinCore.PROPERTY_INSTRUCTIONAL_METHOD, a);
-    for (String a : source.getIsFormatOf()) target.set(DublinCore.PROPERTY_IS_FORMAT_OF, a);
-    for (String a : source.getIsPartOf()) target.set(DublinCore.PROPERTY_IS_PART_OF, a);
-    for (String a : source.getIsReferencedBy()) target.set(DublinCore.PROPERTY_IS_REFERENCED_BY, a);
-    for (String a : source.getIsReplacedBy()) target.set(DublinCore.PROPERTY_IS_REPLACED_BY, a);
-    for (String a : source.getIsRequiredBy()) target.set(DublinCore.PROPERTY_IS_REQUIRED_BY, a);
-    for (String a : source.getIssued()) target.set(DublinCore.PROPERTY_ISSUED, a);
-    for (String a : source.getIsVersionOf()) target.set(DublinCore.PROPERTY_IS_VERSION_OF, a);
-    for (String a : source.getLanguage()) target.set(DublinCore.PROPERTY_LANGUAGE, a);
-    for (String a : source.getLicense()) target.set(DublinCore.PROPERTY_LICENSE, a);
-    for (String a : source.getMediator()) target.set(DublinCore.PROPERTY_MEDIATOR, a);
-    for (String a : source.getMedium()) target.set(DublinCore.PROPERTY_MEDIUM, a);
-    for (String a : source.getModified()) target.set(DublinCore.PROPERTY_MODIFIED, a);
-    for (String a : source.getProvenance()) target.set(DublinCore.PROPERTY_PROVENANCE, a);
-    for (String a : source.getPublisher()) target.set(DublinCore.PROPERTY_PUBLISHER, a);
-    for (String a : source.getReferences()) target.set(DublinCore.PROPERTY_REFERENCES, a);
-    for (String a : source.getRelation()) target.set(DublinCore.PROPERTY_RELATION, a);
-    for (String a : source.getReplaces()) target.set(DublinCore.PROPERTY_REPLACES, a);
-    for (String a : source.getRequires()) target.set(DublinCore.PROPERTY_REQUIRES, a);
-    for (String a : source.getRights()) target.set(DublinCore.PROPERTY_RIGHTS, a);
-    for (String a : source.getRightsHolder()) target.set(DublinCore.PROPERTY_RIGHTS_HOLDER, a);
-    for (String a : source.getSource()) target.set(DublinCore.PROPERTY_SOURCE, a);
-    for (String a : source.getSpatial()) target.set(DublinCore.PROPERTY_SPATIAL, a);
-    for (String a : source.getSubject()) target.set(DublinCore.PROPERTY_SUBJECT, a);
-    for (String a : source.getTableOfContents()) target.set(DublinCore.PROPERTY_TABLE_OF_CONTENTS, a);
-    for (String a : source.getTemporal()) target.set(DublinCore.PROPERTY_TEMPORAL, a);
+    }
+    for (Date a : source.getDateSubmitted()) {
+      target.set(DublinCore.PROPERTY_DATE_SUBMITTED, encodeDateSubmitted(a));
+    }
+    for (String a : source.getDescription()) {
+      target.set(DublinCore.PROPERTY_DESCRIPTION, a);
+    }
+    for (String a : source.getEducationLevel()) {
+      target.set(DublinCore.PROPERTY_EDUCATION_LEVEL, a);
+    }
+    for (Long a : source.getExtent()) {
+      target.set(DublinCore.PROPERTY_EXTENT, encodeExtent(a));
+    }
+    for (String a : source.getFormat()) {
+      target.set(DublinCore.PROPERTY_FORMAT, a);
+    }
+    for (String a : source.getHasFormat()) {
+      target.set(DublinCore.PROPERTY_HAS_FORMAT, a);
+    }
+    for (String a : source.getHasPart()) {
+      target.set(DublinCore.PROPERTY_HAS_PART, a);
+    }
+    for (String a : source.getHasVersion()) {
+      target.set(DublinCore.PROPERTY_HAS_VERSION, a);
+    }
+    for (String a : source.getIdentifier()) {
+      target.set(DublinCore.PROPERTY_IDENTIFIER, a);
+    }
+    for (String a : source.getInstructionalMethod()) {
+      target.set(DublinCore.PROPERTY_INSTRUCTIONAL_METHOD, a);
+    }
+    for (String a : source.getIsFormatOf()) {
+      target.set(DublinCore.PROPERTY_IS_FORMAT_OF, a);
+    }
+    for (String a : source.getIsPartOf()) {
+      target.set(DublinCore.PROPERTY_IS_PART_OF, a);
+    }
+    for (String a : source.getIsReferencedBy()) {
+      target.set(DublinCore.PROPERTY_IS_REFERENCED_BY, a);
+    }
+    for (String a : source.getIsReplacedBy()) {
+      target.set(DublinCore.PROPERTY_IS_REPLACED_BY, a);
+    }
+    for (String a : source.getIsRequiredBy()) {
+      target.set(DublinCore.PROPERTY_IS_REQUIRED_BY, a);
+    }
+    for (String a : source.getIssued()) {
+      target.set(DublinCore.PROPERTY_ISSUED, a);
+    }
+    for (String a : source.getIsVersionOf()) {
+      target.set(DublinCore.PROPERTY_IS_VERSION_OF, a);
+    }
+    for (String a : source.getLanguage()) {
+      target.set(DublinCore.PROPERTY_LANGUAGE, a);
+    }
+    for (String a : source.getLicense()) {
+      target.set(DublinCore.PROPERTY_LICENSE, a);
+    }
+    for (String a : source.getMediator()) {
+      target.set(DublinCore.PROPERTY_MEDIATOR, a);
+    }
+    for (String a : source.getMedium()) {
+      target.set(DublinCore.PROPERTY_MEDIUM, a);
+    }
+    for (String a : source.getModified()) {
+      target.set(DublinCore.PROPERTY_MODIFIED, a);
+    }
+    for (String a : source.getProvenance()) {
+      target.set(DublinCore.PROPERTY_PROVENANCE, a);
+    }
+    for (String a : source.getPublisher()) {
+      target.set(DublinCore.PROPERTY_PUBLISHER, a);
+    }
+    for (String a : source.getReferences()) {
+      target.set(DublinCore.PROPERTY_REFERENCES, a);
+    }
+    for (String a : source.getRelation()) {
+      target.set(DublinCore.PROPERTY_RELATION, a);
+    }
+    for (String a : source.getReplaces()) {
+      target.set(DublinCore.PROPERTY_REPLACES, a);
+    }
+    for (String a : source.getRequires()) {
+      target.set(DublinCore.PROPERTY_REQUIRES, a);
+    }
+    for (String a : source.getRights()) {
+      target.set(DublinCore.PROPERTY_RIGHTS, a);
+    }
+    for (String a : source.getRightsHolder()) {
+      target.set(DublinCore.PROPERTY_RIGHTS_HOLDER, a);
+    }
+    for (String a : source.getSource()) {
+      target.set(DublinCore.PROPERTY_SOURCE, a);
+    }
+    for (String a : source.getSpatial()) {
+      target.set(DublinCore.PROPERTY_SPATIAL, a);
+    }
+    for (String a : source.getSubject()) {
+      target.set(DublinCore.PROPERTY_SUBJECT, a);
+    }
+    for (String a : source.getTableOfContents()) {
+      target.set(DublinCore.PROPERTY_TABLE_OF_CONTENTS, a);
+    }
+    for (String a : source.getTemporal()) {
+      target.set(DublinCore.PROPERTY_TEMPORAL, a);
+    }
     target.set(DublinCore.PROPERTY_TITLE, source.getTitle());
-    for (String a : source.getType()) target.set(DublinCore.PROPERTY_TYPE, a);
-    for (String a : source.getValid()) target.set(DublinCore.PROPERTY_VALID, a);
+    for (String a : source.getType()) {
+      target.set(DublinCore.PROPERTY_TYPE, a);
+    }
+    for (String a : source.getValid()) {
+      target.set(DublinCore.PROPERTY_VALID, a);
+    }
     return target;
   }
 

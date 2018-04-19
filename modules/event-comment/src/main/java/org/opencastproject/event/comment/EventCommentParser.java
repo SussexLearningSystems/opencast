@@ -148,8 +148,9 @@ public final class EventCommentParser {
       // id
       Long id = null;
       Double idAsDouble = ((Number) xpath.evaluate("@id", commentNode, XPathConstants.NUMBER)).doubleValue();
-      if (!idAsDouble.isNaN())
+      if (!idAsDouble.isNaN()) {
         id = idAsDouble.longValue();
+      }
 
       final String eventId = (String) xpath.evaluate("@eventId", commentNode, STRING);
       final String organization = (String) xpath.evaluate("@organization", commentNode, STRING);
@@ -167,8 +168,9 @@ public final class EventCommentParser {
 
       // Reason
       String reason = (String) xpath.evaluate("reason/text()", commentNode, XPathConstants.STRING);
-      if (StringUtils.isNotBlank(reason))
+      if (StringUtils.isNotBlank(reason)) {
         reason = reason.trim();
+      }
 
       // CreationDate
       String creationDateString = (String) xpath.evaluate("creationDate/text()", commentNode, XPathConstants.STRING);
@@ -193,8 +195,9 @@ public final class EventCommentParser {
     } catch (XPathExpressionException e) {
       throw new UnsupportedElementException("Error while reading comment information from manifest", e);
     } catch (Exception e) {
-      if (e instanceof UnsupportedElementException)
+      if (e instanceof UnsupportedElementException) {
         throw (UnsupportedElementException) e;
+      }
       throw new UnsupportedElementException(
               "Error while reading comment creation or modification date information from manifest", e);
     }
@@ -206,8 +209,9 @@ public final class EventCommentParser {
       // id
       Long id = null;
       Double idAsDouble = ((Number) xpath.evaluate("@id", commentReplyNode, XPathConstants.NUMBER)).doubleValue();
-      if (!idAsDouble.isNaN())
+      if (!idAsDouble.isNaN()) {
         id = idAsDouble.longValue();
+      }
 
       // text
       String text = (String) xpath.evaluate("text/text()", commentReplyNode, XPathConstants.STRING);
@@ -231,8 +235,9 @@ public final class EventCommentParser {
     } catch (XPathExpressionException e) {
       throw new UnsupportedElementException("Error while reading comment reply information from manifest", e);
     } catch (Exception e) {
-      if (e instanceof UnsupportedElementException)
+      if (e instanceof UnsupportedElementException) {
         throw (UnsupportedElementException) e;
+      }
       throw new UnsupportedElementException(
               "Error while reading comment reply creation or modification date information from manifest", e);
     }
@@ -314,8 +319,9 @@ public final class EventCommentParser {
     commentXml.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", NAMESPACE);
 
     // Identifier
-    if (comment.getId().isSome())
+    if (comment.getId().isSome()) {
       commentXml.setAttribute("id", comment.getId().get().toString());
+    }
 
     commentXml.setAttribute("eventId", comment.getEventId());
     commentXml.setAttribute("organization", comment.getOrganization());
@@ -339,14 +345,16 @@ public final class EventCommentParser {
 
     // Text
     Element text = doc.createElement("text");
-    if (StringUtils.isNotBlank(comment.getText()))
+    if (StringUtils.isNotBlank(comment.getText())) {
       text.appendChild(doc.createCDATASection(comment.getText()));
+    }
     commentXml.appendChild(text);
 
     // Reason
     Element reason = doc.createElement("reason");
-    if (StringUtils.isNotBlank(comment.getReason()))
+    if (StringUtils.isNotBlank(comment.getReason())) {
       reason.setTextContent(comment.getReason());
+    }
     commentXml.appendChild(reason);
 
     // Replies
@@ -379,8 +387,9 @@ public final class EventCommentParser {
     replyXml.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", NAMESPACE);
 
     // Identifier
-    if (reply.getId().isSome())
+    if (reply.getId().isSome()) {
       replyXml.setAttribute("id", reply.getId().get().toString());
+    }
 
     // Author
     Element authorNode = getAuthorNode(reply.getAuthor(), doc);
@@ -398,8 +407,9 @@ public final class EventCommentParser {
 
     // Text
     Element text = doc.createElement("text");
-    if (StringUtils.isNotBlank(reply.getText()))
+    if (StringUtils.isNotBlank(reply.getText())) {
       text.appendChild(doc.createCDATASection(reply.getText()));
+    }
 
     replyXml.appendChild(text);
 
@@ -415,8 +425,9 @@ public final class EventCommentParser {
     email.setTextContent(author.getEmail());
     authorNode.appendChild(email);
     Element name = doc.createElement("name");
-    if (StringUtils.isNotBlank(author.getName()))
+    if (StringUtils.isNotBlank(author.getName())) {
       name.appendChild(doc.createCDATASection(author.getName()));
+    }
     authorNode.appendChild(name);
     return authorNode;
   }

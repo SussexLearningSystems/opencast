@@ -159,10 +159,12 @@ public class JsonpFilter implements Filter {
      */
     public void flushWrapper() throws IOException {
       if (enableWrapping) {
-        if (bufferWriter != null)
+        if (bufferWriter != null) {
           bufferWriter.close();
-        if (buffer != null)
+        }
+        if (buffer != null) {
           buffer.close();
+        }
         getResponse().setContentType(JS_CONTENT_TYPE);
         getResponse().setContentLength(
                 preWrapper.getBytes(CHARACTER_ENCODING).length + buffer.size() + POST_PADDING.getBytes().length);
@@ -294,8 +296,9 @@ public class JsonpFilter implements Filter {
      */
     @Override
     public void flushBuffer() throws IOException {
-      if (!enableWrapping)
+      if (!enableWrapping) {
         getResponse().flushBuffer();
+      }
     }
 
     /**

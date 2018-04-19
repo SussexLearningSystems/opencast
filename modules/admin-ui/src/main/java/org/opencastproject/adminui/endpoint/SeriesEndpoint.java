@@ -201,8 +201,9 @@ public class SeriesEndpoint {
     if (cc != null) {
       String ccServerUrl = cc.getBundleContext().getProperty(OpencastConstants.SERVER_URL_PROPERTY);
       logger.debug("Configured server url is {}", ccServerUrl);
-      if (ccServerUrl != null)
+      if (ccServerUrl != null) {
         this.serverUrl = ccServerUrl;
+      }
     }
     logger.info("Activate series endpoint");
   }
@@ -216,8 +217,9 @@ public class SeriesEndpoint {
           @RestResponse(responseCode = SC_NOT_FOUND, description = "If the series has not been found."),
           @RestResponse(responseCode = SC_OK, description = "The access information ") })
   public Response getSeriesAccessInformation(@PathParam("seriesId") String seriesId) throws NotFoundException {
-    if (StringUtils.isBlank(seriesId))
+    if (StringUtils.isBlank(seriesId)) {
       return RestUtil.R.badRequest("Path parameter series ID is missing");
+    }
 
     boolean hasProcessingEvents = hasProcessingEvents(seriesId);
 
@@ -273,8 +275,9 @@ public class SeriesEndpoint {
                   @RestResponse(responseCode = SC_NOT_FOUND, description = "If the series has not been found."),
                   @RestResponse(responseCode = SC_OK, description = "The access information ") })
   public Response getSeriesParticipationInformation(@PathParam("seriesId") String seriesId) throws Exception {
-    if (StringUtils.isBlank(seriesId))
+    if (StringUtils.isBlank(seriesId)) {
       return RestUtil.R.badRequest("Path parameter series ID is missing");
+    }
 
     Opt<Series> optSeries = indexService.getSeries(seriesId, searchIndex);
 
@@ -357,8 +360,9 @@ public class SeriesEndpoint {
   public Response getSeriesMetadata(@PathParam("seriesId") String series) throws UnauthorizedException,
           NotFoundException, SearchIndexException {
     Opt<Series> optSeries = indexService.getSeries(series, searchIndex);
-    if (optSeries.isNone())
+    if (optSeries.isNone()) {
       return notFound("Cannot find a series with id '%s'.", series);
+    }
 
     MetadataList metadataList = new MetadataList();
     List<SeriesCatalogUIAdapter> catalogUIAdapters = indexService.getSeriesCatalogUIAdapters();
@@ -627,8 +631,9 @@ public class SeriesEndpoint {
       // If limit is 0, we set the default limit
       query.withLimit(limit == 0 ? DEFAULT_LIMIT : limit);
 
-      if (optedOut != null)
+      if (optedOut != null) {
         query.withOptedOut(optedOut);
+      }
 
       Map<String, String> filters = RestUtils.parseFilter(filter);
       for (String name : filters.keySet()) {
@@ -885,8 +890,9 @@ public class SeriesEndpoint {
     Long themeId;
     try {
       Opt<Series> series = indexService.getSeries(seriesId, searchIndex);
-      if (series.isNone())
+      if (series.isNone()) {
         return notFound("Cannot find a series with id {}", seriesId);
+      }
 
       themeId = series.get().getTheme();
     } catch (SearchIndexException e) {
@@ -895,13 +901,15 @@ public class SeriesEndpoint {
     }
 
     // If no theme is set return empty JSON
-    if (themeId == null)
+    if (themeId == null) {
       return okJson(obj());
+    }
 
     try {
       Opt<Theme> themeOpt = getTheme(themeId);
-      if (themeOpt.isNone())
+      if (themeOpt.isNone()) {
         return notFound("Cannot find a theme with id {}", themeId);
+      }
 
       return getSimpleThemeJsonResponse(themeOpt.get());
     } catch (SearchIndexException e) {
@@ -920,8 +928,9 @@ public class SeriesEndpoint {
           throws UnauthorizedException, NotFoundException {
     try {
       Opt<Theme> themeOpt = getTheme(themeId);
-      if (themeOpt.isNone())
+      if (themeOpt.isNone()) {
         return notFound("Cannot find a theme with id {}", themeId);
+      }
 
       seriesService.updateSeriesProperty(seriesID, THEME_KEY, Long.toString(themeId));
       return getSimpleThemeJsonResponse(themeOpt.get());
@@ -972,8 +981,9 @@ public class SeriesEndpoint {
     }
 
     Opt<Series> series = indexService.getSeries(seriesId, searchIndex);
-    if (series.isNone())
+    if (series.isNone()) {
       return notFound("Cannot find a series with id {}", seriesId);
+    }
 
     if (hasProcessingEvents(seriesId)) {
       logger.warn("Can not update the ACL from series {}. Events being part of the series are currently processed.",
@@ -982,9 +992,9 @@ public class SeriesEndpoint {
     }
 
     try {
-      if (getAclService().applyAclToSeries(seriesId, accessControlList, override, Option.none()))
+      if (getAclService().applyAclToSeries(seriesId, accessControlList, override, Option.none())) {
         return ok();
-      else {
+      } else {
         logger.warn("Unable to find series '{}' to apply the ACL.", seriesId);
         return notFound();
       }

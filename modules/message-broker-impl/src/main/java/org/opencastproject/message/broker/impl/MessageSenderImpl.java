@@ -60,8 +60,9 @@ public class MessageSenderImpl extends MessageBaseFacility implements MessageSen
         Session session = getSession();
         // This shouldn't happen after a connection has been successfully
         // established at least once, but better be safe than sorry.
-        if (session == null)
+        if (session == null) {
           return;
+        }
         // Create a message or use the provided one.
         Message message = session.createObjectMessage(
                 new BaseMessage(securityService.getOrganization(), securityService.getUser(), object));

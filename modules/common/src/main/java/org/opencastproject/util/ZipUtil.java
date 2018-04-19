@@ -155,8 +155,9 @@ public final class ZipUtil {
                 "The destination file does not represent a valid zip archive (.zip extension is required)");
       }
 
-      if (!zipFile.mkdirs())
+      if (!zipFile.mkdirs()) {
         throw new IOException("Couldn't create the destination file");
+      }
 
       for (java.io.File f : sourceFiles) {
 
@@ -177,9 +178,9 @@ public final class ZipUtil {
         if (f.exists()) {
           if (!f.isDirectory() || recursive) {
             success = new File(zipFile, f.getName()).copyAllFrom(f);
-            if (success)
+            if (success) {
               logger.debug("File {} zipped successfuly", f.getAbsolutePath());
-            else {
+            } else {
               logger.error("File {} not zipped", f.getAbsolutePath());
               zipFile.deleteAll();
               throw new IOException("Failed to zip one of the input files: " + f.getAbsolutePath());
@@ -260,9 +261,9 @@ public final class ZipUtil {
 
         success = f.copyAllTo(destination);
 
-        if (success)
+        if (success) {
           logger.debug("File {} unzipped successfully", zipFile.getCanonicalPath());
-        else {
+        } else {
           logger.warn("File {} was not correctly unzipped", zipFile.getCanonicalPath());
           throw new IOException("File " + zipFile.getCanonicalPath() + " was not correctly unzipped");
         }

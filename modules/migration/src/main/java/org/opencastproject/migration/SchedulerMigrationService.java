@@ -233,10 +233,12 @@ public class SchedulerMigrationService {
         }
       }
     } finally {
-      if (result != null)
+      if (result != null) {
         result.close();
-      if (stm != null)
+      }
+      if (stm != null) {
         stm.close();
+      }
     }
   }
 

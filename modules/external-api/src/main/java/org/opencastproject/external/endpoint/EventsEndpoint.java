@@ -337,20 +337,27 @@ public class EventsEndpoint implements ManagedService {
       List<JValue> tracksJson = new ArrayList<>();
       for (Track track : tracks) {
         List<Field> fields = new ArrayList<>();
-        if (track.getChecksum() != null)
+        if (track.getChecksum() != null) {
           fields.add(f("checksum", v(track.getChecksum().toString())));
-        if (track.getDescription() != null)
+        }
+        if (track.getDescription() != null) {
           fields.add(f("description", v(track.getDescription())));
-        if (track.getDuration() != null)
+        }
+        if (track.getDuration() != null) {
           fields.add(f("duration", v(track.getDuration())));
-        if (track.getElementDescription() != null)
+        }
+        if (track.getElementDescription() != null) {
           fields.add(f("element-description", v(track.getElementDescription())));
-        if (track.getFlavor() != null)
+        }
+        if (track.getFlavor() != null) {
           fields.add(f("flavor", v(track.getFlavor().toString())));
-        if (track.getIdentifier() != null)
+        }
+        if (track.getIdentifier() != null) {
           fields.add(f("identifier", v(track.getIdentifier())));
-        if (track.getMimeType() != null)
+        }
+        if (track.getMimeType() != null) {
           fields.add(f("identifier", v(track.getMimeType().toString())));
+        }
         fields.add(f("size", v(track.getSize())));
         if (track.getStreams() != null) {
           List<Field> streams = new ArrayList<>();
@@ -366,8 +373,9 @@ public class EventsEndpoint implements ManagedService {
           }
           fields.add(f("tags", arr(tags)));
         }
-        if (track.getURI() != null)
+        if (track.getURI() != null) {
           fields.add(f("uri", v(track.getURI().toString())));
+        }
         tracksJson.add(obj(fields));
       }
       return ApiResponses.Json.ok(ApiVersion.VERSION_1_0_0, arr(tracksJson));
@@ -384,8 +392,9 @@ public class EventsEndpoint implements ManagedService {
                   @RestResponse(description = "The specified event does not exist.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response deleteEvent(@HeaderParam("Accept") String acceptHeader, @PathParam("eventId") String id)
           throws NotFoundException, UnauthorizedException {
-    if (!indexService.removeEvent(id))
+    if (!indexService.removeEvent(id)) {
       return Response.serverError().build();
+    }
 
     return ApiResponses.Json.noContent(ApiVersion.VERSION_1_0_0);
   }
@@ -530,18 +539,24 @@ public class EventsEndpoint implements ManagedService {
         String name = filterTuple[0];
         String value = filterTuple[1];
 
-        if ("presenters".equals(name))
+        if ("presenters".equals(name)) {
           query.withPresenter(value);
-        if ("contributors".equals(name))
+        }
+        if ("contributors".equals(name)) {
           query.withContributor(value);
-        if ("location".equals(name))
+        }
+        if ("location".equals(name)) {
           query.withLocation(value);
-        if ("textFilter".equals(name))
+        }
+        if ("textFilter".equals(name)) {
           query.withText("*" + value + "*");
-        if ("series".equals(name))
+        }
+        if ("series".equals(name)) {
           query.withSeriesId(value);
-        if ("subject".equals(name))
+        }
+        if ("subject".equals(name)) {
           query.withSubject(value);
+        }
       }
     }
 
@@ -603,11 +618,14 @@ public class EventsEndpoint implements ManagedService {
       }
     }
 
-    if (optLimit.isSome())
+    if (optLimit.isSome()) {
       query.withLimit(optLimit.get());
+    }
     if (optOffset.isSome())
+     {
       query.withOffset(offset);
     // TODO: Add other filters to the query
+    }
 
     SearchResult<Event> results = null;
     try {
@@ -666,8 +684,9 @@ public class EventsEndpoint implements ManagedService {
 
     for (SearchResultItem<Event> item : result.getItems()) {
       Event event = item.getSource();
-      if (event.getSchedulingStatus() == null)
+      if (event.getSchedulingStatus() == null) {
         continue;
+      }
 
       SchedulingStatus schedulingStatus = SchedulingStatus.valueOf(event.getSchedulingStatus());
       if (SchedulingStatus.BLACKLISTED.equals(schedulingStatus)) {
@@ -706,8 +725,9 @@ public class EventsEndpoint implements ManagedService {
   protected JValue eventToJSON(Event event, Boolean withAcl, Boolean withMetadata, Boolean withPublications,
           Boolean withSignedUrls) throws IndexServiceException, SearchIndexException, NotFoundException {
     List<Field> fields = new ArrayList<>();
-    if (event.getArchiveVersion() != null)
+    if (event.getArchiveVersion() != null) {
       fields.add(f("archive_version", v(event.getArchiveVersion())));
+    }
     fields.add(f("created", v(event.getCreated(), Jsons.BLANK)));
     fields.add(f("creator", v(event.getCreator(), Jsons.BLANK)));
     fields.add(f("contributor", arr($(event.getContributors()).map(Functions.stringToJValue))));
@@ -930,9 +950,9 @@ public class EventsEndpoint implements ManagedService {
         }
 
         return ApiResponses.Json.ok(ApiVersion.VERSION_1_0_0, actualList.toJSON());
-      }
-      else
+      } else {
         return ApiResponses.notFound("Cannot find an event with id '%s'.", id);
+      }
     } else {
       return getEventMetadataByType(id, type);
     }
@@ -940,7 +960,9 @@ public class EventsEndpoint implements ManagedService {
 
   private void convertStartDateTimeToApiV1(MetadataCollection collection) throws java.text.ParseException {
 
-    if (!collection.getOutputFields().containsKey("startDate")) return;
+    if (!collection.getOutputFields().containsKey("startDate")) {
+      return;
+    }
 
     MetadataField<String> oldStartDateField = (MetadataField<String>) collection.getOutputFields().get("startDate");
     SimpleDateFormat sdf = MetadataField.getSimpleDateFormatter(oldStartDateField.getPattern().get());
@@ -995,7 +1017,9 @@ public class EventsEndpoint implements ManagedService {
       for (EventCatalogUIAdapter catalogUIAdapter : catalogUIAdapters) {
         // TODO: This is very slow:
         MetadataCollection fields = catalogUIAdapter.getFields(mediaPackage);
-        if (fields != null) metadataList.add(catalogUIAdapter, fields);
+        if (fields != null) {
+          metadataList.add(catalogUIAdapter, fields);
+        }
       }
     }
     // TODO: This is slow:
@@ -1322,16 +1346,21 @@ public class EventsEndpoint implements ManagedService {
           final Stream stream = videoStreams[0];
           if (stream instanceof VideoStream) {
             final VideoStream videoStream = (VideoStream) stream;
-            if (videoStream.getBitRate() != null)
+            if (videoStream.getBitRate() != null) {
               trackInfo.add(f("bitrate", v(videoStream.getBitRate())));
-            if (videoStream.getFrameRate() != null)
+            }
+            if (videoStream.getFrameRate() != null) {
               trackInfo.add(f("framerate", v(videoStream.getFrameRate())));
-            if (videoStream.getFrameCount() != null)
+            }
+            if (videoStream.getFrameCount() != null) {
               trackInfo.add(f("framecount", v(videoStream.getFrameCount())));
-            if (videoStream.getFrameWidth() != null)
+            }
+            if (videoStream.getFrameWidth() != null) {
               trackInfo.add(f("width", v(videoStream.getFrameWidth())));
-            if (videoStream.getFrameHeight() != null)
+            }
+            if (videoStream.getFrameHeight() != null) {
               trackInfo.add(f("height", v(videoStream.getFrameHeight())));
+            }
           }
         }
 
@@ -1478,8 +1507,9 @@ public class EventsEndpoint implements ManagedService {
   protected static AccessControlList getAclFromEvent(Event event) {
     AccessControlList activeAcl = new AccessControlList();
     try {
-      if (event.getAccessPolicy() != null)
+      if (event.getAccessPolicy() != null) {
         activeAcl = AccessControlParser.parseAcl(event.getAccessPolicy());
+      }
     } catch (Exception e) {
       logger.error("Unable to parse access policy because: {}", ExceptionUtils.getStackTrace(e));
     }
@@ -1490,66 +1520,95 @@ public class EventsEndpoint implements ManagedService {
     List<Field> fields = new ArrayList<>();
     if (stream instanceof AudioStream) {
       AudioStream audioStream = (AudioStream) stream;
-      if (audioStream.getBitDepth() != null)
+      if (audioStream.getBitDepth() != null) {
         fields.add(f("bitdepth", v(audioStream.getBitDepth())));
-      if (audioStream.getBitRate() != null)
+      }
+      if (audioStream.getBitRate() != null) {
         fields.add(f("bitrate", v(audioStream.getBitRate())));
-      if (audioStream.getCaptureDevice() != null)
+      }
+      if (audioStream.getCaptureDevice() != null) {
         fields.add(f("capturedevice", v(audioStream.getCaptureDevice())));
-      if (audioStream.getCaptureDeviceVendor() != null)
+      }
+      if (audioStream.getCaptureDeviceVendor() != null) {
         fields.add(f("capturedevicevendor", v(audioStream.getCaptureDeviceVendor())));
-      if (audioStream.getCaptureDeviceVersion() != null)
+      }
+      if (audioStream.getCaptureDeviceVersion() != null) {
         fields.add(f("capturedeviceversion", v(audioStream.getCaptureDeviceVersion())));
-      if (audioStream.getChannels() != null)
+      }
+      if (audioStream.getChannels() != null) {
         fields.add(f("channels", v(audioStream.getChannels())));
-      if (audioStream.getEncoderLibraryVendor() != null)
+      }
+      if (audioStream.getEncoderLibraryVendor() != null) {
         fields.add(f("encoderlibraryvendor", v(audioStream.getEncoderLibraryVendor())));
-      if (audioStream.getFormat() != null)
+      }
+      if (audioStream.getFormat() != null) {
         fields.add(f("format", v(audioStream.getFormat())));
-      if (audioStream.getFormatVersion() != null)
+      }
+      if (audioStream.getFormatVersion() != null) {
         fields.add(f("formatversion", v(audioStream.getFormatVersion())));
-      if (audioStream.getFrameCount() != null)
+      }
+      if (audioStream.getFrameCount() != null) {
         fields.add(f("framecount", v(audioStream.getFrameCount())));
-      if (audioStream.getIdentifier() != null)
+      }
+      if (audioStream.getIdentifier() != null) {
         fields.add(f("identifier", v(audioStream.getIdentifier())));
-      if (audioStream.getPkLevDb() != null)
+      }
+      if (audioStream.getPkLevDb() != null) {
         fields.add(f("pklevdb", v(audioStream.getPkLevDb())));
-      if (audioStream.getRmsLevDb() != null)
+      }
+      if (audioStream.getRmsLevDb() != null) {
         fields.add(f("rmslevdb", v(audioStream.getRmsLevDb())));
-      if (audioStream.getRmsPkDb() != null)
+      }
+      if (audioStream.getRmsPkDb() != null) {
         fields.add(f("rmspkdb", v(audioStream.getRmsPkDb())));
-      if (audioStream.getSamplingRate() != null)
+      }
+      if (audioStream.getSamplingRate() != null) {
         fields.add(f("samplingrate", v(audioStream.getSamplingRate())));
+      }
     } else if (stream instanceof VideoStream) {
       VideoStream videoStream = (VideoStream) stream;
-      if (videoStream.getBitRate() != null)
+      if (videoStream.getBitRate() != null) {
         fields.add(f("bitrate", v(videoStream.getBitRate())));
-      if (videoStream.getCaptureDevice() != null)
+      }
+      if (videoStream.getCaptureDevice() != null) {
         fields.add(f("capturedevice", v(videoStream.getCaptureDevice())));
-      if (videoStream.getCaptureDeviceVendor() != null)
+      }
+      if (videoStream.getCaptureDeviceVendor() != null) {
         fields.add(f("capturedevicevendor", v(videoStream.getCaptureDeviceVendor())));
-      if (videoStream.getCaptureDeviceVersion() != null)
+      }
+      if (videoStream.getCaptureDeviceVersion() != null) {
         fields.add(f("capturedeviceversion", v(videoStream.getCaptureDeviceVersion())));
-      if (videoStream.getEncoderLibraryVendor() != null)
+      }
+      if (videoStream.getEncoderLibraryVendor() != null) {
         fields.add(f("encoderlibraryvendor", v(videoStream.getEncoderLibraryVendor())));
-      if (videoStream.getFormat() != null)
+      }
+      if (videoStream.getFormat() != null) {
         fields.add(f("format", v(videoStream.getFormat())));
-      if (videoStream.getFormatVersion() != null)
+      }
+      if (videoStream.getFormatVersion() != null) {
         fields.add(f("formatversion", v(videoStream.getFormatVersion())));
-      if (videoStream.getFrameCount() != null)
+      }
+      if (videoStream.getFrameCount() != null) {
         fields.add(f("framecount", v(videoStream.getFrameCount())));
-      if (videoStream.getFrameHeight() != null)
+      }
+      if (videoStream.getFrameHeight() != null) {
         fields.add(f("frameheight", v(videoStream.getFrameHeight())));
-      if (videoStream.getFrameRate() != null)
+      }
+      if (videoStream.getFrameRate() != null) {
         fields.add(f("framerate", v(videoStream.getFrameRate())));
-      if (videoStream.getFrameWidth() != null)
+      }
+      if (videoStream.getFrameWidth() != null) {
         fields.add(f("framewidth", v(videoStream.getFrameWidth())));
-      if (videoStream.getIdentifier() != null)
+      }
+      if (videoStream.getIdentifier() != null) {
         fields.add(f("identifier", v(videoStream.getIdentifier())));
-      if (videoStream.getScanOrder() != null)
+      }
+      if (videoStream.getScanOrder() != null) {
         fields.add(f("scanorder", v(videoStream.getScanOrder().toString())));
-      if (videoStream.getScanType() != null)
+      }
+      if (videoStream.getScanType() != null) {
         fields.add(f("scantype", v(videoStream.getScanType().toString())));
+      }
     }
     return obj(fields);
   }

@@ -50,8 +50,9 @@ public class SpatioTemporalLocatorImpl implements SpatioTemporalLocator {
    */
   @Override
   public void setMediaTime(MediaTime time) {
-    if (time == null)
+    if (time == null) {
       throw new IllegalArgumentException("The media time must not be null");
+    }
     this.mediaTime = time;
   }
 

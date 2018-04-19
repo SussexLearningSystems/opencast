@@ -80,10 +80,11 @@ public final class ListProviderUtil {
       String e1 = (String) baseMap.get(o1);
       String e2 = (String) baseMap.get(o2);
 
-      if (ascending)
+      if (ascending) {
         return e1.compareTo(e2);
-      else
+      } else {
         return 0 - e1.compareTo(e2);
+      }
     }
   }
 
@@ -97,8 +98,9 @@ public final class ListProviderUtil {
    * @return the filtered map
    */
   public static Map<String, String> filterMap(Map<String, String> map, ResourceListQuery query) {
-    if (noActionRequired(query))
+    if (noActionRequired(query)) {
       return map;
+    }
 
     int limit = query.getLimit().getOrElse(0);
     int offset = query.getOffset().getOrElse(0);
@@ -130,8 +132,9 @@ public final class ListProviderUtil {
   public static List<String> splitStringList(List<String> inputList) {
     List<String> outputList = new ArrayList<>();
     for (String item : inputList) {
-      if (StringUtils.isNotBlank(item))
+      if (StringUtils.isNotBlank(item)) {
         outputList.addAll(Arrays.asList(item.split(",")));
+      }
     }
     return outputList;
   }
@@ -146,8 +149,9 @@ public final class ListProviderUtil {
   public static Map<String, String> invertMap(Map<String, String> map) {
     Map<String, String> inv = new HashMap<String, String>();
 
-    for (Entry<String, String> entry : map.entrySet())
+    for (Entry<String, String> entry : map.entrySet()) {
       inv.put(entry.getValue(), entry.getKey());
+    }
 
     return inv;
   }

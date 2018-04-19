@@ -219,14 +219,16 @@ public class RestPublisher implements RestConstants {
     }
 
     private int compareByServiceClass(Class<?> clazz1, Class<?> clazz2, Message message) {
-      if (clazz1.equals(clazz2))
+      if (clazz1.equals(clazz2)) {
         return 0;
+      }
 
       UriInfoImpl uriInfo = new UriInfoImpl(message);
       String path = uriInfo.getBaseUri().getPath();
       path = StringUtils.removeEnd(path, "/");
-      if (StringUtils.isBlank(path))
+      if (StringUtils.isBlank(path)) {
         return 0;
+      }
 
       Object servicePath1 = servicePathCache.getUnchecked(clazz1);
       Object servicePath2 = servicePathCache.getUnchecked(clazz2);

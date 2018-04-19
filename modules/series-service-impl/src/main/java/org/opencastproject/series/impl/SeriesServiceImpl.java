@@ -490,8 +490,9 @@ public class SeriesServiceImpl extends AbstractIndexProducer implements SeriesSe
     final Map<EName, List<DublinCoreValue>> bv = b.getValues();
     if (av.size() == bv.size()) {
       for (Map.Entry<EName, List<DublinCoreValue>> ave : av.entrySet()) {
-        if (!eqListSorted(ave.getValue(), bv.get(ave.getKey())))
+        if (!eqListSorted(ave.getValue(), bv.get(ave.getKey()))) {
           return false;
+        }
       }
       return true;
     } else {

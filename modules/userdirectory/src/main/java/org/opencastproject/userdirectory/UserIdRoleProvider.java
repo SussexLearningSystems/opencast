@@ -140,8 +140,9 @@ public class UserIdRoleProvider implements RoleProvider, ManagedService {
    */
   @Override
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
 
     // These roles are not meaningful for users/groups
     if (target == Role.Target.USER) {

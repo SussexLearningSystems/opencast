@@ -225,8 +225,9 @@ public class JpaOrganization implements Organization {
    *          the port
    */
   public void addServer(String serverName, Integer port) {
-    if (servers == null)
+    if (servers == null) {
       servers = new HashMap<String, Integer>();
+    }
     servers.put(serverName, port);
   }
 
@@ -246,8 +247,9 @@ public class JpaOrganization implements Organization {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Organization))
+    if (!(obj instanceof Organization)) {
       return false;
+    }
     return ((Organization) obj).getId().equals(id);
   }
 

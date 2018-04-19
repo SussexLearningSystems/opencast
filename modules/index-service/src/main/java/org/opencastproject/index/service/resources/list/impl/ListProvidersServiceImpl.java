@@ -56,8 +56,9 @@ public class ListProvidersServiceImpl implements ListProvidersService {
   public Map<String, String> getList(String listName, ResourceListQuery query, Organization organization,
           boolean inverseValueKey) throws ListProviderException {
     ResourceListProvider provider = providers.get(listName);
-    if (provider == null)
+    if (provider == null) {
       throw new ListProviderException("No resources list found with the name " + listName);
+    }
     Map<String, String> list = provider.getList(listName, query, organization);
     if (inverseValueKey) {
       list = invertMap(list);
@@ -69,16 +70,18 @@ public class ListProvidersServiceImpl implements ListProvidersService {
   @Override
   public boolean isTranslatable(String listName) throws ListProviderException {
     ResourceListProvider provider = providers.get(listName);
-    if (provider == null)
+    if (provider == null) {
       throw new ListProviderException("No resources list found with the name " + listName);
+    }
     return provider.isTranslatable(listName);
   }
 
   @Override
   public String getDefault(String listName) throws ListProviderException {
     ResourceListProvider provider = providers.get(listName);
-    if (provider == null)
+    if (provider == null) {
       throw new ListProviderException("No resources list found with the name " + listName);
+    }
     return provider.getDefault();
   }
 

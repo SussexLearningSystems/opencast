@@ -145,10 +145,12 @@ public class TrackImpl extends AbstractMediaPackageElement implements Track {
   @Override
   public Stream[] getStreams() {
     List<Stream> streams = new ArrayList<Stream>(audio.size() + video.size());
-    for (Stream s : audio)
+    for (Stream s : audio) {
       streams.add(s);
-    for (Stream s : video)
+    }
+    for (Stream s : video) {
       streams.add(s);
+    }
     return streams.toArray(new Stream[streams.size()]);
   }
 
@@ -232,10 +234,12 @@ public class TrackImpl extends AbstractMediaPackageElement implements Track {
     liveNode.appendChild(document.createTextNode(Boolean.toString(live)));
     node.appendChild(liveNode);
 
-    for (Stream s : audio)
+    for (Stream s : audio) {
       node.appendChild(s.toManifest(document, serializer));
-    for (Stream s : video)
+    }
+    for (Stream s : video) {
       node.appendChild(s.toManifest(document, serializer));
+    }
     return node;
   }
 
@@ -261,7 +265,9 @@ public class TrackImpl extends AbstractMediaPackageElement implements Track {
   }
 
   public StreamingProtocol getTransport() {
-    if (transport == null) return autodetectTransport(getURI());
+    if (transport == null) {
+      return autodetectTransport(getURI());
+    }
     return transport;
   }
 
@@ -296,19 +302,33 @@ public class TrackImpl extends AbstractMediaPackageElement implements Track {
   }
 
   private StreamingProtocol autodetectTransport(URI uri) {
-    if (uri == null || uri.getScheme() == null) return null;
-    if (uri.getScheme().toLowerCase().startsWith("http")) {
-        if (uri.getFragment() == null) return StreamingProtocol.DOWNLOAD;
-        else if (uri.getFragment().toLowerCase().endsWith(".m3u8")) return StreamingProtocol.HLS;
-        else if (uri.getFragment().toLowerCase().endsWith(".mpd")) return StreamingProtocol.DASH;
-        else if (uri.getFragment().toLowerCase().endsWith(".f4m")) return StreamingProtocol.HDS;
-        else setTransport(StreamingProtocol.DOWNLOAD);
+    if (uri == null || uri.getScheme() == null) {
+      return null;
     }
-    else if (uri.getScheme().toLowerCase().startsWith("rtmp")) return StreamingProtocol.RTMP;
-    else if (uri.getScheme().toLowerCase().startsWith("rtmpe")) return StreamingProtocol.RTMPE;
-    else if (uri.getScheme().toLowerCase().startsWith("file")) return StreamingProtocol.FILE;
-    else if (uri.getScheme().toLowerCase().startsWith("rtp")) return StreamingProtocol.RTP;
-    else if (uri.getScheme().toLowerCase().startsWith("rtsp")) return StreamingProtocol.RTSP;
+    if (uri.getScheme().toLowerCase().startsWith("http")) {
+        if (uri.getFragment() == null) {
+          return StreamingProtocol.DOWNLOAD;
+        } else if (uri.getFragment().toLowerCase().endsWith(".m3u8")) {
+          return StreamingProtocol.HLS;
+        } else if (uri.getFragment().toLowerCase().endsWith(".mpd")) {
+          return StreamingProtocol.DASH;
+        } else if (uri.getFragment().toLowerCase().endsWith(".f4m")) {
+          return StreamingProtocol.HDS;
+        } else {
+          setTransport(StreamingProtocol.DOWNLOAD);
+        }
+    }
+    else if (uri.getScheme().toLowerCase().startsWith("rtmp")) {
+      return StreamingProtocol.RTMP;
+    } else if (uri.getScheme().toLowerCase().startsWith("rtmpe")) {
+      return StreamingProtocol.RTMPE;
+    } else if (uri.getScheme().toLowerCase().startsWith("file")) {
+      return StreamingProtocol.FILE;
+    } else if (uri.getScheme().toLowerCase().startsWith("rtp")) {
+      return StreamingProtocol.RTP;
+    } else if (uri.getScheme().toLowerCase().startsWith("rtsp")) {
+      return StreamingProtocol.RTSP;
+    }
     return StreamingProtocol.UNKNOWN;
   }
 

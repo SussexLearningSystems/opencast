@@ -220,8 +220,9 @@ public final class JaxbGroup implements Group {
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Group))
+    if (!(obj instanceof Group)) {
       return false;
+    }
     Group other = (Group) obj;
     return groupId.equals(other.getGroupId()) && organization.equals(other.getOrganization());
   }

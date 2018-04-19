@@ -206,8 +206,9 @@ public final class MimeType implements Comparable<MimeType>, Serializable {
    * @return <code>true</code> if the file has that flavor
    */
   public boolean hasFlavor(String flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       return false;
+    }
     return flavor.equalsIgnoreCase(flavor);
   }
 

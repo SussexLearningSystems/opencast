@@ -122,8 +122,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -143,8 +144,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       tx.begin();
 
       SearchEntity searchEntity = getSearchEntity(mediaPackageId, em);
-      if (searchEntity == null)
+      if (searchEntity == null) {
         throw new NotFoundException("No media package with id=" + mediaPackageId + " exists");
+      }
 
       // Ensure this user is allowed to delete this episode
       String accessControlXml = searchEntity.getAccessControl();
@@ -152,8 +154,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
         AccessControlList acl = AccessControlParser.parseAcl(accessControlXml);
         User currentUser = securityService.getUser();
         Organization currentOrg = securityService.getOrganization();
-        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, WRITE.toString()))
+        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, WRITE.toString())) {
           throw new UnauthorizedException(currentUser + " is not authorized to delete media package " + mediaPackageId);
+        }
 
         searchEntity.setDeletionDate(deletionDate);
         em.merge(searchEntity);
@@ -168,8 +171,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -293,8 +297,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -312,8 +317,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       tx = em.getTransaction();
       tx.begin();
       SearchEntity episodeEntity = getSearchEntity(mediaPackageId, em);
-      if (episodeEntity == null)
+      if (episodeEntity == null) {
         throw new NotFoundException("No episode with id=" + mediaPackageId + " exists");
+      }
       // Ensure this user is allowed to read this episode
       String accessControlXml = episodeEntity.getAccessControl();
       if (accessControlXml != null) {
@@ -337,8 +343,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -356,16 +363,18 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       tx = em.getTransaction();
       tx.begin();
       SearchEntity searchEntity = getSearchEntity(mediaPackageId, em);
-      if (searchEntity == null)
+      if (searchEntity == null) {
         throw new NotFoundException("No media package with id=" + mediaPackageId + " exists");
+      }
       // Ensure this user is allowed to read this media package
       String accessControlXml = searchEntity.getAccessControl();
       if (accessControlXml != null) {
         AccessControlList acl = AccessControlParser.parseAcl(accessControlXml);
         User currentUser = securityService.getUser();
         Organization currentOrg = securityService.getOrganization();
-        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString()))
+        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString())) {
           throw new UnauthorizedException(currentUser + " is not authorized to read media package " + mediaPackageId);
+        }
       }
       return searchEntity.getModificationDate();
     } catch (NotFoundException e) {
@@ -377,8 +386,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -405,8 +415,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
         AccessControlList acl = AccessControlParser.parseAcl(accessControlXml);
         User currentUser = securityService.getUser();
         Organization currentOrg = securityService.getOrganization();
-        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString()))
+        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString())) {
           throw new UnauthorizedException(currentUser + " is not authorized to read media package " + mediaPackageId);
+        }
       }
       return searchEntity.getDeletionDate();
     } catch (NotFoundException e) {
@@ -418,8 +429,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -437,16 +449,18 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       tx = em.getTransaction();
       tx.begin();
       SearchEntity searchEntity = getSearchEntity(mediaPackageId, em);
-      if (searchEntity == null)
+      if (searchEntity == null) {
         throw new NotFoundException("No media package with id=" + mediaPackageId + " exists");
+      }
       // Ensure this user is allowed to read this media package
       String accessControlXml = searchEntity.getAccessControl();
       if (accessControlXml != null) {
         AccessControlList acl = AccessControlParser.parseAcl(accessControlXml);
         User currentUser = securityService.getUser();
         Organization currentOrg = securityService.getOrganization();
-        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString()))
+        if (!AccessControlUtil.isAuthorized(acl, currentUser, currentOrg, READ.toString())) {
           throw new UnauthorizedException(currentUser + " is not authorized to read media package " + mediaPackageId);
+        }
       }
       return searchEntity.getOrganization();
     } catch (NotFoundException e) {
@@ -458,8 +472,9 @@ public class SearchServiceDatabaseImpl implements SearchServiceDatabase {
       }
       throw new SearchServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

@@ -57,8 +57,9 @@ public final class MediaPackageElementParser {
    *         if serialization failed
    */
   public static String getAsXml(MediaPackageElement element) throws MediaPackageException {
-    if (element == null)
+    if (element == null) {
       throw new IllegalArgumentException("Mediapackage element must not be null");
+    }
     StringWriter writer = new StringWriter();
     Marshaller m = null;
     try {

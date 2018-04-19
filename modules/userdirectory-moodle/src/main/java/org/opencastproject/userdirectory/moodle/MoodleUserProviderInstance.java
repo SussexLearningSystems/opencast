@@ -166,8 +166,9 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
    */
   @Override
   public float getCacheHitRatio() {
-    if (loadUserRequests.get() == 0)
+    if (loadUserRequests.get() == 0) {
       return 0;
+    }
     return (float) (loadUserRequests.get() - moodleWebServiceRequests.get()) / loadUserRequests.get();
   }
 
@@ -272,14 +273,17 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
    */
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
 
-    if (query.endsWith("%"))
+    if (query.endsWith("%")) {
       query = query.substring(0, query.length() - 1);
+    }
 
-    if (query.isEmpty())
+    if (query.isEmpty()) {
       return Collections.emptyIterator();
+    }
 
     // Check if user matches pattern
     try {
@@ -296,8 +300,9 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
     List<User> users = new LinkedList<>();
 
     User user = loadUser(query);
-    if (user != null)
+    if (user != null) {
       users.add(user);
+    }
 
     return users.iterator();
   }
@@ -362,8 +367,9 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
   @Override
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
     // Don't return roles for users or groups
-    if (target == Role.Target.USER)
+    if (target == Role.Target.USER) {
       return Collections.emptyIterator();
+    }
 
     boolean exact = true;
     boolean ltirole = false;
@@ -373,12 +379,14 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
       query = query.substring(0, query.length() - 1);
     }
 
-    if (query.isEmpty())
+    if (query.isEmpty()) {
       return Collections.emptyIterator();
+    }
 
     // Verify that role name ends with LEARNER_ROLE_SUFFIX or INSTRUCTOR_ROLE_SUFFIX
-    if (exact && !query.endsWith("_" + LEARNER_ROLE_SUFFIX) && !query.endsWith("_" + INSTRUCTOR_ROLE_SUFFIX))
+    if (exact && !query.endsWith("_" + LEARNER_ROLE_SUFFIX) && !query.endsWith("_" + INSTRUCTOR_ROLE_SUFFIX)) {
       return Collections.emptyIterator();
+    }
 
     // Extract moodle course id
     String moodleCourseId = query;
@@ -430,8 +438,9 @@ public class MoodleUserProviderInstance implements UserProvider, RoleProvider, C
   private User loadUserFromMoodle(String username) {
     logger.debug("loadUserFromMoodle({})", username);
 
-    if (cache == null)
+    if (cache == null) {
       throw new IllegalStateException("The Moodle user detail service has not yet been configured");
+    }
 
     // Don't answer for admin, anonymous or empty user
     if ("admin".equals(username) || "".equals(username) || "anonymous".equals(username)) {

@@ -135,8 +135,9 @@ public class MediaInspector {
         track = (TrackImpl) element;
 
         // Duration
-        if (metadata.getDuration() != null && metadata.getDuration() > 0)
+        if (metadata.getDuration() != null && metadata.getDuration() > 0) {
           track.setDuration(metadata.getDuration());
+        }
 
         // Checksum
         try {
@@ -279,8 +280,9 @@ public class MediaInspector {
         }
 
         // enrich the new track with basic info
-        if (track.getDuration() == null || override)
+        if (track.getDuration() == null || override) {
           track.setDuration(metadata.getDuration());
+        }
         if (track.getChecksum() == null || override) {
           try {
             track.setChecksum(Checksum.create(ChecksumType.DEFAULT_TYPE, file));
@@ -404,8 +406,9 @@ public class MediaInspector {
    *           if metadata extraction fails
    */
   private MediaContainerMetadata getFileMetadata(File file, boolean accurateFrameCount) throws MediaInspectionException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("file to analyze cannot be null");
+    }
     try {
       MediaAnalyzer analyzer = new FFmpegAnalyzer(accurateFrameCount);
       analyzer.setConfig(map(Tuple.<String, Object> tuple(FFmpegAnalyzer.FFPROBE_BINARY_CONFIG, ffprobePath)));
@@ -495,8 +498,9 @@ public class MediaInspector {
       ParseContext context = new ParseContext();
       tikaParser.parse(in, contenthandler, metadata, context);
       String mimeType = metadata.get(HttpHeaders.CONTENT_TYPE);
-      if (mimeType == null)
+      if (mimeType == null) {
         return null;
+      }
       return MimeTypes.parseMimeType(mimeType);
     } catch (Exception e) {
       logger.warn("Unable to extract mimetype from input stream, ", e);

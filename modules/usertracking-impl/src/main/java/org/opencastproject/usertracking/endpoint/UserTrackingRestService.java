@@ -144,23 +144,26 @@ public class UserTrackingRestService {
           @QueryParam("day") String day, @QueryParam("limit") int limit, @QueryParam("offset") int offset) {
 
     // Are the values of offset and limit valid?
-    if (offset < 0 || limit < 0)
+    if (offset < 0 || limit < 0) {
       throw new WebApplicationException(Status.BAD_REQUEST);
+    }
 
     // Set default value of limit (max result value)
-    if (limit == 0)
+    if (limit == 0) {
       limit = 10;
+    }
     try {
-      if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(type))
+      if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(type)) {
         return (UserActionListImpl) usertrackingService.getUserActionsByTypeAndMediapackageId(type, id, offset, limit);
-      else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(day))
+      } else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(day)) {
         return (UserActionListImpl) usertrackingService.getUserActionsByTypeAndDay(type, day, offset, limit);
-      else if (!StringUtils.isEmpty(type))
+      } else if (!StringUtils.isEmpty(type)) {
         return (UserActionListImpl) usertrackingService.getUserActionsByType(type, offset, limit);
-      else if (!StringUtils.isEmpty(day))
+      } else if (!StringUtils.isEmpty(day)) {
         return (UserActionListImpl) usertrackingService.getUserActionsByDay(day, offset, limit);
-      else
+      } else {
         return (UserActionListImpl) usertrackingService.getUserActions(offset, limit);
+      }
     } catch (UserTrackingException e) {
       throw new WebApplicationException(e);
     }
@@ -217,18 +220,21 @@ public class UserTrackingRestService {
           @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 
     // Are the values of offset and limit valid?
-    if (offset < 0 || limit < 0)
+    if (offset < 0 || limit < 0) {
       throw new WebApplicationException(Status.BAD_REQUEST);
+    }
 
     // Set default value of limit (max result value)
-    if (limit == 0)
+    if (limit == 0) {
       limit = 10;
+    }
 
     try {
-      if (from == null && to == null)
+      if (from == null && to == null) {
         return (ReportImpl) usertrackingService.getReport(offset, limit);
-      else
+      } else {
         return (ReportImpl) usertrackingService.getReport(from, to, offset, limit);
+      }
     } catch (UserTrackingException e) {
       throw new WebApplicationException(e);
     } catch (ParseException e) {
@@ -371,8 +377,9 @@ public class UserTrackingRestService {
     String userId = securityService.getUser().getUsername();
 
     // Is the mediapackageId passed
-    if (mediapackageId == null)
+    if (mediapackageId == null) {
       throw new WebApplicationException(Status.BAD_REQUEST);
+    }
 
     try {
       return (FootprintsListImpl) usertrackingService.getFootprints(mediapackageId, userId);

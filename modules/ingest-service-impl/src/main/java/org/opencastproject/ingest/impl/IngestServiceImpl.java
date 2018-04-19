@@ -454,8 +454,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
       // While there are entries write them to a collection
       while ((entry = zis.getNextZipEntry()) != null) {
         try {
-          if (entry.isDirectory() || entry.getName().contains("__MACOSX"))
+          if (entry.isDirectory() || entry.getName().contains("__MACOSX")) {
             continue;
+          }
 
           if (entry.getName().endsWith("manifest.xml") || entry.getName().endsWith("index.xml")) {
             // Build the mediapackage
@@ -494,12 +495,14 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
         }
       }
 
-      if (mp == null)
+      if (mp == null) {
         throw new MediaPackageException("No manifest found in this zip");
+      }
 
       // Determine the mediapackage identifier
-      if (mp.getIdentifier() == null || isBlank(mp.getIdentifier().toString()))
+      if (mp.getIdentifier() == null || isBlank(mp.getIdentifier().toString())) {
         mp.setIdentifier(new UUIDIdBuilderImpl().createNew());
+      }
 
       String mediaPackageId = mp.getIdentifier().toString();
 
@@ -515,8 +518,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
         // Key has root folder name if there is one
         URI uri = uris.get((hasRootFolder ? folderName + "/" : "") + element.getURI().toString());
 
-        if (uri == null)
+        if (uri == null) {
           throw new MediaPackageException("Unable to map element name '" + element.getURI() + "' to workspace uri");
+        }
         logger.info("Ingested mediapackage element {}/{} located at {}", mediaPackageId, element.getIdentifier(), uri);
         URI dest = workingFileRepository.moveTo(wfrCollectionId, FilenameUtils.getName(uri.toString()), mediaPackageId,
                 element.getIdentifier(), FilenameUtils.getName(element.getURI().toString()));
@@ -541,8 +545,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
       job.setStatus(Job.Status.FAILED, Job.FailureReason.DATA);
       throw e;
     } catch (Exception e) {
-      if (e instanceof IngestException)
+      if (e instanceof IngestException) {
         throw (IngestException) e;
+      }
       throw new IngestException(e);
     } finally {
       IOUtils.closeQuietly(zis);
@@ -1240,8 +1245,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
    */
   private MediaPackage checkForLegacyMediaPackageId(MediaPackage mp, Map<String, String> properties)
           throws IngestException {
-    if (properties == null || properties.isEmpty())
+    if (properties == null || properties.isEmpty()) {
       return mp;
+    }
 
     try {
       String mediaPackageId = properties.get(LEGACY_MEDIAPACKAGE_ID_KEY);
@@ -1289,8 +1295,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
   }
 
   private Map<String, String> mergeWorkflowConfiguration(Map<String, String> properties, String mediaPackageId) {
-    if (isBlank(mediaPackageId) || schedulerService == null)
+    if (isBlank(mediaPackageId) || schedulerService == null) {
       return properties;
+    }
 
     HashMap<String, String> mergedProperties = new HashMap<>();
 
@@ -1361,16 +1368,21 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
 
   private void mergeMediaPackageMetadata(MediaPackage mp, MediaPackage scheduledMp) {
     // Merge media package fields
-    if (mp.getDate() == null)
+    if (mp.getDate() == null) {
       mp.setDate(scheduledMp.getDate());
-    if (isBlank(mp.getLicense()))
+    }
+    if (isBlank(mp.getLicense())) {
       mp.setLicense(scheduledMp.getLicense());
-    if (isBlank(mp.getSeries()))
+    }
+    if (isBlank(mp.getSeries())) {
       mp.setSeries(scheduledMp.getSeries());
-    if (isBlank(mp.getSeriesTitle()))
+    }
+    if (isBlank(mp.getSeriesTitle())) {
       mp.setSeriesTitle(scheduledMp.getSeriesTitle());
-    if (isBlank(mp.getTitle()))
+    }
+    if (isBlank(mp.getTitle())) {
       mp.setTitle(scheduledMp.getTitle());
+    }
     if (mp.getSubjects().length == 0) {
       for (String subject : scheduledMp.getSubjects()) {
         mp.addSubject(subject);
@@ -1491,8 +1503,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
   public void discardMediaPackage(MediaPackage mp) throws IOException {
     String mediaPackageId = mp.getIdentifier().compact();
     for (MediaPackageElement element : mp.getElements()) {
-      if (!workingFileRepository.delete(mediaPackageId, element.getIdentifier()))
+      if (!workingFileRepository.delete(mediaPackageId, element.getIdentifier())) {
         logger.warn("Unable to find (and hence, delete), this mediapackage element");
+      }
     }
     logger.info("Sucessful discarded mediapackage {}", mp);
   }
@@ -1513,11 +1526,13 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
         in = uri.toURL().openStream();
       }
       String fileName = FilenameUtils.getName(uri.getPath());
-      if (isBlank(FilenameUtils.getExtension(fileName)))
+      if (isBlank(FilenameUtils.getExtension(fileName))) {
         fileName = getContentDispositionFileName(response);
+      }
 
-      if (isBlank(FilenameUtils.getExtension(fileName)))
+      if (isBlank(FilenameUtils.getExtension(fileName))) {
         throw new IOException("No filename extension found: " + fileName);
+      }
       return addContentToRepo(mp, elementId, fileName, in);
     } finally {
       IOUtils.closeQuietly(in);
@@ -1526,8 +1541,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
   }
 
   private String getContentDispositionFileName(HttpResponse response) {
-    if (response == null)
+    if (response == null) {
       return null;
+    }
 
     Header header = response.getFirstHeader("Content-Disposition");
     ContentDisposition contentDisposition = new ContentDisposition(header.getValue());
@@ -1669,14 +1685,16 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
     Stream<Track> partialTracks = Stream.empty();
     for (Track track : mediaPackage.getTracks()) {
       Long startTime = partialTrackStartTimes.getIfPresent(track.getIdentifier());
-      if (startTime == null)
+      if (startTime == null) {
         continue;
+      }
       partialTracks = partialTracks.append(Opt.nul(track));
     }
 
     // No partial track available return without adding SMIL catalog
-    if (partialTracks.isEmpty())
+    if (partialTracks.isEmpty()) {
       return mediaPackage;
+    }
 
     // Inspect the partial tracks
     List<Track> tracks = partialTracks.map(newEnrichJob(mediaInspectionService).toFn())
@@ -1715,8 +1733,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
   private MediaPackage addSmilCatalog(org.w3c.dom.Document smilDocument, MediaPackage mediaPackage)
           throws IOException, IngestException {
     Option<org.w3c.dom.Document> optSmilDocument = loadSmilDocument(workingFileRepository, mediaPackage);
-    if (optSmilDocument.isSome())
+    if (optSmilDocument.isSome()) {
       throw new IngestException("SMIL already exists!");
+    }
 
     InputStream in = null;
     try {
@@ -1824,8 +1843,9 @@ public class IngestServiceImpl extends AbstractJobProducer implements IngestServ
       return;
     }
 
-    if (!Job.Status.FINISHED.equals(job.getStatus()))
+    if (!Job.Status.FINISHED.equals(job.getStatus())) {
       job.setStatus(Job.Status.FAILED);
+    }
 
     try {
       serviceRegistry.updateJob(job);

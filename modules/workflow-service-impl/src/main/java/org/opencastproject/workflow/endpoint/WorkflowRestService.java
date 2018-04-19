@@ -395,8 +395,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
           @QueryParam("startPage") int startPage, @QueryParam("count") int count, @QueryParam("compact") boolean compact)
           throws Exception {
     // CHECKSTYLE:ON
-    if (count < 1)
+    if (count < 1) {
       count = DEFAULT_LIMIT;
+    }
 
     WorkflowQuery q = new WorkflowQuery();
     q.withCount(count);
@@ -576,8 +577,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
   public WorkflowInstanceImpl start(@FormParam("definition") String workflowDefinitionXmlOrId,
           @FormParam("mediapackage") MediaPackageImpl mp, @FormParam("parent") String parentWorkflowId,
           @FormParam("properties") LocalHashMap localMap) {
-    if (mp == null || StringUtils.isBlank(workflowDefinitionXmlOrId))
+    if (mp == null || StringUtils.isBlank(workflowDefinitionXmlOrId)) {
       throw new WebApplicationException(Status.BAD_REQUEST);
+    }
 
     WorkflowDefinition workflowDefinition;
     try {
@@ -597,8 +599,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
   private WorkflowInstanceImpl startWorkflow(WorkflowDefinition workflowDefinition, MediaPackageImpl mp,
           String parentWorkflowId, LocalHashMap localMap) {
     Map<String, String> properties = new HashMap<String, String>();
-    if (localMap != null)
+    if (localMap != null) {
       properties = localMap.getMap();
+    }
 
     Long parentIdAsLong = null;
     if (StringUtils.isNotEmpty(parentWorkflowId)) {
@@ -704,8 +707,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
 
         // Delete removed elements from workspace
         for (MediaPackageElement elem : oldMp.getElements()) {
-          if (MediaPackageSupport.contains(elem.getIdentifier(), newMp))
+          if (MediaPackageSupport.contains(elem.getIdentifier(), newMp)) {
             continue;
+          }
           try {
             workspace.delete(elem.getURI());
             logger.info("Deleted removed mediapackge element {}", elem);
@@ -779,8 +783,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
           @RestResponse(responseCode = SC_CREATED, description = "Workflow definition updated."),
           @RestResponse(responseCode = SC_PRECONDITION_FAILED, description = "Workflow definition already registered.") })
   public Response registerWorkflowDefinition(@FormParam("workflowDefinition") WorkflowDefinitionImpl workflowDefinition) {
-    if (workflowDefinition == null)
+    if (workflowDefinition == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
 
     try {
       service.getWorkflowDefinitionById(workflowDefinition.getId());
@@ -837,8 +842,9 @@ public class WorkflowRestService extends AbstractJobProducerEndpoint {
     }
 
     if (state != WorkflowInstance.WorkflowState.SUCCEEDED && state != WorkflowInstance.WorkflowState.FAILED
-            && state != WorkflowInstance.WorkflowState.STOPPED)
+            && state != WorkflowInstance.WorkflowState.STOPPED) {
       return Response.status(Status.FORBIDDEN).build();
+    }
 
     try {
       service.cleanupWorkflowInstances(buffer, state);

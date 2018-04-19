@@ -166,8 +166,9 @@ public class InspectWorkflowOperationHandler extends AbstractWorkflowOperationHa
     // Test if there are tracks in the mediapackage
     if (mediaPackage.getTracks().length == 0) {
       logger.warn("Recording {} contains no media", mediaPackage);
-      if (!acceptNoMedia)
+      if (!acceptNoMedia) {
         throw new WorkflowOperationException("Mediapackage " + mediaPackage + " contains no media");
+      }
     }
 
     for (Track track : mediaPackage.getTracks()) {
@@ -204,11 +205,13 @@ public class InspectWorkflowOperationHandler extends AbstractWorkflowOperationHa
           throw new WorkflowOperationException("Unable to parse track from job " + inspectJob.getId(), e);
         }
 
-        if (inspectedTrack == null)
+        if (inspectedTrack == null) {
           throw new WorkflowOperationException("Track " + track + " could not be inspected");
+        }
 
-        if (inspectedTrack.getStreams().length == 0)
+        if (inspectedTrack.getStreams().length == 0) {
           throw new WorkflowOperationException(format("Track %s does not contain any streams", track));
+        }
       }
       // Replace the original track with the inspected one
       try {

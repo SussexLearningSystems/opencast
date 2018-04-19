@@ -114,10 +114,12 @@ public class OaiPmhPublicationRestService extends AbstractJobProducerEndpoint {
       final MediaPackage mediaPackage = MediaPackageParser.getFromXml(mediaPackageXml);
       final String[] downloadElements = StringUtils.split(downloadElementIds, ";;");
       final String[] streamingElements = StringUtils.split(streamingElementIds, ";;");
-      if (downloadElements != null)
+      if (downloadElements != null) {
         download = set(downloadElements);
-      if (streamingElements != null)
+      }
+      if (streamingElements != null) {
         streaming = set(streamingElements);
+      }
       job = service.publish(mediaPackage, channel, download, streaming, checkAvailability);
     } catch (IllegalArgumentException e) {
       logger.warn("Unable to create an publication job", e);
@@ -194,10 +196,11 @@ public class OaiPmhPublicationRestService extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

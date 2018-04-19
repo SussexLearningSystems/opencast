@@ -195,11 +195,13 @@ public class MediaPackageMergeTest {
     List<String> ids = new ArrayList<String>();
     List<URI> files = new ArrayList<URI>();
     for (MediaPackageElement e : mediaPackage.elements()) {
-      if (ids.contains(e.getIdentifier()))
+      if (ids.contains(e.getIdentifier())) {
         throw new MediaPackageException("Duplicate id " + e.getIdentifier() + "' found");
+      }
       ids.add(e.getIdentifier());
-      if (files.contains(e.getURI()))
+      if (files.contains(e.getURI())) {
         throw new MediaPackageException("Duplicate filename " + e.getURI() + "' found");
+      }
       files.add(e.getURI());
     }
   }

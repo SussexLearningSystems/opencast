@@ -151,8 +151,9 @@ public class JpaUser implements User {
           Set<JpaRole> roles) {
     this(username, password, organization, null, null, provider, manageable);
     for (Role role : roles) {
-      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId()))
+      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId())) {
         throw new IllegalArgumentException("Role " + role + " is not from the same organization!");
+      }
     }
     this.roles = roles;
   }
@@ -181,8 +182,9 @@ public class JpaUser implements User {
           String provider, boolean manageable, Set<JpaRole> roles) {
     this(username, password, organization, name, email, provider, manageable);
     for (Role role : roles) {
-      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId()))
+      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId())) {
         throw new IllegalArgumentException("Role " + role + " is not from the same organization!");
+      }
     }
     this.roles = roles;
   }
@@ -227,8 +229,9 @@ public class JpaUser implements User {
   @Override
   public boolean hasRole(String roleName) {
     for (Role role : roles) {
-      if (role.getName().equals(roleName))
+      if (role.getName().equals(roleName)) {
         return true;
+      }
     }
     return false;
   }
@@ -256,8 +259,9 @@ public class JpaUser implements User {
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof User))
+    if (!(obj instanceof User)) {
       return false;
+    }
     User other = (User) obj;
     return username.equals(other.getUsername()) && organization.equals(other.getOrganization())
             && EqualsUtil.eq(provider, other.getProvider());

@@ -188,8 +188,9 @@ public abstract class AbstractAssetManagerRestEndpoint {
           } else {
             return notFound();
           }
-        } else
+        } else {
           return notFound();
+        }
       }
     });
   }

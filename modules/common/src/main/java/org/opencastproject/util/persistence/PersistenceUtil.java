@@ -312,10 +312,12 @@ public final class PersistenceUtil {
   public static <A> List<A> findAll(EntityManager em, final String queryName, Option<Integer> offset,
           Option<Integer> limit, final Tuple<String, ?>... params) {
     final Query q = createNamedQuery(em, queryName, params);
-    for (Integer x : offset)
+    for (Integer x : offset) {
       q.setFirstResult(x);
-    for (Integer x : limit)
+    }
+    for (Integer x : limit) {
       q.setMaxResults(x);
+    }
     return q.getResultList();
   }
 
@@ -347,10 +349,12 @@ public final class PersistenceUtil {
   public static <A, B> List<A> findAll(EntityManager em, final Function<B, A> toA, Option<Integer> offset,
           Option<Integer> limit, final String queryName, final Tuple<String, ?>... params) {
     final Query q = createNamedQuery(em, queryName, params);
-    for (Integer x : offset)
+    for (Integer x : offset) {
       q.setFirstResult(x);
-    for (Integer x : limit)
+    }
+    for (Integer x : limit) {
       q.setMaxResults(x);
+    }
     return mlist((List<B>) q.getResultList()).map(toA).value();
   }
 

@@ -134,8 +134,9 @@ public class FFmpegEdit {
       String line;
       int n = 5;
       while ((line = in.readLine()) != null) {
-        if (n-- > 0)
+        if (n-- > 0) {
           logger.info(line);
+        }
       }
 
       // wait until the task is finished

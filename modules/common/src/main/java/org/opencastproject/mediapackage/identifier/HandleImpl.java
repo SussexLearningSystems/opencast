@@ -57,10 +57,12 @@ public final class HandleImpl extends IdImpl implements Handle {
    *          the handle builder that created this handle
    */
   HandleImpl(String namingAuthority, String localName, HandleBuilder builder) {
-    if (namingAuthority == null)
+    if (namingAuthority == null) {
       throw new IllegalArgumentException("Naming authority is null");
-    if (localName == null)
+    }
+    if (localName == null) {
       throw new IllegalArgumentException("Local name is null");
+    }
     this.namingAuthority = namingAuthority;
     this.localName = localName;
     this.builder = builder;
@@ -82,8 +84,9 @@ public final class HandleImpl extends IdImpl implements Handle {
    */
   HandleImpl(String namingAuthority, String localName, URL url, HandleBuilder builder) {
     this(namingAuthority, localName, builder);
-    if (url == null)
+    if (url == null) {
       throw new IllegalArgumentException("Url is null");
+    }
     target = url;
   }
 
@@ -125,8 +128,9 @@ public final class HandleImpl extends IdImpl implements Handle {
    */
   public URL resolve() throws HandleException {
     if (target == null) {
-      if (builder == null)
+      if (builder == null) {
         builder = HandleBuilderFactory.newInstance().newHandleBuilder();
+      }
       target = builder.resolve(this);
     }
     return target;

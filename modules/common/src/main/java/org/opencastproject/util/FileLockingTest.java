@@ -78,12 +78,15 @@ public final class FileLockingTest {
         });
         withResource(new BufferedReader(new FileReader(file)), new Effect.X<BufferedReader>() {
           @Override public void xrun(BufferedReader in) throws Exception {
-            if (!myId.equals(in.readLine()))
+            if (!myId.equals(in.readLine())) {
               throw new Error("File not locked");
-            if (!myId.equals(in.readLine()))
+            }
+            if (!myId.equals(in.readLine())) {
               throw new Error("File not locked");
-            if (null != in.readLine())
+            }
+            if (null != in.readLine()) {
               throw new Error("File not locked");
+            }
           }
         });
       }

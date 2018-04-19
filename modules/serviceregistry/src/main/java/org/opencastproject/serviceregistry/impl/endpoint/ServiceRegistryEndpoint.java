@@ -276,9 +276,10 @@ public class ServiceRegistryEndpoint {
           @RestResponse(responseCode = SC_OK, description = "Returned the available services."),
           @RestResponse(responseCode = SC_BAD_REQUEST, description = "No service type specified, bad request.") })
   public Response getAvailableServicesAsXml(@QueryParam("serviceType") String serviceType) {
-    if (isBlank(serviceType))
+    if (isBlank(serviceType)) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Service type must be specified")
               .build());
+    }
     JaxbServiceRegistrationList registrations = new JaxbServiceRegistrationList();
     try {
       for (ServiceRegistration reg : serviceRegistry.getServiceRegistrationsByLoad(serviceType)) {
@@ -330,8 +331,9 @@ public class ServiceRegistryEndpoint {
       if (isNotBlank(serviceType) && isNotBlank(host)) {
         // This is a request for one specific service. Return it, or SC_NOT_FOUND if not found
         ServiceRegistration reg = serviceRegistry.getServiceRegistration(serviceType, host);
-        if (reg == null)
+        if (reg == null) {
           throw new NotFoundException();
+        }
 
         services = new LinkedList<ServiceRegistration>();
         services.add(reg);
@@ -429,8 +431,9 @@ public class ServiceRegistryEndpoint {
   public JaxbHostRegistrationList getHostsAsXml() throws NotFoundException {
     JaxbHostRegistrationList registrations = new JaxbHostRegistrationList();
     try {
-      for (HostRegistration reg : serviceRegistry.getHostRegistrations())
+      for (HostRegistration reg : serviceRegistry.getHostRegistrations()) {
         registrations.add(new JaxbHostRegistration(reg));
+      }
       return registrations;
     } catch (ServiceRegistryException e) {
       throw new WebApplicationException(e);
@@ -606,16 +609,19 @@ public class ServiceRegistryEndpoint {
           @QueryParam("host") String host, @QueryParam("operation") String operation) {
     try {
       if (isNotBlank(host) && isNotBlank(operation)) {
-        if (isBlank(serviceType))
+        if (isBlank(serviceType)) {
           throw new WebApplicationException(Response.serverError().entity("Service type must not be null").build());
+        }
         return serviceRegistry.count(serviceType, host, operation, status);
       } else if (isNotBlank(host)) {
-        if (isBlank(serviceType))
+        if (isBlank(serviceType)) {
           throw new WebApplicationException(Response.serverError().entity("Service type must not be null").build());
+        }
         return serviceRegistry.countByHost(serviceType, host, status);
       } else if (isNotBlank(operation)) {
-        if (isBlank(serviceType))
+        if (isBlank(serviceType)) {
           throw new WebApplicationException(Response.serverError().entity("Service type must not be null").build());
+        }
         return serviceRegistry.countByOperation(serviceType, operation, status);
       } else {
         return serviceRegistry.count(serviceType, status);

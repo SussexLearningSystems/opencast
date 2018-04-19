@@ -57,8 +57,9 @@ public final class AdminUIElasticsearchUtils {
     File configurationRoot = new File(PathSupport.concat(new String[] { homeDirectory.getAbsolutePath(), "etc",
             "index", index }));
     FileUtils.deleteQuietly(configurationRoot);
-    if (!configurationRoot.mkdirs())
+    if (!configurationRoot.mkdirs()) {
       throw new IOException("Error creating " + configurationRoot);
+    }
 
     String[] files = new String[] { "default-mapping.json", "event-mapping.json", "group-mapping.json", "names.txt",
             "series-mapping.json", "settings.yml", "theme-mapping.json", "version-mapping.json" };

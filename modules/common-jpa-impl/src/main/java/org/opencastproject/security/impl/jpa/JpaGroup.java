@@ -113,10 +113,12 @@ public final class JpaGroup implements Group {
   public JpaGroup(String groupId, JpaOrganization organization, String name, String description)
           throws IllegalArgumentException {
     super();
-    if (groupId.length() > 128)
+    if (groupId.length() > 128) {
       throw new IllegalArgumentException("Group id must not be longer than 128 Bytes");
-    if (name.length() > 128)
+    }
+    if (name.length() > 128) {
       throw new IllegalArgumentException("Name must not be longer than 128 Bytes");
+    }
     this.groupId = groupId;
     this.organization = organization;
     this.name = name;
@@ -265,8 +267,9 @@ public final class JpaGroup implements Group {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Group))
+    if (!(obj instanceof Group)) {
       return false;
+    }
     Group other = (Group) obj;
     return groupId.equals(other.getGroupId()) && organization.equals(other.getOrganization());
   }

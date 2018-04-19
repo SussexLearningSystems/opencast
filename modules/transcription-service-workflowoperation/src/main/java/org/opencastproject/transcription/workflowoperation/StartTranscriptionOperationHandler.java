@@ -117,8 +117,9 @@ public class StartTranscriptionOperationHandler extends AbstractWorkflowOperatio
     AbstractMediaPackageElementSelector<Track> elementSelector = new TrackSelector();
 
     // Make sure either one of tags or flavors are provided
-    if (StringUtils.isBlank(sourceTagOption) && StringUtils.isBlank(sourceFlavorOption))
+    if (StringUtils.isBlank(sourceTagOption) && StringUtils.isBlank(sourceFlavorOption)) {
       throw new WorkflowOperationException("No source tag or flavor have been specified!");
+    }
 
     if (StringUtils.isNotBlank(sourceFlavorOption)) {
       String flavor = StringUtils.trim(sourceFlavorOption);
@@ -128,8 +129,9 @@ public class StartTranscriptionOperationHandler extends AbstractWorkflowOperatio
         throw new WorkflowOperationException("Source flavor '" + flavor + "' is malformed");
       }
     }
-    if (sourceTagOption != null)
+    if (sourceTagOption != null) {
       elementSelector.addTag(sourceTagOption);
+    }
 
     Collection<Track> elements = elementSelector.select(mediaPackage, false);
     Job job = null;

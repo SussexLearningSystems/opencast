@@ -73,8 +73,9 @@ public class MediaPackageBuilderImpl implements MediaPackageBuilder {
    *           if the temporary directory cannot be created or is not accessible
    */
   public MediaPackageBuilderImpl(MediaPackageSerializer serializer) {
-    if (serializer == null)
+    if (serializer == null) {
       throw new IllegalArgumentException("Serializer may not be null");
+    }
     this.serializer = serializer;
   }
 

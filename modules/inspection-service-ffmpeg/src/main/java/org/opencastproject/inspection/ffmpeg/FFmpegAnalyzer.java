@@ -86,14 +86,16 @@ public class FFmpegAnalyzer implements MediaAnalyzer {
 
   @Override
   public MediaContainerMetadata analyze(File media) throws MediaAnalyzerException {
-    if (binary == null)
+    if (binary == null) {
       throw new IllegalStateException("Binary is not set");
+    }
 
     List<String> command = new ArrayList<>();
     command.add("-show_format");
     command.add("-show_streams");
-    if (accurateFrameCount)
+    if (accurateFrameCount) {
       command.add("-count_frames");
+    }
     command.add("-of");
     command.add("json");
     command.add(media.getAbsolutePath().replaceAll(" ", "\\ "));
@@ -118,8 +120,9 @@ public class FFmpegAnalyzer implements MediaAnalyzer {
         }
       }, fnLogError);
       // Windows binary will return -1 when queried for options
-      if (exitCode != -1 && exitCode != 0 && exitCode != 255)
+      if (exitCode != -1 && exitCode != 0 && exitCode != 255) {
         throw new MediaAnalyzerException("Frame analyzer " + binary + " exited with code " + exitCode);
+      }
     } catch (IOException e) {
       logger.error("Error executing ffprobe: {}", ExceptionUtils.getStackTrace(e));
       throw new MediaAnalyzerException("Error while running ffprobe " + binary, e);

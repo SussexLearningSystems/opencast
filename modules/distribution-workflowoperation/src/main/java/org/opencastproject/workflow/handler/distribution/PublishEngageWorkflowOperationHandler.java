@@ -353,8 +353,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
       }
 
       // Wait until all distribution jobs have returned
-      if (!waitForStatus(jobs.toArray(new Job[jobs.size()])).isSuccess())
+      if (!waitForStatus(jobs.toArray(new Job[jobs.size()])).isSuccess()) {
         throw new WorkflowOperationException("One of the distribution jobs did not complete successfully");
+      }
 
       logger.debug("Distribute of mediapackage {} completed", mediaPackage);
 
@@ -378,8 +379,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
           // nothing to do here
         }
 
-        if (!isPublishable(mediaPackageForSearch))
+        if (!isPublishable(mediaPackageForSearch)) {
           throw new WorkflowOperationException("Media package does not meet criteria for publication");
+        }
 
         logger.info("Publishing media package {} to search index", mediaPackageForSearch);
 
@@ -423,10 +425,11 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
         logger.error("{} is malformed: {}", ENGAGE_URL_PROPERTY, engageUrlString);
         throw new WorkflowOperationException(e);
       } catch (Throwable t) {
-        if (t instanceof WorkflowOperationException)
+        if (t instanceof WorkflowOperationException) {
           throw (WorkflowOperationException) t;
-        else
+        } else {
           throw new WorkflowOperationException(t);
+        }
         }
     } catch (Exception e) {
       if (e instanceof WorkflowOperationException) {
@@ -493,8 +496,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
       Job job = serviceRegistry.getJob(entry.getId());
 
       // If there is no payload, then the item has not been distributed.
-      if (job.getPayload() == null)
+      if (job.getPayload() == null) {
         continue;
+      }
 
       List <MediaPackageElement> distributedElements = null;
       try {
@@ -505,8 +509,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
 
       // If the job finished successfully, but returned no new element, the channel simply doesn't support this
       // kind of element. So we just keep on looping.
-      if (distributedElements == null || distributedElements.size() < 1)
+      if (distributedElements == null || distributedElements.size() < 1) {
         continue;
+      }
 
       for (MediaPackageElement distributedElement : distributedElements) {
 
@@ -548,9 +553,11 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
           }
         }
 
-        if (isStreamingFormat(distributedElement))
-            applyTags(distributedElement, streamingTargetTags);
-        else applyTags(distributedElement, downloadTargetTags);
+        if (isStreamingFormat(distributedElement)) {
+          applyTags(distributedElement, streamingTargetTags);
+        } else {
+          applyTags(distributedElement, downloadTargetTags);
+        }
 
         // Add the new element to the mediapackage
         mp.add(distributedElement);
@@ -570,18 +577,21 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
     // Translate references to the distributed artifacts
     for (MediaPackageElement element : mp.getElements()) {
 
-      if (removals.contains(element))
+      if (removals.contains(element)) {
         continue;
+      }
 
       // Is the element referencing anything?
       MediaPackageReference reference = element.getReference();
-      if (reference == null)
+      if (reference == null) {
         continue;
+      }
 
       // See if the element has been distributed
       String distributedElementId = distributedElementIds.get(reference.getIdentifier());
-      if (distributedElementId == null)
+      if (distributedElementId == null) {
         continue;
+      }
 
       MediaPackageReference translatedReference = new MediaPackageReferenceImpl(mp.getElementById(distributedElementId));
       if (reference.getProperties() != null) {
@@ -612,8 +622,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
           || TrackImpl.StreamingProtocol.HLS.equals(((TrackImpl) element).getTransport())
           || TrackImpl.StreamingProtocol.DASH.equals(((TrackImpl) element).getTransport())
           || TrackImpl.StreamingProtocol.HDS.equals(((TrackImpl) element).getTransport())
-          || TrackImpl.StreamingProtocol.SMOOTH.equals(((TrackImpl) element).getTransport()))
+          || TrackImpl.StreamingProtocol.SMOOTH.equals(((TrackImpl) element).getTransport())) {
         return true;
+      }
     }
     return false;
   }
@@ -632,12 +643,14 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
   /** Media package must meet these criteria in order to be published. */
   private boolean isPublishable(MediaPackage mp) {
     boolean hasTitle = !isBlank(mp.getTitle());
-    if (!hasTitle)
+    if (!hasTitle) {
       logger.warn("Media package does not meet criteria for publication: There is no title");
+    }
 
     boolean hasTracks = mp.hasTracks();
-    if (!hasTracks)
+    if (!hasTracks) {
       logger.warn("Media package does not meet criteria for publication: There are no tracks");
+    }
 
     return hasTitle && hasTracks;
   }
@@ -694,8 +707,9 @@ public class PublishEngageWorkflowOperationHandler extends AbstractWorkflowOpera
    * @return the merged mediapackage
    */
   protected MediaPackage mergePackages(MediaPackage updatedMp, MediaPackage publishedMp) {
-    if (publishedMp == null)
+    if (publishedMp == null) {
       return updatedMp;
+    }
 
     MediaPackage mergedMediaPackage = (MediaPackage) updatedMp.clone();
     for (MediaPackageElement element : publishedMp.elements()) {

@@ -396,8 +396,9 @@ public class SeriesServiceRemoteImpl extends RemoteBase implements SeriesService
                 JSONObject seriesJsonObj = seriesJsonArr.getJSONObject(idx);
                 String seriesId = seriesJsonObj.optString("identifier");
                 String seriesTitle = seriesJsonObj.optString("title");
-                if (StringUtils.isNotBlank(seriesId) && StringUtils.isNotEmpty(seriesTitle))
+                if (StringUtils.isNotBlank(seriesId) && StringUtils.isNotEmpty(seriesTitle)) {
                   result.put(seriesId, seriesTitle);
+                }
               }
             }
             return result;
@@ -443,8 +444,9 @@ public class SeriesServiceRemoteImpl extends RemoteBase implements SeriesService
         } else {
           String optOutString = EntityUtils.toString(response.getEntity(), "UTF-8");
           Boolean booleanObject = BooleanUtils.toBooleanObject(optOutString);
-          if (booleanObject == null)
+          if (booleanObject == null) {
             throw new SeriesException("Could not parse opt out status from the remote series service: " + optOutString);
+          }
 
           logger.info("Successfully get opt out status of series with id {} from the remote series service", seriesId);
           return booleanObject.booleanValue();
@@ -503,40 +505,55 @@ public class SeriesServiceRemoteImpl extends RemoteBase implements SeriesService
     url.append("/series.xml?");
 
     List<NameValuePair> queryStringParams = new ArrayList<>();
-    if (q.getText() != null)
+    if (q.getText() != null) {
       queryStringParams.add(new BasicNameValuePair("q", q.getText()));
-    if (q.getSeriesId() != null)
+    }
+    if (q.getSeriesId() != null) {
       queryStringParams.add(new BasicNameValuePair("seriesId", q.getSeriesId()));
+    }
     queryStringParams.add(new BasicNameValuePair("edit", Boolean.toString(q.isEdit())));
     queryStringParams.add(new BasicNameValuePair("fuzzyMatch", Boolean.toString(q.isFuzzyMatch())));
-    if (q.getSeriesTitle() != null)
+    if (q.getSeriesTitle() != null) {
       queryStringParams.add(new BasicNameValuePair("seriesTitle", q.getSeriesTitle()));
-    if (q.getCreator() != null)
+    }
+    if (q.getCreator() != null) {
       queryStringParams.add(new BasicNameValuePair("creator", q.getCreator()));
-    if (q.getContributor() != null)
+    }
+    if (q.getContributor() != null) {
       queryStringParams.add(new BasicNameValuePair("contributor", q.getContributor()));
-    if (q.getPublisher() != null)
+    }
+    if (q.getPublisher() != null) {
       queryStringParams.add(new BasicNameValuePair("publisher", q.getPublisher()));
-    if (q.getRightsHolder() != null)
+    }
+    if (q.getRightsHolder() != null) {
       queryStringParams.add(new BasicNameValuePair("rightsholder", q.getRightsHolder()));
-    if (q.getCreatedFrom() != null)
+    }
+    if (q.getCreatedFrom() != null) {
       queryStringParams.add(new BasicNameValuePair("createdfrom", SolrUtils.serializeDate(q.getCreatedFrom())));
-    if (q.getCreatedTo() != null)
+    }
+    if (q.getCreatedTo() != null) {
       queryStringParams.add(new BasicNameValuePair("createdto", SolrUtils.serializeDate(q.getCreatedTo())));
-    if (q.getLanguage() != null)
+    }
+    if (q.getLanguage() != null) {
       queryStringParams.add(new BasicNameValuePair("language", q.getLanguage()));
-    if (q.getLicense() != null)
+    }
+    if (q.getLicense() != null) {
       queryStringParams.add(new BasicNameValuePair("license", q.getLicense()));
-    if (q.getSubject() != null)
+    }
+    if (q.getSubject() != null) {
       queryStringParams.add(new BasicNameValuePair("subject", q.getSubject()));
-    if (q.getAbstract() != null)
+    }
+    if (q.getAbstract() != null) {
       queryStringParams.add(new BasicNameValuePair("abstract", q.getAbstract()));
-    if (q.getDescription() != null)
+    }
+    if (q.getDescription() != null) {
       queryStringParams.add(new BasicNameValuePair("description", q.getDescription()));
+    }
     if (q.getSort() != null) {
       String sortString = q.getSort().toString();
-      if (!q.isSortAscending())
+      if (!q.isSortAscending()) {
         sortString = sortString.concat("_DESC");
+      }
       queryStringParams.add(new BasicNameValuePair("sort", sortString));
     }
     queryStringParams.add(new BasicNameValuePair("startPage", Long.toString(q.getStartPage())));
@@ -803,10 +820,12 @@ public class SeriesServiceRemoteImpl extends RemoteBase implements SeriesService
 
   @Override
   public boolean deleteSeriesElement(String seriesID, String type) throws SeriesException {
-    if (isBlank(seriesID))
+    if (isBlank(seriesID)) {
       throw new IllegalArgumentException("Series ID must not be blank");
-    if (isBlank(type))
+    }
+    if (isBlank(type)) {
       throw new IllegalArgumentException("Element type must not be blank");
+    }
 
     HttpDelete del = new HttpDelete("/" + seriesID + "/elements/" + type);
     HttpResponse response = getResponse(del, SC_NO_CONTENT, SC_NOT_FOUND, SC_INTERNAL_SERVER_ERROR);
@@ -857,8 +876,9 @@ public class SeriesServiceRemoteImpl extends RemoteBase implements SeriesService
       } catch (NumberFormatException e) {
         logger.warn("Bad count parameter");
       }
-      if (count < 1)
+      if (count < 1) {
         count = DEFAULT_LIMIT;
+      }
     }
 
     SeriesQuery q = new SeriesQuery();

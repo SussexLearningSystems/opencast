@@ -105,8 +105,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
 
   @Override
   protected String process(Job job) throws Exception {
-    if (!StringUtils.equalsIgnoreCase(JOB_TYPE, job.getJobType()))
+    if (!StringUtils.equalsIgnoreCase(JOB_TYPE, job.getJobType())) {
       throw new IllegalArgumentException("Can not handle job type " + job.getJobType());
+    }
 
     Publication publication = null;
     MediaPackage mediaPackage = MediaPackageParser.getFromXml(job.getArguments().get(0));
@@ -170,8 +171,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
   public Job updateMetadata(MediaPackage mediaPackage, String repository, Set<String> flavors, Set<String> tags,
           boolean checkAvailability) throws PublicationException, MediaPackageException {
     checkInputArguments(mediaPackage, repository);
-    if ((flavors == null || flavors.isEmpty()) && (tags == null || tags.isEmpty()))
+    if ((flavors == null || flavors.isEmpty()) && (tags == null || tags.isEmpty())) {
       throw new IllegalArgumentException("Flavors or tags must be set");
+    }
 
     try {
       return serviceRegistry.createJob(JOB_TYPE, Operation.UpdateMetadata.toString(),
@@ -195,8 +197,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     if (searchResult.size() > 0) {
       try {
         Publication p = retract(job, mediaPackage, repository);
-        if (mediaPackage.contains(p))
+        if (mediaPackage.contains(p)) {
           mediaPackage.remove(p);
+        }
       } catch (NotFoundException e) {
         logger.debug("No OAI-PMH publication found for media package {}.", mpId, e);
         // this is ok
@@ -207,8 +210,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
       // select elements for download distribution
       MediaPackage mpDownloadDist = (MediaPackage) mediaPackage.clone();
       for (MediaPackageElement mpe : mpDownloadDist.getElements()) {
-        if (downloadElementIds.contains(mpe.getIdentifier()))
+        if (downloadElementIds.contains(mpe.getIdentifier())) {
           continue;
+        }
         mpDownloadDist.remove(mpe);
       }
       // publish to download
@@ -230,8 +234,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
       // select elements for streaming distribution
       MediaPackage mpStreamingDist = (MediaPackage) mediaPackage.clone();
       for (MediaPackageElement mpe : mpStreamingDist.getElements()) {
-        if (streamingElementIds.contains(mpe.getIdentifier()))
+        if (streamingElementIds.contains(mpe.getIdentifier())) {
           continue;
+        }
         mpStreamingDist.remove(mpe);
       }
       // publish to streaming
@@ -271,8 +276,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     // cleanup media package elements
     for (MediaPackageElement mpe : oaiPmhDistMp.getElements()) {
       // keep publications
-      if (MediaPackageElement.Type.Publication == mpe.getElementType())
+      if (MediaPackageElement.Type.Publication == mpe.getElementType()) {
         continue;
+      }
       oaiPmhDistMp.remove(mpe);
     }
     // ...add the distributed elements
@@ -320,8 +326,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
       // retract files from distribution channels
       Set<String> mpeIds = new HashSet<>();
       for (MediaPackageElement mpe : oaiPmhMp.elements()) {
-        if (MediaPackageElement.Type.Publication == mpe.getElementType())
+        if (MediaPackageElement.Type.Publication == mpe.getElementType()) {
           continue;
+        }
 
         mpeIds.add(mpe.getIdentifier());
       }
@@ -352,17 +359,19 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
         }
         if (retractionJobs.size() > 0) {
           // wait for distribution jobs
-          if (!waitForJobs(job, serviceRegistry, retractionJobs).isSuccess())
+          if (!waitForJobs(job, serviceRegistry, retractionJobs).isSuccess()) {
             throw new PublicationException(
                     format("Unable to retract elements of media package %s from distribution channels.", mpId));
+          }
         }
       }
     }
 
     String publicationChannel = getPublicationChannelName(repository);
     for (Publication p : mediaPackage.getPublications()) {
-      if (StringUtils.equals(publicationChannel, p.getChannel()))
+      if (StringUtils.equals(publicationChannel, p.getChannel())) {
         return p;
+      }
     }
     return null;
   }
@@ -401,8 +410,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     Set<String> elementIdsToDistribute = new HashSet<>();
     for (MediaPackageElement mpe : filteredMp.getElements()) {
       // do not distribute publications
-      if (MediaPackageElement.Type.Publication == mpe.getElementType())
+      if (MediaPackageElement.Type.Publication == mpe.getElementType()) {
         continue;
+      }
       elementIdsToDistribute.add(mpe.getIdentifier());
     }
     if (elementIdsToDistribute.isEmpty()) {
@@ -416,8 +426,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     try {
       Job distJob = downloadDistributionService
               .distribute(getPublicationChannelName(repository), filteredMp, elementIdsToDistribute, checkAvailability);
-      if (job == null)
+      if (job == null) {
         throw new PublicationException("The distribution service can not handle this type of media package elements.");
+      }
       if (!waitForJobs(job, serviceRegistry, distJob).isSuccess()) {
         throw new PublicationException(format(
                 "Unable to distribute updated elements from media package %s to the download distribution service",
@@ -436,8 +447,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
 
     // update elements (URLs)
     for (MediaPackageElement e : filteredMp.getElements()) {
-      if (MediaPackageElement.Type.Publication.equals(e.getElementType()))
+      if (MediaPackageElement.Type.Publication.equals(e.getElementType())) {
         continue;
+      }
       filteredMp.remove(e);
     }
     for (MediaPackageElement e : distributedElements) {
@@ -463,16 +475,19 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     Map<URI, MediaPackageElement> elementUriMap = new Hashtable<>();
     for (SearchResultItem oaiPmhSearchResultItem : result.getItems()) {
       for (MediaPackageElement mpe : oaiPmhSearchResultItem.getMediaPackage().getElements()) {
-        if (MediaPackageElement.Type.Publication == mpe.getElementType() || null == mpe.getURI())
+        if (MediaPackageElement.Type.Publication == mpe.getElementType() || null == mpe.getURI()) {
           continue;
+        }
         elementUriMap.put(mpe.getURI(), mpe);
       }
     }
     for (MediaPackageElement publishedMpe : publishedMp.getElements()) {
-      if (MediaPackageElement.Type.Publication == publishedMpe.getElementType())
+      if (MediaPackageElement.Type.Publication == publishedMpe.getElementType()) {
         continue;
-      if (elementUriMap.containsKey(publishedMpe.getURI()))
+      }
+      if (elementUriMap.containsKey(publishedMpe.getURI())) {
         elementUriMap.remove(publishedMpe.getURI());
+      }
     }
     Set<String> orphanedElementIds = new HashSet<>();
     for (MediaPackageElement orphanedMpe : elementUriMap.values()) {
@@ -484,9 +499,10 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
           Job retractJob = downloadDistributionService.retract(getPublicationChannelName(repository),
                   oaiPmhSearchResultItem.getMediaPackage(), orphanedElementIds);
           if (retractJob != null) {
-            if (!waitForJobs(job, serviceRegistry, retractJob).isSuccess())
+            if (!waitForJobs(job, serviceRegistry, retractJob).isSuccess()) {
               logger.warn("The download distribution retract job for the orphaned elements from media package {} does not end successfully",
                       oaiPmhSearchResultItem.getMediaPackage().getIdentifier().compact());
+            }
           }
         } catch (DistributionException e) {
           logger.warn("Unable to retract orphaned elements from download distribution service for the media package {} channel {}",
@@ -498,19 +514,23 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     // return the publication
     String publicationChannel = getPublicationChannelName(repository);
     for (Publication p : mediaPackage.getPublications()) {
-      if (StringUtils.equals(publicationChannel, p.getChannel()))
+      if (StringUtils.equals(publicationChannel, p.getChannel())) {
         return p;
+      }
     }
     return null;
   }
 
   protected void checkInputArguments(MediaPackage mediaPackage, String repository) {
-    if (mediaPackage == null)
+    if (mediaPackage == null) {
       throw new IllegalArgumentException("Media package must be specified");
-    if (StringUtils.isEmpty(repository))
+    }
+    if (StringUtils.isEmpty(repository)) {
       throw new IllegalArgumentException("Repository must be specified");
-    if (!oaiPmhServerInfo.hasRepo(repository))
+    }
+    if (!oaiPmhServerInfo.hasRepo(repository)) {
       throw new IllegalArgumentException("OAI-PMH repository '" + repository + "' does not exist");
+    }
   }
 
   protected String getPublicationChannelName(String repository) {
@@ -539,18 +559,24 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     oaiPmhMp.setLicense(mediaPackage.getLicense());
     oaiPmhMp.setSeries(mediaPackage.getSeries());
     oaiPmhMp.setSeriesTitle(mediaPackage.getSeriesTitle());
-    for (String contributor : oaiPmhMp.getContributors())
+    for (String contributor : oaiPmhMp.getContributors()) {
       oaiPmhMp.removeContributor(contributor);
-    for (String contributor : mediaPackage.getContributors())
+    }
+    for (String contributor : mediaPackage.getContributors()) {
       oaiPmhMp.addContributor(contributor);
-    for (String creator : oaiPmhMp.getCreators())
+    }
+    for (String creator : oaiPmhMp.getCreators()) {
       oaiPmhMp.removeCreator(creator);
-    for (String creator : mediaPackage.getCreators())
+    }
+    for (String creator : mediaPackage.getCreators()) {
       oaiPmhMp.addCreator(creator);
-    for (String subject : oaiPmhMp.getSubjects())
+    }
+    for (String subject : oaiPmhMp.getSubjects()) {
       oaiPmhMp.removeSubject(subject);
-    for (String subject : mediaPackage.getSubjects())
+    }
+    for (String subject : mediaPackage.getSubjects()) {
       oaiPmhMp.addSubject(subject);
+    }
     return oaiPmhMp;
   }
 
@@ -568,8 +594,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
    */
   private MediaPackage filterMediaPackage(MediaPackage mediaPackage, Set<MediaPackageElementFlavor> flavors,
           Set<String> tags) throws MediaPackageException {
-    if (flavors.isEmpty() && tags.isEmpty())
+    if (flavors.isEmpty() && tags.isEmpty()) {
       throw new IllegalArgumentException("Flavors or tags parameter must be set");
+    }
 
     MediaPackage filteredMediaPackage = (MediaPackage) mediaPackage.clone();
 
@@ -587,8 +614,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     keep.addAll(selector.select(mediaPackage, true));
 
     // Keep publications
-    for (Publication p : filteredMediaPackage.getPublications())
+    for (Publication p : filteredMediaPackage.getPublications()) {
       keep.add(p);
+    }
 
     // Fix references and flavors
     for (MediaPackageElement element : filteredMediaPackage.getElements()) {
@@ -615,17 +643,18 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
             if (parent.getFlavor() != null && element.getFlavor() == null) {
               element.setFlavor(parent.getFlavor());
             }
-            if (parent.getReference() == null)
+            if (parent.getReference() == null) {
               break;
+            }
             reference = parent.getReference();
           }
 
           // Done. Let's cut the path but keep references to the mediapackage itself
-          if (reference != null && reference.getType().equals(MediaPackageReference.TYPE_MEDIAPACKAGE))
+          if (reference != null && reference.getType().equals(MediaPackageReference.TYPE_MEDIAPACKAGE)) {
             element.setReference(reference);
-          else if (reference != null && (referenceProperties == null || referenceProperties.size() == 0))
+          } else if (reference != null && (referenceProperties == null || referenceProperties.size() == 0)) {
             element.clearReference();
-          else {
+          } else {
             // Ok, there is more to that reference than just pointing at an element. Let's keep the original,
             // you never know.
             referencedElement.setURI(null);
@@ -690,8 +719,9 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
    * @return the merged media package
    */
   public static MediaPackage merge(MediaPackage updatedMp, MediaPackage publishedMp) {
-    if (publishedMp == null)
+    if (publishedMp == null) {
       return updatedMp;
+    }
 
     final MediaPackage mergedMp = MediaPackageSupport.copy(publishedMp);
 
@@ -708,12 +738,14 @@ public class OaiPmhPublicationServiceImpl extends AbstractJobProducer implements
     }
 
     // Remove publications
-    for (final Publication p : mergedMp.getPublications())
+    for (final Publication p : mergedMp.getPublications()) {
       mergedMp.remove(p);
+    }
 
     // Add updated publications
-    for (final Publication updatedPublication : updatedMp.getPublications())
+    for (final Publication updatedPublication : updatedMp.getPublications()) {
       mergedMp.add(updatedPublication);
+    }
 
     // Merge media package fields
     updateMediaPackageFields(mergedMp, updatedMp);

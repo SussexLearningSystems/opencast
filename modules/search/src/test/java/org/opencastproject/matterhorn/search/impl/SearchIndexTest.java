@@ -85,8 +85,9 @@ public class SearchIndexTest {
   @AfterClass
   public static void tearDownClass() {
     try {
-      if (idx != null)
+      if (idx != null) {
         idx.close();
+      }
       FileUtils.deleteQuietly(idxRoot);
     } catch (IOException e) {
       fail("Error closing search index: " + e.getMessage());

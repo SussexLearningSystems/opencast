@@ -240,8 +240,9 @@ public class WorkingFileRepositoryRemoteImpl extends RemoteBase implements Worki
     HttpDelete del = new HttpDelete(url);
     HttpResponse response = getResponse(del, SC_NO_CONTENT, SC_NOT_FOUND);
     try {
-      if (response != null)
+      if (response != null) {
         return SC_NO_CONTENT == response.getStatusLine().getStatusCode();
+      }
     } finally {
       closeConnection(response);
     }
@@ -278,8 +279,9 @@ public class WorkingFileRepositoryRemoteImpl extends RemoteBase implements Worki
     HttpResponse response = getResponse(get, SC_OK, SC_NOT_FOUND);
     try {
       if (response != null) {
-        if (SC_NOT_FOUND == response.getStatusLine().getStatusCode())
+        if (SC_NOT_FOUND == response.getStatusLine().getStatusCode()) {
           throw new NotFoundException();
+        }
         // Do not close this response. It will be closed when the caller closes the input stream
         return new HttpClientClosingInputStream(response);
       }
@@ -343,8 +345,9 @@ public class WorkingFileRepositoryRemoteImpl extends RemoteBase implements Worki
   @Override
   public URI getURI(String mediaPackageID, String mediaPackageElementID, String fileName) {
     String url = UrlSupport.concat(new String[] { "uri", mediaPackageID, mediaPackageElementID });
-    if (fileName != null)
+    if (fileName != null) {
       url = UrlSupport.concat(url, fileName);
+    }
     HttpGet get = new HttpGet(url);
     HttpResponse response = getResponse(get);
     try {
@@ -448,8 +451,9 @@ public class WorkingFileRepositoryRemoteImpl extends RemoteBase implements Worki
     HttpDelete del = new HttpDelete(url);
     HttpResponse response = getResponse(del, SC_NO_CONTENT, SC_NOT_FOUND);
     try {
-      if (response != null)
+      if (response != null) {
         return SC_NO_CONTENT == response.getStatusLine().getStatusCode();
+      }
     } finally {
       closeConnection(response);
     }
@@ -477,8 +481,9 @@ public class WorkingFileRepositoryRemoteImpl extends RemoteBase implements Worki
     HttpGet get = new HttpGet("/baseUri");
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return new URI(EntityUtils.toString(response.getEntity(), "UTF-8"));
+      }
     } catch (Exception e) {
       throw new IllegalStateException("Unable to determine the base URI of the file repository");
     } finally {

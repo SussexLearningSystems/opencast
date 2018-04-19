@@ -72,8 +72,9 @@ public final class AccessInformationUtil {
    *           if the <code>managedAcl</code> parameter is null
    */
   public static JSONObject serializeManagedAcl(ManagedAcl managedAcl) {
-    if (managedAcl == null)
+    if (managedAcl == null) {
       throw new IllegalArgumentException("The parameter managedAcl must not be null");
+    }
 
     JSONObject systemAclJson = new JSONObject();
 
@@ -107,15 +108,17 @@ public final class AccessInformationUtil {
    *           if the <code>trans</code> parameter is null
    */
   public static JSONObject serializeACLTransition(ACLTransition trans) {
-    if (trans == null)
+    if (trans == null) {
       throw new IllegalArgumentException("The parameter trans must not be null");
+    }
 
     JSONObject transJson = new JSONObject();
     try {
       transJson.put("id", trans.getTransitionId());
       transJson.put("application_date", DateTimeSupport.toUTC(trans.getApplicationDate().getTime()));
-      if (trans.getWorkflow().isSome())
+      if (trans.getWorkflow().isSome()) {
         transJson.put("workflow_id", trans.getWorkflow().get().getWorkflowId());
+      }
       transJson.put("done", trans.isDone());
     } catch (JSONException e) {
       // This should never happen, because the key is never null
@@ -149,8 +152,9 @@ public final class AccessInformationUtil {
   public static JSONObject serializeSeriesACLTransition(SeriesACLTransition trans) {
     JSONObject transJson = serializeACLTransition((ACLTransition) trans);
     try {
-      if (trans.getAccessControlList() != null)
+      if (trans.getAccessControlList() != null) {
         transJson.put("acl_id", trans.getAccessControlList().getId());
+      }
       transJson.put("override_episodes", trans.isOverride());
     } catch (JSONException e) {
       // This should never happen, because the key is never null
@@ -184,8 +188,9 @@ public final class AccessInformationUtil {
   public static JSONObject serializeEpisodeACLTransition(EpisodeACLTransition trans) {
     JSONObject transJson = serializeACLTransition((ACLTransition) trans);
     try {
-      if (trans.getAccessControlList().isSome())
+      if (trans.getAccessControlList().isSome()) {
         transJson.put("acl_id", trans.getAccessControlList().get().getId());
+      }
       transJson.put("is_deleted", trans.isDelete());
     } catch (JSONException e) {
       // This should never happen, because the key is never null
@@ -219,8 +224,9 @@ public final class AccessInformationUtil {
    *           if the <code>acl</code> parameter is null
    */
   public static JSONObject serializePrivilegesByRole(AccessControlList acl) {
-    if (acl == null)
+    if (acl == null) {
       throw new IllegalArgumentException("The parameter trans must not be null");
+    }
 
     Map<String, JSONObject> privilegesByRole = new HashMap<String, JSONObject>();
     for (AccessControlEntry entry : acl.getEntries()) {

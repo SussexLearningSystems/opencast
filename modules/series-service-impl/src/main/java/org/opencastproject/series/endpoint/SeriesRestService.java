@@ -167,9 +167,9 @@ public class SeriesRestService {
     } else {
       String ccServerUrl = cc.getBundleContext().getProperty(OpencastConstants.SERVER_URL_PROPERTY);
       logger.debug("Configured server url is {}", ccServerUrl);
-      if (ccServerUrl == null)
+      if (ccServerUrl == null) {
         this.serverUrl = "http://localhost:8080";
-      else {
+      } else {
         this.serverUrl = ccServerUrl;
       }
     }
@@ -664,8 +664,9 @@ public class SeriesRestService {
       } catch (NumberFormatException e) {
         logger.warn("Bad count parameter");
       }
-      if (count < 1)
+      if (count < 1) {
         count = DEFAULT_LIMIT;
+      }
     }
 
     SeriesQuery q = new SeriesQuery();

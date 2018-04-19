@@ -174,10 +174,11 @@ public class LdapUserProviderInstance implements UserProvider, CachingUserProvid
 
       mapper.setRoleAttributes(roleAttributesGlob.split(","));
 
-      if (convertToUppercase)
+      if (convertToUppercase) {
         this.rolePrefix = StringUtils.trimToEmpty(rolePrefix).toUpperCase();
-      else
+      } else {
         this.rolePrefix = StringUtils.trimToEmpty(rolePrefix);
+      }
 
       logger.debug("Role prefix set to: \"{}\"", this.rolePrefix);
 
@@ -193,10 +194,11 @@ public class LdapUserProviderInstance implements UserProvider, CachingUserProvid
           for (String excludePrefix : excludePrefixes) {
             String cleanPrefix = excludePrefix.trim();
             if (!cleanPrefix.isEmpty()) {
-              if (convertToUppercase)
+              if (convertToUppercase) {
                 setExcludePrefixes.add(cleanPrefix.toUpperCase());
-              else
+              } else {
                 setExcludePrefixes.add(cleanPrefix);
+              }
             }
           }
 
@@ -386,8 +388,9 @@ public class LdapUserProviderInstance implements UserProvider, CachingUserProvid
 
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     // TODO implement a LDAP wildcard search
     // FIXME We return the current user, rather than an empty list, to make sure the current user's role is displayed in
     // the admin UI (MH-12526).

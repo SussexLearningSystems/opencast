@@ -97,46 +97,56 @@ public class ServicesEndpoint {
     EndpointUtil.addRequestFiltersToQuery(filter, query);
 
     String fName = null;
-    if (query.getName().isSome())
+    if (query.getName().isSome()) {
       fName = StringUtils.trimToNull(query.getName().get());
+    }
     String fHostname = null;
-    if (query.getHostname().isSome())
+    if (query.getHostname().isSome()) {
       fHostname = StringUtils.trimToNull(query.getHostname().get());
+    }
     String fStatus = null;
-    if (query.getStatus().isSome())
+    if (query.getStatus().isSome()) {
       fStatus = StringUtils.trimToNull(query.getStatus().get());
+    }
     String fFreeText = null;
-    if (query.getFreeText().isSome())
+    if (query.getFreeText().isSome()) {
       fFreeText = StringUtils.trimToNull(query.getFreeText().get());
+    }
 
     List<Service> services = new ArrayList<Service>();
     for (ServiceStatistics stats : serviceRegistry.getServiceStatistics()) {
       Service service = new Service(stats);
-      if (fName != null && !StringUtils.equalsIgnoreCase(service.getName(), fName))
+      if (fName != null && !StringUtils.equalsIgnoreCase(service.getName(), fName)) {
         continue;
+      }
 
-      if (fHostname != null && !StringUtils.equalsIgnoreCase(service.getHost(), fHostname))
+      if (fHostname != null && !StringUtils.equalsIgnoreCase(service.getHost(), fHostname)) {
         continue;
+      }
 
-      if (fStatus != null && !StringUtils.equalsIgnoreCase(service.getStatus().toString(), fStatus))
+      if (fStatus != null && !StringUtils.equalsIgnoreCase(service.getStatus().toString(), fStatus)) {
         continue;
+      }
 
       if (query.getActions().isSome()) {
         ServiceState serviceState = service.getStatus();
 
         if (query.getActions().get()) {
-          if (ServiceState.NORMAL == serviceState)
+          if (ServiceState.NORMAL == serviceState) {
             continue;
+          }
         } else {
-          if (ServiceState.NORMAL != serviceState)
+          if (ServiceState.NORMAL != serviceState) {
             continue;
+          }
         }
       }
 
       if (fFreeText != null && !StringUtils.containsIgnoreCase(service.getName(), fFreeText)
                 && !StringUtils.containsIgnoreCase(service.getHost(), fFreeText)
-                && !StringUtils.containsIgnoreCase(service.getStatus().toString(), fFreeText))
+                && !StringUtils.containsIgnoreCase(service.getStatus().toString(), fFreeText)) {
         continue;
+      }
 
       services.add(service);
     }

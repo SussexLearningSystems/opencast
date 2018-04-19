@@ -126,8 +126,9 @@ public final class DublinCoreUtil {
     final Map<EName, List<DublinCoreValue>> bv = b.getValues();
     if (av.size() == bv.size()) {
       for (Map.Entry<EName, List<DublinCoreValue>> ave : av.entrySet()) {
-        if (!eq(ave.getValue(), bv.get(ave.getKey())))
+        if (!eq(ave.getValue(), bv.get(ave.getKey()))) {
           return false;
+        }
       }
       return true;
     } else {

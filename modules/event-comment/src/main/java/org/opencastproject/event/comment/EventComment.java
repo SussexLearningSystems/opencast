@@ -307,10 +307,12 @@ public final class EventComment {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     EventComment comment = (EventComment) o;
 
     return text.equals(comment.getText()) && creationDate.equals(comment.getCreationDate())
@@ -339,8 +341,9 @@ public final class EventComment {
     }
 
     Val idValue = Jsons.ZERO_VAL;
-    if (id.isSome())
+    if (id.isSome()) {
       idValue = Jsons.v(id.get());
+    }
 
     return Jsons.obj(Jsons.p("id", idValue), Jsons.p("text", text),
             Jsons.p("creationDate", DateTimeSupport.toUTC(creationDate.getTime())),
@@ -359,8 +362,9 @@ public final class EventComment {
     }
 
     JValue idValue = ZERO;
-    if (id.isSome())
+    if (id.isSome()) {
       idValue = v(id.get());
+    }
 
     List<Field> fields = new ArrayList<Field>();
     fields.add(f("id", idValue));

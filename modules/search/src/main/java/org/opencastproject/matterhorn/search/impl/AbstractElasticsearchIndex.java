@@ -136,8 +136,9 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
    */
   public void activate(ComponentContext ctx) throws ComponentException {
     Option<String> indexSettingsPathOption = OsgiUtil.getOptContextProperty(ctx, ELASTICSEARCH_CONFIG_DIR_KEY);
-    if (indexSettingsPathOption.isNone())
+    if (indexSettingsPathOption.isNone()) {
       throw new ComponentException("Configuration for key '" + ELASTICSEARCH_CONFIG_DIR_KEY + "' missing");
+    }
 
     indexSettingsPath = indexSettingsPathOption.get();
   }
@@ -170,8 +171,9 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
       if (indicesExistsResponse.isExists()) {
         DeleteIndexResponse delete = nodeClient.admin().indices().delete(new DeleteIndexRequest(getIndexName()))
                 .actionGet();
-        if (!delete.isAcknowledged())
+        if (!delete.isAcknowledged()) {
           logger.error("Index '{}' could not be deleted", getIndexName());
+        }
       } else {
         logger.error("Cannot clear not existing index '{}'", getIndexName());
       }
@@ -277,8 +279,9 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
    *           if the index identifier is blank.
    */
   protected void init(String index, int version) throws IOException, IllegalArgumentException, SearchIndexException {
-    if (StringUtils.isBlank(index))
+    if (StringUtils.isBlank(index)) {
       throw new IllegalArgumentException("Search index identifier must not be null");
+    }
 
     this.index = index;
     this.indexVersion = version;
@@ -356,8 +359,9 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
       logger.debug("Trying to create index for '{}'", idx);
       CreateIndexRequest indexCreateRequest = new CreateIndexRequest(idx);
       String settings = getIndexSettings(idx);
-      if (settings != null)
+      if (settings != null) {
         indexCreateRequest.settings(settings);
+      }
       CreateIndexResponse siteidxResponse = nodeClient.admin().indices().create(indexCreateRequest).actionGet();
       if (!siteidxResponse.isAcknowledged()) {
         throw new SearchIndexException("Unable to create index for '" + idx + "'");
@@ -385,9 +389,10 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
       GetResponse response = getRequestBuilder.execute().actionGet();
       if (response.isExists() && response.getField(VERSION) != null) {
         int actualIndexVersion = Integer.parseInt((String) response.getField(VERSION).getValue());
-        if (indexVersion != actualIndexVersion)
+        if (indexVersion != actualIndexVersion) {
           throw new SearchIndexException("Search index is at version " + actualIndexVersion + ", but codebase expects "
                   + indexVersion);
+        }
         versionIndexExists = true;
         logger.debug("Search index version is {}", indexVersion);
       }
@@ -572,8 +577,9 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
     requestBuilder.setTypes(query.getTypes());
 
     // Pagination
-    if (query.getOffset() >= 0)
+    if (query.getOffset() >= 0) {
       requestBuilder.setFrom(query.getOffset());
+    }
 
     int limit = ELASTICSEARCH_INDEX_MAX_RESULT_WINDOW;
     if (query.getLimit() > 0) {
@@ -582,10 +588,11 @@ public abstract class AbstractElasticsearchIndex implements SearchIndex {
       // elasticsearch version 2.1 onwards documented this behaviour by index.max_result_window
       // see https://www.elastic.co/guide/en/elasticsearch/reference/2.1/index-modules.html
       if (query.getOffset() > 0
-              && (long)query.getOffset() + (long)query.getLimit() > ELASTICSEARCH_INDEX_MAX_RESULT_WINDOW)
+              && (long)query.getOffset() + (long)query.getLimit() > ELASTICSEARCH_INDEX_MAX_RESULT_WINDOW) {
         limit = ELASTICSEARCH_INDEX_MAX_RESULT_WINDOW - query.getOffset();
-      else
+      } else {
         limit = query.getLimit();
+      }
     }
     requestBuilder.setSize(limit);
 

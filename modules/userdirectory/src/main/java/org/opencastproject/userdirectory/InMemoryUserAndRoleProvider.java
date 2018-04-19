@@ -99,11 +99,13 @@ public class InMemoryUserAndRoleProvider implements UserProvider, RoleProvider {
    */
   protected void activate(ComponentContext cc) {
     digestUsername = StringUtils.trimToNull(cc.getBundleContext().getProperty(DIGEST_USER_KEY));
-    if (digestUsername == null)
+    if (digestUsername == null) {
       logger.warn("Digest username has not been configured ({})", DIGEST_USER_KEY);
+    }
     digestUserPass = StringUtils.trimToNull(cc.getBundleContext().getProperty(DIGEST_PASSWORD_KEY));
-    if (digestUsername == null)
+    if (digestUsername == null) {
       logger.warn("Digest password has not been configured ({})", DIGEST_PASSWORD_KEY);
+    }
 
     // Create the digest user
     createSystemUsers();
@@ -195,8 +197,9 @@ public class InMemoryUserAndRoleProvider implements UserProvider, RoleProvider {
   @Override
   public User loadUser(String userName) {
     for (User user : Stream.$(inMemoryUsers).filter(filterByCurrentOrg())) {
-      if (user.getUsername().equals(userName))
+      if (user.getUsername().equals(userName)) {
         return user;
+      }
     }
     return null;
   }
@@ -229,37 +232,42 @@ public class InMemoryUserAndRoleProvider implements UserProvider, RoleProvider {
   @Override
   public List<Role> getRolesForUser(String userName) {
     User user = loadUser(userName);
-    if (user == null)
+    if (user == null) {
       return Collections.emptyList();
+    }
     return Collections.unmodifiableList(new ArrayList<Role>(user.getRoles()));
   }
 
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
 
     // Find all users from the user providers
     Stream<User> users = Stream.empty();
     for (User user : Stream.$(inMemoryUsers).filter(filterByCurrentOrg())) {
-      if (like(user.getUsername(), query))
+      if (like(user.getUsername(), query)) {
         users = users.append(Stream.single(user)).sort(userComparator);
+      }
     }
     return users.drop(offset).apply(limit > 0 ? StreamOp.<User> id().take(limit) : StreamOp.<User> id()).iterator();
   }
 
   @Override
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
 
     // Find all roles from the role providers
     Stream<Role> roles = Stream.empty();
     for (Iterator<Role> it = getRoles(); it.hasNext();) {
       Role role = it.next();
       if ((like(role.getName(), query) || like(role.getDescription(), query))
-          && !(target == Role.Target.ACL && GLOBAL_SUDO_ROLE.equals(role.getName())))
+          && !(target == Role.Target.ACL && GLOBAL_SUDO_ROLE.equals(role.getName()))) {
         roles = roles.append(Stream.single(role)).sort(roleComparator);
+      }
     }
 
     return roles.drop(offset).apply(limit > 0 ? StreamOp.<Role> id().take(limit) : StreamOp.<Role> id()).iterator();

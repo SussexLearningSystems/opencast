@@ -269,9 +269,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
           distributionDirectoryPath += "/streams";
         }
       }
-      if (distributionDirectoryPath == null)
+      if (distributionDirectoryPath == null) {
         logger.warn("Streaming distribution directory must be set (org.opencastproject.streaming.directory)");
-      else {
+      } else {
         distributionDirectory = new File(distributionDirectoryPath);
         if (!distributionDirectory.isDirectory()) {
           try {
@@ -341,10 +341,11 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
       if (!format.isEmpty()) {
         try {
           StreamingProtocol protocol = StreamingProtocol.valueOf(format);
-          if (protocol.equals(StreamingProtocol.RTMP))
+          if (protocol.equals(StreamingProtocol.RTMP)) {
             isRTMPSupported = true;
-          else
+          } else {
             supportedAdaptiveFormats.add(protocol);
+          }
         } catch (IllegalArgumentException e) {
           logger.warn("Found incorrect format \"{}\". Ignoring...", format);
         }
@@ -398,10 +399,11 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     }
 
     if (!validSchemes.contains(scheme)) {
-      if (scheme == null)
+      if (scheme == null) {
         uriBuilder.scheme(defaultScheme);
-      else
+      } else {
         throw new URISyntaxException(inputUri, "Provided URI has an illegal scheme");
+      }
     }
 
     if ((port != null) && (port != defaultProtocolPorts.get(uriBuilder.build().getScheme()))) {
@@ -425,12 +427,14 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     notNull(elementIds, "elementIds");
     notNull(channelId, "channelId");
 
-    if (streamingUri == null && adaptiveStreamingUri == null)
+    if (streamingUri == null && adaptiveStreamingUri == null) {
       throw new IllegalStateException(
               "A least one streaming url must be set (org.opencastproject.streaming.url,org.opencastproject.adaptive-streaming.url)");
-    if (distributionDirectory == null)
+    }
+    if (distributionDirectory == null) {
       throw new IllegalStateException(
               "Streaming distribution directory must be set (org.opencastproject.streaming.directory)");
+    }
 
     try {
       return serviceRegistry.createJob(
@@ -481,7 +485,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
       MediaPackageElement[] distributed = distributeElement(channelId, mediapackage, element.getIdentifier());
       if (distributed != null) {
         for (MediaPackageElement e : distributed) {
-          if (e != null) distributedElements.add(e);
+          if (e != null) {
+            distributedElements.add(e);
+          }
         }
       }
     }
@@ -509,9 +515,10 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     final MediaPackageElement element = mediapackage.getElementById(elementId);
 
     // Make sure the element exists
-    if (element == null)
+    if (element == null) {
       throw new IllegalStateException(
               "No element " + elementId + " found in mediapackage" + mediapackage.getIdentifier());
+    }
 
     // Streaming servers only deal with tracks
     if (!MediaPackageElement.Type.Track.equals(element.getElementType())) {
@@ -714,8 +721,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
 
   private void addElementToSmil(Document doc, String channelId, MediaPackage mediapackage, MediaPackageElement element)
           throws DOMException, URISyntaxException {
-    if (!(element instanceof TrackImpl))
+    if (!(element instanceof TrackImpl)) {
       return;
+    }
     TrackImpl track = (TrackImpl) element;
     NodeList switchElementsList = doc.getElementsByTagName("switch");
     Node switchElement = null;
@@ -725,10 +733,12 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     if (switchElementsList.getLength() > 0) {
       switchElement = switchElementsList.item(0);
     } else {
-      if (doc.getElementsByTagName("head").getLength() < 1)
+      if (doc.getElementsByTagName("head").getLength() < 1) {
         doc.appendChild(doc.createElement("head"));
-      if (doc.getElementsByTagName("body").getLength() < 1)
+      }
+      if (doc.getElementsByTagName("body").getLength() < 1) {
         doc.appendChild(doc.createElement("body"));
+      }
       switchElement = doc.createElement("switch");
       doc.getElementsByTagName("body").item(0).appendChild(switchElement);
     }
@@ -887,7 +897,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
       MediaPackageElement[] retracted = retractElement(channelId, mediapackage, element.getIdentifier());
       if (retracted != null) {
         for (MediaPackageElement e : retracted) {
-          if (e != null) retractedElements.add(e);
+          if (e != null) {
+            retractedElements.add(e);
+          }
         }
       }
     }
@@ -914,17 +926,19 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
 
     // Make sure the element exists
     final MediaPackageElement element = mediapackage.getElementById(elementId);
-    if (element == null)
+    if (element == null) {
       throw new IllegalStateException(
               "No element " + elementId + " found in mediapackage" + mediapackage.getIdentifier());
+    }
 
     logger.debug("Start element retraction for element \"{}\" with URI {}", elementId, element.getURI());
 
     ArrayList<MediaPackageElement> retractedElements = new ArrayList<MediaPackageElement>();
 
     // Has this element been distributed?
-    if (element == null || (!(element instanceof TrackImpl)))
+    if (element == null || (!(element instanceof TrackImpl))) {
       return null;
+    }
 
     try {
       // Get the distribution path on the disk for this mediapackage element
@@ -947,10 +961,12 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
             if (videoList.item(i) instanceof Element) {
               String smilPathStr = ((Element) videoList.item(i)).getAttribute("src");
               // Patch the streaming tags
-              if (smilPathStr.contains("mp4:"))
+              if (smilPathStr.contains("mp4:")) {
                 smilPathStr = smilPathStr.replace("mp4:", "");
-              if (!smilPathStr.endsWith(".mp4"))
+              }
+              if (!smilPathStr.endsWith(".mp4")) {
                 smilPathStr += ".mp4";
+              }
 
               elementFile = smilFile.toPath().resolveSibling(smilPathStr).toFile();
               deleteElementFile(elementFile);
@@ -988,8 +1004,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
 
     // Try to remove the element file
     if (elementFile.exists()) {
-      if (!elementFile.delete())
+      if (!elementFile.delete()) {
         logger.warn("Could not properly delete element file: {}", elementFile);
+      }
     } else {
       logger.warn("Tried to delete non-existent element file. Perhaps was already deleted?: {}", elementFile);
     }
@@ -998,8 +1015,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     File elementDir = elementFile.getParentFile();
     if (elementDir != null && elementDir.exists()) {
       if (elementDir.list().length == 0) {
-        if (!elementDir.delete())
+        if (!elementDir.delete()) {
           logger.warn("Could not properly delete element directory: {}", elementDir);
+        }
       } else {
         logger.warn("Element directory was not empty after deleting element. Skipping deletion: {}", elementDir);
       }
@@ -1010,8 +1028,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     File mediapackageDir = elementDir.getParentFile();
     if (mediapackageDir != null && mediapackageDir.exists()) {
       if (mediapackageDir.list().length == 0) {
-        if (!mediapackageDir.delete())
+        if (!mediapackageDir.delete()) {
           logger.warn("Could not properly delete mediapackage directory: {}", mediapackageDir);
+        }
       } else {
         logger.debug("Mediapackage directory was not empty after deleting element. Skipping deletion: {}",
                 mediapackageDir);
@@ -1045,8 +1064,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
         uriPath = uriPath.substring(0, uriPath.lastIndexOf('/'));
         // Remove the "smil:" tags, if any, and set the right extension if needed
         uriPath = uriPath.replace("smil:", "");
-        if (!uriPath.endsWith(".smil"))
+        if (!uriPath.endsWith(".smil")) {
           uriPath += ".smil";
+        }
 
         String[] uriPathParts = uriPath.split("/");
 
@@ -1068,8 +1088,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
         String urlPath = relativeUri.getPath();
         // Remove the "mp4:" tags, if any, and set the right extension if needed
         urlPath = urlPath.replace("mp4:", "");
-        if (!urlPath.endsWith(".mp4"))
+        if (!urlPath.endsWith(".mp4")) {
           urlPath += ".mp4";
+        }
 
         String[] urlPathParts = urlPath.split("/");
 
@@ -1120,8 +1141,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     String tag = FilenameUtils.getExtension(element.getURI().toString()) + ":";
 
     // removes the tag for flv files, but keeps it for all others (mp4 needs it)
-    if ("flv:".equals(tag))
+    if ("flv:".equals(tag)) {
       tag = "";
+    }
 
     return UriBuilder.fromUri(streamingUri).path(tag + channelId).path(mp.getIdentifier().compact()).path(elementId)
             .path(fileName).build();
@@ -1141,8 +1163,9 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
     String tag = FilenameUtils.getExtension(element.getURI().toString()) + ":";
 
     // removes the tag for flv files, but keeps it for all others (mp4 needs it)
-    if ("flv:".equals(tag))
+    if ("flv:".equals(tag)) {
       tag = "";
+    }
     String result = tag + channelId + "/" + mp.getIdentifier().compact() + "/" + elementId + "/" + fileName;
     return result;
   }
@@ -1167,14 +1190,18 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
         case Distribute:
           MediaPackageElement[] distributedElements = distributeElements(channelId, mediapackage, elementIds);
           if (logger.isDebugEnabled()) {
-            for (MediaPackageElement element : distributedElements)
-              if (element != null)
+            for (MediaPackageElement element : distributedElements) {
+              if (element != null) {
                 logger.debug("Distributed element {} with URL {}", element.getIdentifier(), element.getURI());
+              }
+            }
           }
           ArrayList<MediaPackageElement> distributedElementsList = new ArrayList<MediaPackageElement>();
           if (distributedElements != null) {
             for (int i = 0; i < distributedElements.length; i++) {
-              if (distributedElements[i] != null) distributedElementsList.add(distributedElements[i]);
+              if (distributedElements[i] != null) {
+                distributedElementsList.add(distributedElements[i]);
+              }
             }
           }
           return (! distributedElementsList.isEmpty())
@@ -1185,9 +1212,11 @@ public class WowzaAdaptiveStreamingDistributionService extends AbstractDistribut
             if (streamingUri != null || adaptiveStreamingUri != null) {
               retractedElements = retractElements(channelId, mediapackage, elementIds);
               if (logger.isDebugEnabled()) {
-                for (MediaPackageElement element : retractedElements)
-                  if (element != null)
+                for (MediaPackageElement element : retractedElements) {
+                  if (element != null) {
                     logger.debug("Retracted element {} with URL {}", element.getIdentifier(), element.getURI());
+                  }
+                }
               }
             }
           }

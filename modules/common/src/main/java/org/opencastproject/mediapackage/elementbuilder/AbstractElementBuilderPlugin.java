@@ -103,17 +103,19 @@ public abstract class AbstractElementBuilderPlugin implements MediaPackageElemen
    *           if the file's mime type cannot be gathered or is unknown
    */
   protected boolean checkMimeType(File file, MimeType[] mimeTypes) throws IOException, UnknownFileTypeException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("File is null");
-    else if (!file.isFile())
+    } else if (!file.isFile()) {
       return false;
+    }
 
     // Check mimetype
     if (mimeTypes != null) {
       if (mimeTypes.length > 0) {
         for (MimeType m : mimeTypes) {
-          if (m.equals(MimeTypes.fromURL(file.toURI().toURL())))
+          if (m.equals(MimeTypes.fromURL(file.toURI().toURL()))) {
             return true;
+          }
         }
       } else {
         return false;
@@ -135,19 +137,22 @@ public abstract class AbstractElementBuilderPlugin implements MediaPackageElemen
    *           if the file's mime type cannot be gathered or is unknown
    */
   protected boolean checkMimeType(File file) throws IOException, UnknownFileTypeException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("File is null");
-    else if (!file.isFile())
+    } else if (!file.isFile()) {
       return false;
-    if (mimeTypes == null)
+    }
+    if (mimeTypes == null) {
       throw new IllegalStateException("Mime types have not been initialized");
+    }
 
     // Check mimetype
     if (mimeTypes != null) {
       if (mimeTypes.size() > 0) {
         for (MimeType m : mimeTypes) {
-          if (m.equals(MimeTypes.fromURL(file.toURI().toURL())))
+          if (m.equals(MimeTypes.fromURL(file.toURI().toURL()))) {
             return true;
+          }
         }
       } else {
         return false;
@@ -169,10 +174,11 @@ public abstract class AbstractElementBuilderPlugin implements MediaPackageElemen
    *           if the file cannot be accessed
    */
   protected boolean checkFilename(File file, String filename) throws IOException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("File is null");
-    else if (!file.isFile())
+    } else if (!file.isFile()) {
       return false;
+    }
 
     // Check filename
     return (file.getName().equals(filename));
@@ -192,12 +198,15 @@ public abstract class AbstractElementBuilderPlugin implements MediaPackageElemen
    *           if the checksum cannot be created
    */
   protected boolean verifyFileIntegrity(File file, Checksum checksum) throws IOException, NoSuchAlgorithmException {
-    if (!file.exists())
+    if (!file.exists()) {
       throw new IOException(file + " cannot be found");
-    if (!file.isFile())
+    }
+    if (!file.isFile()) {
       throw new IOException(file + " is not a regular file");
-    if (!file.canRead())
+    }
+    if (!file.canRead()) {
       throw new IOException(file + " cannot be accessed");
+    }
 
     Checksum c = Checksum.create(checksum.getType(), file);
     return c.equals(checksum);

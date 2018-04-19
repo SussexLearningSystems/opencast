@@ -55,8 +55,9 @@ public class SakaiUserProviderTest {
 
   private boolean hasRole(Set<Role> roles, String roleName) {
     for (Role role : roles) {
-      if (roleName.equals(role.getName()))
+      if (roleName.equals(role.getName())) {
         return true;
+      }
     }
 
     return false;

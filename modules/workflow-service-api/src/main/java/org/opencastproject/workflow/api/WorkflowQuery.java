@@ -97,8 +97,9 @@ public class WorkflowQuery {
 
   /** Limit results to workflow instances matching a free text search */
   public WorkflowQuery withText(String text) {
-    if (StringUtils.isNotBlank(text))
+    if (StringUtils.isNotBlank(text)) {
       this.text = text;
+    }
     return this;
   }
 
@@ -111,8 +112,9 @@ public class WorkflowQuery {
    * @return this query
    */
   public WorkflowQuery withState(WorkflowState state) {
-    if (state != null)
+    if (state != null) {
       stateTerms.add(new QueryTerm(state.toString(), true));
+    }
     return this;
   }
 
@@ -125,8 +127,9 @@ public class WorkflowQuery {
    * @return this query
    */
   public WorkflowQuery withoutState(WorkflowState state) {
-    if (state != null)
+    if (state != null) {
       stateTerms.add(new QueryTerm(state.toString(), false));
+    }
     return this;
   }
 
@@ -137,8 +140,9 @@ public class WorkflowQuery {
    *          the series title
    */
   public WorkflowQuery withSeriesTitle(String seriesTitle) {
-    if (StringUtils.isNotBlank(seriesTitle))
+    if (StringUtils.isNotBlank(seriesTitle)) {
       this.seriesTitle = seriesTitle;
+    }
     return this;
   }
 
@@ -149,8 +153,9 @@ public class WorkflowQuery {
    *          the series identifier
    */
   public WorkflowQuery withSeriesId(String seriesId) {
-    if (StringUtils.isNotBlank(seriesId))
+    if (StringUtils.isNotBlank(seriesId)) {
       this.seriesId = seriesId;
+    }
     return this;
   }
 
@@ -161,8 +166,9 @@ public class WorkflowQuery {
    *          the media package identifier
    */
   public WorkflowQuery withMediaPackage(String mediaPackageId) {
-    if (StringUtils.isNotBlank(mediaPackageId))
+    if (StringUtils.isNotBlank(mediaPackageId)) {
       this.mediaPackageId = mediaPackageId;
+    }
     return this;
   }
 
@@ -175,8 +181,9 @@ public class WorkflowQuery {
    * @return this query
    */
   public WorkflowQuery withCurrentOperation(String currentOperation) {
-    if (StringUtils.isNotBlank(currentOperation))
+    if (StringUtils.isNotBlank(currentOperation)) {
       currentOperationTerms.add(new QueryTerm(currentOperation, true));
+    }
     return this;
   }
 
@@ -189,8 +196,9 @@ public class WorkflowQuery {
    * @return this query
    */
   public WorkflowQuery withoutCurrentOperation(String currentOperation) {
-    if (StringUtils.isNotBlank(currentOperation))
+    if (StringUtils.isNotBlank(currentOperation)) {
       currentOperationTerms.add(new QueryTerm(currentOperation, false));
+    }
     return this;
   }
 
@@ -201,8 +209,9 @@ public class WorkflowQuery {
    *          the workflow identifier
    */
   public WorkflowQuery withWorkflowDefintion(String workflowDefinitionId) {
-    if (StringUtils.isNotBlank(workflowDefinitionId))
+    if (StringUtils.isNotBlank(workflowDefinitionId)) {
       this.workflowDefinitionId = workflowDefinitionId;
+    }
     return this;
   }
 
@@ -235,8 +244,9 @@ public class WorkflowQuery {
    *          the mediapackage creator
    */
   public WorkflowQuery withCreator(String creator) {
-    if (StringUtils.isNotBlank(creator))
+    if (StringUtils.isNotBlank(creator)) {
       this.creator = creator;
+    }
     return this;
   }
 
@@ -247,8 +257,9 @@ public class WorkflowQuery {
    *          the mediapackage contributor
    */
   public WorkflowQuery withContributor(String contributor) {
-    if (StringUtils.isNotBlank(contributor))
+    if (StringUtils.isNotBlank(contributor)) {
       this.contributor = contributor;
+    }
     return this;
   }
 
@@ -259,8 +270,9 @@ public class WorkflowQuery {
    *          the mediapackage language
    */
   public WorkflowQuery withLanguage(String language) {
-    if (StringUtils.isNotBlank(language))
+    if (StringUtils.isNotBlank(language)) {
       this.language = language;
+    }
     return this;
   }
 
@@ -271,8 +283,9 @@ public class WorkflowQuery {
    *          the mediapackage license
    */
   public WorkflowQuery withLicense(String license) {
-    if (StringUtils.isNotBlank(license))
+    if (StringUtils.isNotBlank(license)) {
       this.license = license;
+    }
     return this;
   }
 
@@ -283,8 +296,9 @@ public class WorkflowQuery {
    *          the mediapackage title
    */
   public WorkflowQuery withTitle(String title) {
-    if (StringUtils.isNotBlank(title))
+    if (StringUtils.isNotBlank(title)) {
       this.title = title;
+    }
     return this;
   }
 
@@ -295,8 +309,9 @@ public class WorkflowQuery {
    *          the mediapackage subject
    */
   public WorkflowQuery withSubject(String subject) {
-    if (StringUtils.isNotBlank(subject))
+    if (StringUtils.isNotBlank(subject)) {
       this.subject = subject;
+    }
     return this;
   }
 

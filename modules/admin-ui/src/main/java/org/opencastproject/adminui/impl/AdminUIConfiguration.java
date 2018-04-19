@@ -72,8 +72,9 @@ public class AdminUIConfiguration implements ManagedService {
 
   @Override
   public void updated(Dictionary properties) throws ConfigurationException {
-    if (properties == null)
+    if (properties == null) {
       return;
+    }
 
     // Preview subtype
     String preview = StringUtils.trimToNull((String) properties.get(OPT_PREVIEW_SUBTYPE));

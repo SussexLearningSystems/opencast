@@ -49,8 +49,9 @@ public class ConflictingEventImpl implements ConflictingEvent {
     notNull(strategy, "strategy");
     notNull(oldScheduledEvent, "oldScheduledEvent");
     notNull(newScheduledEvent, "newScheduledEvent");
-    if (Strategy.MERGED.equals(strategy))
+    if (Strategy.MERGED.equals(strategy)) {
       throw new IllegalArgumentException("Strategy must not be MERGED!");
+    }
     this.strategy = strategy;
     this.oldScheduledEvent = oldScheduledEvent;
     this.newScheduledEvent = newScheduledEvent;

@@ -351,8 +351,12 @@ public final class Queries {
                                final Option<Integer> limit,
                                final P... params) {
       final Query query = query(em, q, params);
-      for (Integer x : offset) query.setFirstResult(x);
-      for (Integer x : limit) query.setMaxResults(x);
+      for (Integer x : offset) {
+        query.setFirstResult(x);
+      }
+      for (Integer x : limit) {
+        query.setMaxResults(x);
+      }
       return (List<A>) query.getResultList();
     }
 

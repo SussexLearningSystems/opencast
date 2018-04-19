@@ -95,15 +95,17 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
           XPathException {
     // Create stream
     String sid = (String) xpath.evaluate("@id", node, XPathConstants.STRING);
-    if (StringUtils.isEmpty(sid))
+    if (StringUtils.isEmpty(sid)) {
       sid = streamIdHint;
+    }
     VideoStreamImpl vs = new VideoStreamImpl(sid);
 
     // Frame count
     try {
       String frameCount = (String) xpath.evaluate("framecount/text()", node, XPathConstants.STRING);
-      if (!StringUtils.isBlank(frameCount))
+      if (!StringUtils.isBlank(frameCount)) {
         vs.frameCount = new Long(frameCount.trim());
+      }
     } catch (NumberFormatException e) {
       throw new IllegalStateException("Frame count was malformatted: " + e.getMessage());
     }
@@ -111,8 +113,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
     // bit rate
     try {
       String strBitrate = (String) xpath.evaluate("bitrate/text()", node, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(strBitrate))
+      if (StringUtils.isNotEmpty(strBitrate)) {
         vs.bitRate = new Float(strBitrate.trim());
+      }
     } catch (NumberFormatException e) {
       throw new IllegalStateException("Bit rate was malformatted: " + e.getMessage());
     }
@@ -120,8 +123,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
     // frame rate
     try {
       String strFrameRate = (String) xpath.evaluate("framerate/text()", node, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(strFrameRate))
+      if (StringUtils.isNotEmpty(strFrameRate)) {
         vs.frameRate = new Float(strFrameRate.trim());
+      }
     } catch (NumberFormatException e) {
       throw new IllegalStateException("Frame rate was malformatted: " + e.getMessage());
     }
@@ -135,58 +139,66 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
     // interlacing
     String scanType = (String) xpath.evaluate("scantype/@type", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(scanType)) {
-      if (vs.scanType == null)
+      if (vs.scanType == null) {
         vs.scanType = new Scan();
+      }
       vs.scanType.type = ScanType.fromString(scanType);
     }
 
     String scanOrder = (String) xpath.evaluate("interlacing/@order", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(scanOrder)) {
-      if (vs.scanType == null)
+      if (vs.scanType == null) {
         vs.scanType = new Scan();
+      }
       vs.scanType.order = ScanOrder.fromString(scanOrder);
     }
     // device
     String deviceType = (String) xpath.evaluate("device/@type", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(deviceType)) {
-      if (vs.device == null)
+      if (vs.device == null) {
         vs.device = new Device();
+      }
       vs.device.type = deviceType;
     }
 
     String deviceVersion = (String) xpath.evaluate("device/@version", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(deviceVersion)) {
-      if (vs.device == null)
+      if (vs.device == null) {
         vs.device = new Device();
+      }
       vs.device.version = deviceVersion;
     }
 
     String deviceVendor = (String) xpath.evaluate("device/@vendor", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(deviceVendor)) {
-      if (vs.device == null)
+      if (vs.device == null) {
         vs.device = new Device();
+      }
       vs.device.vendor = deviceVendor;
     }
 
     // encoder
     String encoderType = (String) xpath.evaluate("encoder/@type", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(encoderType)) {
-      if (vs.encoder == null)
+      if (vs.encoder == null) {
         vs.encoder = new Encoder();
+      }
       vs.encoder.type = encoderType;
     }
 
     String encoderVersion = (String) xpath.evaluate("encoder/@version", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(encoderVersion)) {
-      if (vs.encoder == null)
+      if (vs.encoder == null) {
         vs.encoder = new Encoder();
+      }
       vs.encoder.version = encoderVersion;
     }
 
     String encoderVendor = (String) xpath.evaluate("encoder/@vendor", node, XPathConstants.STRING);
     if (StringUtils.isNotEmpty(encoderVendor)) {
-      if (vs.encoder == null)
+      if (vs.encoder == null) {
         vs.encoder = new Encoder();
+      }
       vs.encoder.vendor = encoderVendor;
     }
 
@@ -225,8 +237,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
       deviceNode.setAttribute("vendor", device.vendor);
       hasAttr = true;
     }
-    if (hasAttr)
+    if (hasAttr) {
       node.appendChild(deviceNode);
+    }
 
     // encoder
     Element encoderNode = document.createElement("encoder");
@@ -243,8 +256,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
       encoderNode.setAttribute("vendor", encoder.vendor);
       hasAttr = true;
     }
-    if (hasAttr)
+    if (hasAttr) {
       node.appendChild(encoderNode);
+    }
 
     // Resolution
     Element resolutionNode = document.createElement("resolution");
@@ -255,8 +269,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
     if (scanType != null) {
       Element interlacingNode = document.createElement("scantype");
       interlacingNode.setAttribute("type", scanType.toString());
-      if (scanType.order != null)
+      if (scanType.order != null) {
         interlacingNode.setAttribute("order", scanType.order.toString());
+      }
       node.appendChild(interlacingNode);
     }
 
@@ -291,8 +306,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
   public Integer getFrameWidth() {
     try {
       String[] s = resolution.trim().split("x");
-      if (s.length != 2)
+      if (s.length != 2) {
         throw new IllegalStateException("video size must be of the form <hsize>x<vsize>, found " + resolution);
+      }
       return new Integer(s[0].trim());
     } catch (NumberFormatException e) {
       throw new IllegalStateException("Resolution was malformatted: " + e.getMessage());
@@ -303,8 +319,9 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
   public Integer getFrameHeight() {
     try {
       String[] s = resolution.trim().split("x");
-      if (s.length != 2)
+      if (s.length != 2) {
         throw new IllegalStateException("video size must be of the form <hsize>x<vsize>, found " + resolution);
+      }
       return new Integer(s[1].trim());
     } catch (NumberFormatException e) {
       throw new IllegalStateException("Resolution was malformatted: " + e.getMessage());
@@ -333,14 +350,16 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
 
   public void setFrameWidth(Integer frameWidth) {
     this.frameWidth = frameWidth;
-    if (frameWidth != null && frameHeight != null)
+    if (frameWidth != null && frameHeight != null) {
       updateResolution();
+    }
   }
 
   public void setFrameHeight(Integer frameHeight) {
     this.frameHeight = frameHeight;
-    if (frameWidth != null && frameHeight != null)
+    if (frameWidth != null && frameHeight != null) {
       updateResolution();
+    }
   }
 
   private void updateResolution() {
@@ -348,18 +367,22 @@ public class VideoStreamImpl extends AbstractStreamImpl implements VideoStream {
   }
 
   public void setScanType(ScanType scanType) {
-    if (scanType == null)
+    if (scanType == null) {
       return;
-    if (this.scanType == null)
+    }
+    if (this.scanType == null) {
       this.scanType = new Scan();
+    }
     this.scanType.type = scanType;
   }
 
   public void setScanOrder(ScanOrder scanOrder) {
-    if (scanOrder == null)
+    if (scanOrder == null) {
       return;
-    if (this.scanType == null)
+    }
+    if (this.scanType == null) {
       this.scanType = new Scan();
+    }
     this.scanType.order = scanOrder;
   }
 }

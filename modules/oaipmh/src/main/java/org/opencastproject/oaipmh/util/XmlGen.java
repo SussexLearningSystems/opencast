@@ -153,8 +153,9 @@ public abstract class XmlGen {
 
   protected Node $langNode(String language) {
     if (StringUtils.isBlank(language) || DublinCore.LANGUAGE_UNDEFINED.equals(language)
-            || DublinCore.LANGUAGE_ANY.equals(language))
+            || DublinCore.LANGUAGE_ANY.equals(language)) {
       return nodeZero();
+    }
 
     Attr a = document.createAttributeNS(XMLConstants.XML_NS_URI, "xml:lang");
     a.setValue(language);
@@ -363,8 +364,9 @@ public abstract class XmlGen {
    * Append <code>nodes</code> to element <code>e</code>. Respects different node types like attributes and elements.
    */
   private Element appendTo(Element e, List<Node> nodes) {
-    for (Node node : nodes)
+    for (Node node : nodes) {
       appendTo(e, node);
+    }
     return e;
   }
 
@@ -372,8 +374,9 @@ public abstract class XmlGen {
    * Like {@link #appendTo(org.w3c.dom.Element, java.util.List)} but with a different signature.
    */
   private Element appendTo(Element e, NodeList nodes) {
-    for (int i = 0; i < nodes.getLength(); i++)
+    for (int i = 0; i < nodes.getLength(); i++) {
       appendTo(e, nodes.item(i));
+    }
     return e;
   }
 

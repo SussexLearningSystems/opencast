@@ -109,13 +109,15 @@ public class IoSupportTest {
     BufferedReader br = null;
     try {
       br = new BufferedReader(new InputStreamReader(spacesFileURL.openStream()));
-      while ((line = br.readLine()) != null)
+      while ((line = br.readLine()) != null) {
         sb.append(line).append('\n');
+      }
     } catch (IOException ioe) {
       throw ioe;
     } finally {
-      if (br != null)
+      if (br != null) {
         br.close();
+      }
     }
     Assert.assertEquals("File contents comparison", sampleText, sb.toString());
   }
@@ -134,13 +136,15 @@ public class IoSupportTest {
     BufferedReader br = null;
     try {
       br = new BufferedReader(new InputStreamReader(spacesFileURL.openStream()));
-      while ((line = br.readLine()) != null)
+      while ((line = br.readLine()) != null) {
         sb.append(line).append('\n');
+      }
     } catch (IOException ioe) {
       throw ioe;
     } finally {
-      if (br != null)
+      if (br != null) {
         br.close();
+      }
     }
     Assert.assertEquals("File contents comparison", sampleText, sb.toString());
   }

@@ -262,8 +262,9 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
         List<VideoSegment> videoSegments = new LinkedList<VideoSegment>();
         while (segmentIterator.hasNext()) {
           Segment segment = segmentIterator.next();
-          if ((segment instanceof VideoSegment))
+          if ((segment instanceof VideoSegment)) {
             videoSegments.add((VideoSegment) segment);
+          }
         }
 
         // argument array for image extraction
@@ -276,10 +277,11 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
 
           // Choose a time
           MediaPackageReference reference = null;
-          if (catalogRef == null)
+          if (catalogRef == null) {
             reference = new MediaPackageReferenceImpl();
-          else
+          } else {
             reference = new MediaPackageReferenceImpl(catalogRef.getType(), catalogRef.getIdentifier());
+          }
           reference.setProperty("time", segmentTimePoint.toString());
 
           // Have the time for ocr image created. To circumvent problems with slowly building slides, we take the image
@@ -301,8 +303,9 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
           for (long time : times) {
             extractImageJobs.put(time, composer.image(sourceTrack, IMAGE_EXTRACTION_PROFILE, time));
           }
-          if (!waitForStatus(extractImageJobs.values().toArray(new Job[extractImageJobs.size()])).isSuccess())
+          if (!waitForStatus(extractImageJobs.values().toArray(new Job[extractImageJobs.size()])).isSuccess()) {
             throw new WorkflowOperationException("Extracting scene image from " + sourceTrack + " failed");
+          }
           for (Map.Entry<Long, Job> entry : extractImageJobs.entrySet()) {
             Job job = serviceRegistry.getJob(entry.getValue().getId());
             Attachment image = (Attachment) MediaPackageElementParser.getFromXml(job.getPayload());
@@ -340,8 +343,9 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
             continue;
           }
           Mpeg7Catalog videoTextCatalog = loadMpeg7Catalog(catalog);
-          if (videoTextCatalog == null)
+          if (videoTextCatalog == null) {
             throw new IllegalStateException("Text analysis service did not return a valid mpeg7");
+          }
 
           // Add the spatiotemporal decompositions from the new catalog to the existing video segments
           Iterator<Video> videoTextContents = videoTextCatalog.videoContent();
@@ -408,11 +412,13 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
           Catalog catalog = null;
           try {
             Job job = serviceRegistry.getJob(j.getId());
-            if (!Job.Status.FINISHED.equals(job.getStatus()))
+            if (!Job.Status.FINISHED.equals(job.getStatus())) {
               continue;
+            }
             catalog = (Catalog) MediaPackageElementParser.getFromXml(job.getPayload());
-            if (catalog != null)
+            if (catalog != null) {
               workspace.delete(catalog.getURI());
+            }
           } catch (Exception e) {
             if (catalog != null) {
               logger.warn("Unable to delete temporary text file {}: {}", catalog.getURI(), e);
@@ -476,16 +482,19 @@ public class TextAnalysisWorkflowOperationHandler extends AbstractWorkflowOperat
         continue;
       }
       if (sourceFlavor != null) {
-        if (mediaPackageCatalog.getReference() == null)
+        if (mediaPackageCatalog.getReference() == null) {
           continue;
+        }
         Track t = mediaPackage.getTrack(mediaPackageCatalog.getReference().getIdentifier());
-        if (t == null || !t.getFlavor().matches(MediaPackageElementFlavor.parseFlavor(sourceFlavor)))
+        if (t == null || !t.getFlavor().matches(MediaPackageElementFlavor.parseFlavor(sourceFlavor))) {
           continue;
+        }
       }
 
       // Make sure the catalog features at least one of the required tags
-      if (!mediaPackageCatalog.containsTag(sourceTagSet))
+      if (!mediaPackageCatalog.containsTag(sourceTagSet)) {
         continue;
+      }
 
       Mpeg7Catalog mpeg7 = loadMpeg7Catalog(mediaPackageCatalog);
 

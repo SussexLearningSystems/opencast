@@ -174,11 +174,12 @@ public class AwsS3DistributionServiceImpl extends AbstractDistributionService
       // Keys not informed so use default credentials provider chain, which
       // will look at the environment variables, java system props, credential files, and instance
       // profile credentials
-      if (accessKeyIdOpt.isNone() && accessKeySecretOpt.isNone())
+      if (accessKeyIdOpt.isNone() && accessKeySecretOpt.isNone()) {
         provider = new DefaultAWSCredentialsProviderChain();
-      else
+      } else {
         provider = new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(accessKeyIdOpt.get(), accessKeySecretOpt.get()));
+      }
 
       // Create AWS client.
       s3 = AmazonS3ClientBuilder.standard().withRegion(regionStr).withCredentials(provider).build();
@@ -200,8 +201,9 @@ public class AwsS3DistributionServiceImpl extends AbstractDistributionService
 
   public void deactivate() {
     // Transfer manager is null if service disabled
-    if (s3TransferManager != null)
+    if (s3TransferManager != null) {
       s3TransferManager.shutdownNow();
+    }
 
     logger.info("AwsS3DistributionService deactivated!");
   }
@@ -488,12 +490,15 @@ public class AwsS3DistributionServiceImpl extends AbstractDistributionService
 
   @Override
   public Job restore(String channelId, MediaPackage mediaPackage, String elementId) throws DistributionException {
-    if (mediaPackage == null)
+    if (mediaPackage == null) {
       throw new IllegalArgumentException("Media package must be specified");
-    if (elementId == null)
+    }
+    if (elementId == null) {
       throw new IllegalArgumentException("Element ID must be specified");
-    if (channelId == null)
+    }
+    if (channelId == null) {
       throw new IllegalArgumentException("Channel ID must be specified");
+    }
 
     try {
       return serviceRegistry.createJob(JOB_TYPE, Operation.Restore.toString(),
@@ -506,14 +511,18 @@ public class AwsS3DistributionServiceImpl extends AbstractDistributionService
   @Override
   public Job restore(String channelId, MediaPackage mediaPackage, String elementId, String fileName)
           throws DistributionException {
-    if (mediaPackage == null)
+    if (mediaPackage == null) {
       throw new IllegalArgumentException("Media package must be specified");
-    if (elementId == null)
+    }
+    if (elementId == null) {
       throw new IllegalArgumentException("Element ID must be specified");
-    if (channelId == null)
+    }
+    if (channelId == null) {
       throw new IllegalArgumentException("Channel ID must be specified");
-    if (fileName == null)
+    }
+    if (fileName == null) {
       throw new IllegalArgumentException("Filename must be specified");
+    }
 
     try {
       return serviceRegistry.createJob(JOB_TYPE, Operation.Restore.toString(),

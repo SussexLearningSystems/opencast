@@ -115,19 +115,26 @@ public class ServersListProvider implements ResourceListProvider {
       boolean vMaintenance = server.isMaintenanceMode();
       String vHostname = server.getBaseUrl();
 
-      if (fHostname.isSome() && !StringUtils.equalsIgnoreCase(StringUtils.trimToEmpty(fHostname.get()), vHostname))
+      if (fHostname.isSome() && !StringUtils.equalsIgnoreCase(StringUtils.trimToEmpty(fHostname.get()), vHostname)) {
         continue;
+      }
 
       if (fStatus.isSome()) {
         switch (StringUtils.trimToEmpty(fStatus.get())) {
           case SERVER_STATUS_ONLINE:
-            if (!vOnline) continue;
+            if (!vOnline) {
+              continue;
+            }
             break;
           case SERVER_STATUS_OFFLINE:
-            if (vOnline) continue;
+            if (vOnline) {
+              continue;
+            }
             break;
           case SERVER_STATUS_MAINTENANCE:
-            if (!vMaintenance) continue;
+            if (!vMaintenance) {
+              continue;
+            }
             break;
           default:
             break;

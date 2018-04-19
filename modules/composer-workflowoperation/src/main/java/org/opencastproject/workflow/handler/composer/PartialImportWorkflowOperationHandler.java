@@ -700,8 +700,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
    */
   private Dimension determineDimension(List<Track> tracks, boolean forceDivisible) {
     Tuple<Track, Dimension> trackDimension = getLargestTrack(tracks);
-    if (trackDimension == null)
+    if (trackDimension == null) {
       return null;
+    }
 
     if (forceDivisible && (trackDimension.getB().getHeight() % 2 != 0 || trackDimension.getB().getWidth() % 2 != 0)) {
       Dimension scaledDimension = Dimension.dimension((trackDimension.getB().getWidth() / 2) * 2, (trackDimension
@@ -726,8 +727,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
     Track track = null;
     Dimension dimension = null;
     for (Track t : tracks) {
-      if (!t.hasVideo())
+      if (!t.hasVideo()) {
         continue;
+      }
 
       VideoStream[] videoStreams = TrackSupport.byType(t.getStreams(), VideoStream.class);
       int frameWidth = videoStreams[0].getFrameWidth();
@@ -737,8 +739,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
         track = t;
       }
     }
-    if (track == null || dimension == null)
+    if (track == null || dimension == null) {
       return null;
+    }
 
     return Tuple.tuple(track, dimension);
   }
@@ -748,8 +751,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
           throws EncoderException, MediaPackageException, WorkflowOperationException, NotFoundException,
           ServiceRegistryException, IOException {
     MediaPackageElement[] elements = mediaPackage.getElementsByFlavor(targetFlavor);
-    if (elements.length == 0)
+    if (elements.length == 0) {
       return 0;
+    }
 
     Track trackToTrim = (Track) elements[0];
     if (elements.length == 1 && trackToTrim.getDuration() / 1000 > videoDuration) {
@@ -915,14 +919,16 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
           List<MediaPackageElement> elementsToClean) throws EncoderException, MediaPackageException,
           WorkflowOperationException, NotFoundException, ServiceRegistryException, IOException {
     Job trimJob = composerService.trim(track, trimProfile.getIdentifier(), 0, (long) (duration * 1000));
-    if (!waitForStatus(trimJob).isSuccess())
+    if (!waitForStatus(trimJob).isSuccess()) {
       throw new WorkflowOperationException("Trimming of track " + track + " failed");
+    }
 
     trimJob = serviceRegistry.getJob(trimJob.getId());
 
     Track trimmedTrack = (Track) MediaPackageElementParser.getFromXml(trimJob.getPayload());
-    if (trimmedTrack == null)
+    if (trimmedTrack == null) {
       throw new WorkflowOperationException("Trimming track " + track + " failed to produce a track");
+    }
 
     URI uri = workspace.moveTo(trimmedTrack.getURI(), mediaPackage.getIdentifier().compact(),
             trimmedTrack.getIdentifier(), FilenameUtils.getName(track.getURI().toString()));
@@ -1012,8 +1018,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
     elementsToClean.add(emptyAttachment);
 
     final Job silentAudioJob = composerService.imageToVideo(emptyAttachment, SILENT_AUDIO_PROFILE, time);
-    if (!waitForStatus(silentAudioJob).isSuccess())
+    if (!waitForStatus(silentAudioJob).isSuccess()) {
       throw new WorkflowOperationException("Silent audio job did not complete successfully");
+    }
 
     // Get the latest copy
     try {
@@ -1032,8 +1039,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
   private Track createVideoFromImage(Attachment image, double time, List<MediaPackageElement> elementsToClean)
           throws EncoderException, MediaPackageException, WorkflowOperationException, NotFoundException {
     Job imageToVideoJob = composerService.imageToVideo(image, IMAGE_MOVIE_PROFILE, time);
-    if (!waitForStatus(imageToVideoJob).isSuccess())
+    if (!waitForStatus(imageToVideoJob).isSuccess()) {
       throw new WorkflowOperationException("Image to video job did not complete successfully");
+    }
 
     // Get the latest copy
     try {
@@ -1049,8 +1057,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
   private Attachment extractImage(Track presentationTrack, double time, List<MediaPackageElement> elementsToClean)
           throws EncoderException, MediaPackageException, WorkflowOperationException, NotFoundException {
     Job extractImageJob = composerService.image(presentationTrack, PREVIEW_PROFILE, time);
-    if (!waitForStatus(extractImageJob).isSuccess())
+    if (!waitForStatus(extractImageJob).isSuccess()) {
       throw new WorkflowOperationException("Extract image frame video job did not complete successfully");
+    }
 
     // Get the latest copy
     try {
@@ -1071,8 +1080,9 @@ public class PartialImportWorkflowOperationHandler extends AbstractWorkflowOpera
     properties.put("frame", Long.toString(videoStreams[0].getFrameCount() - 1));
 
     Job extractImageJob = composerService.image(presentationTrack, IMAGE_FRAME_PROFILE, properties);
-    if (!waitForStatus(extractImageJob).isSuccess())
+    if (!waitForStatus(extractImageJob).isSuccess()) {
       throw new WorkflowOperationException("Extract image frame video job did not complete successfully");
+    }
 
     // Get the latest copy
     try {

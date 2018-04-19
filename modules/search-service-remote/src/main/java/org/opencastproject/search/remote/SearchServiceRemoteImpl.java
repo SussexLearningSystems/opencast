@@ -125,8 +125,9 @@ public class SearchServiceRemoteImpl extends RemoteBase implements SearchService
     HttpGet get = new HttpGet(getSearchUrl(q, false));
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return SearchResultImpl.valueOf(response.getEntity().getContent());
+      }
     } catch (Exception e) {
       throw new SearchException("Unable to parse results of a getByQuery request from remote search index: ", e);
     } finally {
@@ -145,8 +146,9 @@ public class SearchServiceRemoteImpl extends RemoteBase implements SearchService
     HttpGet get = new HttpGet(getSearchUrl(q, true));
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return SearchResultImpl.valueOf(response.getEntity().getContent());
+      }
     } catch (Exception e) {
       throw new SearchException(
               "Unable to parse results of a getForAdministrativeRead request from remote search index: ", e);
@@ -172,8 +174,9 @@ public class SearchServiceRemoteImpl extends RemoteBase implements SearchService
     logger.debug("Sending remote query '{}'", get.getRequestLine().toString());
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return SearchResultImpl.valueOf(response.getEntity().getContent());
+      }
     } catch (Exception e) {
       throw new SearchException("Unable to parse getByQuery response from remote search index", e);
     } finally {
@@ -199,8 +202,9 @@ public class SearchServiceRemoteImpl extends RemoteBase implements SearchService
     if (q.getId() != null || q.getSeriesId() != null || q.getElementFlavors() != null || q.getElementTags() != null) {
       url.append("/episode.xml?");
 
-      if (q.getSeriesId() != null)
+      if (q.getSeriesId() != null) {
         queryStringParams.add(new BasicNameValuePair("sid", q.getSeriesId()));
+      }
 
       if (q.getElementFlavors() != null) {
         for (MediaPackageElementFlavor f : q.getElementFlavors()) {
@@ -220,11 +224,13 @@ public class SearchServiceRemoteImpl extends RemoteBase implements SearchService
     }
 
     // General query parameters
-    if (q.getText() != null)
+    if (q.getText() != null) {
       queryStringParams.add(new BasicNameValuePair("q", q.getText()));
+    }
 
-    if (q.getId() != null)
+    if (q.getId() != null) {
       queryStringParams.add(new BasicNameValuePair("id", q.getId()));
+    }
 
     if (admin) {
       queryStringParams.add(new BasicNameValuePair("admin", Boolean.TRUE.toString()));

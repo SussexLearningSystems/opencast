@@ -462,10 +462,11 @@ public abstract class AbstractWorkflowOperationHandler implements WorkflowOperat
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof WorkflowOperationHandler) {
-      if (id != null)
+      if (id != null) {
         return id.equals(((WorkflowOperationHandler) obj).getId());
-      else
+      } else {
         return this == obj;
+      }
     }
     return false;
   }

@@ -247,7 +247,7 @@ public class SeriesWorkflowOperationHandler extends AbstractWorkflowOperationHan
     // Process extra metadata
     HashSet<EName> extraMetadata = new HashSet<>();
     if (optCopyMetadata.isSome()) {
-      for (String strEName : optCopyMetadata.get().split(",+\\s*"))
+      for (String strEName : optCopyMetadata.get().split(",+\\s*")) {
         try {
           if (!strEName.isEmpty()) {
             extraMetadata.add(EName.fromString(strEName, defaultNamespace));
@@ -255,6 +255,7 @@ public class SeriesWorkflowOperationHandler extends AbstractWorkflowOperationHan
         } catch (IllegalArgumentException iae) {
           logger.warn("Ignoring incorrect dublincore metadata property: '{}'", strEName);
         }
+      }
     }
 
     // Update the episode catalog
@@ -339,8 +340,9 @@ public class SeriesWorkflowOperationHandler extends AbstractWorkflowOperationHan
     if (applyAcl) {
       try {
         AccessControlList acl = seriesService.getSeriesAccessControl(seriesId);
-        if (acl != null)
+        if (acl != null) {
           authorizationService.setAcl(mediaPackage, AclScope.Series, acl);
+        }
       } catch (Exception e) {
         logger.error("Unable to update series ACL: {}", ExceptionUtils.getStackTrace(e));
         throw new WorkflowOperationException(e);

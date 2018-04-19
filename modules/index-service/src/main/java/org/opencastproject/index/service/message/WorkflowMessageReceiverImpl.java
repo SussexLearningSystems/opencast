@@ -108,8 +108,9 @@ public class WorkflowMessageReceiverImpl extends BaseMessageReceiverImpl<Workflo
 
             try {
               Opt<DublinCoreCatalog> loadedDC = DublinCoreUtil.loadEpisodeDublinCore(workspace, mp);
-              if (loadedDC.isSome())
+              if (loadedDC.isSome()) {
                 updateEvent(event, loadedDC.get());
+              }
             } catch (Throwable t) {
               logger.warn("Unable to load dublincore catalog for the workflow {}", wf.getId(), t);
             }

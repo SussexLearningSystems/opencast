@@ -88,8 +88,9 @@ public class VideoTextImpl implements VideoText {
     this.id = id;
     this.text = text;
     this.boundary = boundary;
-    if (time != null)
+    if (time != null) {
       this.locator = new SpatioTemporalLocatorImpl(time);
+    }
   }
 
   /**
@@ -245,14 +246,17 @@ public class VideoTextImpl implements VideoText {
     Element videoText = document.createElement("VideoText");
     videoText.setAttribute("id", id);
     videoText.setAttribute("textType", type.toString());
-    if (fontSize > 0)
+    if (fontSize > 0) {
       videoText.setAttribute("fontSize", Integer.toString(fontSize));
-    if (fontType != null)
+    }
+    if (fontType != null) {
       videoText.setAttribute("fontType", fontType);
+    }
 
     // Media locator
-    if (locator != null)
+    if (locator != null) {
       videoText.appendChild(locator.toXml(document));
+    }
 
     // Temporal Mask (Boundary)
     if (boundary != null) {

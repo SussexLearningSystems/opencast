@@ -192,8 +192,9 @@ public class HostRegistrationJpaImpl implements HostRegistration {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof HostRegistration))
+    if (!(obj instanceof HostRegistration)) {
       return false;
+    }
     HostRegistration registration = (HostRegistration) obj;
     return baseUrl.equals(registration.getBaseUrl());
   }

@@ -118,8 +118,9 @@ public class SolrRequester {
    *          the optional mediapackage serializer
    */
   public SolrRequester(SolrServer connection, SecurityService securityService, MediaPackageSerializer serializer) {
-    if (connection == null)
+    if (connection == null) {
       throw new IllegalStateException("Unable to run queries on null connection");
+    }
     this.solrServer = connection;
     this.securityService = securityService;
     this.serializer = serializer;
@@ -192,8 +193,9 @@ public class SolrRequester {
         @Override
         public MediaPackage getMediaPackage() {
           MediaPackageBuilder builder = MediaPackageBuilderFactory.newInstance().newMediaPackageBuilder();
-          if (serializer != null)
+          if (serializer != null) {
             builder.setSerializer(serializer);
+          }
           String mediaPackageFieldValue = Schema.getOcMediapackage(doc);
           if (mediaPackageFieldValue != null) {
             try {
@@ -209,8 +211,9 @@ public class SolrRequester {
         public long getDcExtent() {
           if (getType().equals(SearchResultItemType.AudioVisual)) {
             Long extent = Schema.getDcExtent(doc);
-            if (extent != null)
+            if (extent != null) {
               return extent;
+            }
           }
           return -1;
         }
@@ -344,8 +347,9 @@ public class SolrRequester {
           if (getType().equals(SearchResultItemType.AudioVisual)) {
             String k = Schema.getOcKeywords(doc);
             return k != null ? k.split(" ") : new String[0];
-          } else
+          } else {
             return new String[0];
+          }
         }
 
         @Override
@@ -365,10 +369,11 @@ public class SolrRequester {
 
         @Override
         public MediaSegment[] getSegments() {
-          if (SearchResultItemType.AudioVisual.equals(getType()))
+          if (SearchResultItemType.AudioVisual.equals(getType())) {
             return createSearchResultSegments(doc, query).toArray(new MediaSegmentImpl[0]);
-          else
+          } else {
             return new MediaSegmentImpl[0];
+          }
         }
       });
 
@@ -395,8 +400,9 @@ public class SolrRequester {
 
     // Loop over every segment
     for (String fieldName : doc.getFieldNames()) {
-      if (!fieldName.startsWith(Schema.SEGMENT_TEXT_PREFIX))
+      if (!fieldName.startsWith(Schema.SEGMENT_TEXT_PREFIX)) {
         continue;
+      }
 
       // Ceate a new segment
       int segmentId = Integer.parseInt(fieldName.substring(Schema.SEGMENT_TEXT_PREFIX.length()));
@@ -415,14 +421,16 @@ public class SolrRequester {
 
       // get segment time
       String segmentTime = segmentHints.getProperty("time");
-      if (segmentTime == null)
+      if (segmentTime == null) {
         throw new IllegalStateException("Found segment without time hint");
+      }
       segment.setTime(Long.parseLong(segmentTime));
 
       // get segment duration
       String segmentDuration = segmentHints.getProperty("duration");
-      if (segmentDuration == null)
+      if (segmentDuration == null) {
         throw new IllegalStateException("Found segment without duration hint");
+      }
       segment.setDuration(Long.parseLong(segmentDuration));
 
       // get preview urls
@@ -446,13 +454,15 @@ public class SolrRequester {
           int textLength = segmentText.length();
           for (String t : queryTerms) {
             String strippedTerm = StringUtils.strip(t, "*");
-            if (StringUtils.isBlank(strippedTerm))
+            if (StringUtils.isBlank(strippedTerm)) {
               continue;
+            }
             int startIndex = 0;
             while (startIndex < textLength - 1) {
               int foundAt = segmentText.indexOf(strippedTerm, startIndex);
-              if (foundAt < 0)
+              if (foundAt < 0) {
                 break;
+              }
               segmentHits++;
               startIndex = foundAt + strippedTerm.length();
             }
@@ -463,8 +473,9 @@ public class SolrRequester {
             segment.setHit(true);
             segment.setRelevance(segmentHits);
           }
-          if (segmentHits > maxHits)
+          if (segmentHits > maxHits) {
             maxHits = segmentHits;
+          }
         }
       }
 
@@ -473,8 +484,9 @@ public class SolrRequester {
 
     for (MediaSegmentImpl segment : segments) {
       int hitsInSegment = segment.getRelevance();
-      if (hitsInSegment > 0)
+      if (hitsInSegment > 0) {
         segment.setRelevance((int) ((100 * hitsInSegment) / maxHits));
+      }
     }
 
     return segments;
@@ -568,10 +580,11 @@ public class SolrRequester {
    * @return The input object or empty string.
    */
   private static String mkString(Object f) {
-    if (f != null)
+    if (f != null) {
       return f.toString();
-    else
+    } else {
       return "";
+    }
   }
 
   /**
@@ -589,14 +602,16 @@ public class SolrRequester {
   private SolrQuery getForAction(SearchQuery q, String action, boolean applyPermissions) throws SolrServerException {
     StringBuilder sb = new StringBuilder();
 
-    if (StringUtils.isNotBlank(q.getQuery()))
+    if (StringUtils.isNotBlank(q.getQuery())) {
       sb.append(q.getQuery());
+    }
 
     String solrIdRequest = StringUtils.trimToNull(q.getId());
     if (solrIdRequest != null) {
       String cleanSolrIdRequest = SolrUtils.clean(solrIdRequest);
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       sb.append("(");
       sb.append(Schema.ID);
       sb.append(":");
@@ -627,8 +642,9 @@ public class SolrRequester {
     if (solrTextRequest != null) {
       String cleanSolrTextRequest = SolrUtils.clean(q.getText());
       if (StringUtils.isNotEmpty(cleanSolrTextRequest)) {
-        if (sb.length() > 0)
+        if (sb.length() > 0) {
           sb.append(" AND ");
+        }
         sb.append("( *:");
         sb.append(boost(cleanSolrTextRequest));
         sb.append(" OR (");
@@ -640,13 +656,15 @@ public class SolrRequester {
     }
 
     if (q.getElementTags() != null && q.getElementTags().length > 0) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       StringBuilder tagBuilder = new StringBuilder();
       for (int i = 0; i < q.getElementTags().length; i++) {
         String tag = SolrUtils.clean(q.getElementTags()[i]);
-        if (StringUtils.isEmpty(tag))
+        if (StringUtils.isEmpty(tag)) {
           continue;
+        }
         if (tagBuilder.length() == 0) {
           tagBuilder.append("(");
         } else {
@@ -663,13 +681,15 @@ public class SolrRequester {
     }
 
     if (q.getElementFlavors() != null && q.getElementFlavors().length > 0) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       StringBuilder flavorBuilder = new StringBuilder();
       for (int i = 0; i < q.getElementFlavors().length; i++) {
         String flavor = SolrUtils.clean(q.getElementFlavors()[i].toString());
-        if (StringUtils.isEmpty(flavor))
+        if (StringUtils.isEmpty(flavor)) {
           continue;
+        }
         if (flavorBuilder.length() == 0) {
           flavorBuilder.append("(");
         } else {
@@ -686,14 +706,16 @@ public class SolrRequester {
     }
 
     if (q.getDeletedDate() != null) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       sb.append(Schema.OC_DELETED + ":"
               + SolrUtils.serializeDateRange(option(q.getDeletedDate()), Option.<Date> none()));
     }
 
-    if (sb.length() == 0)
+    if (sb.length() == 0) {
       sb.append("*:*");
+    }
 
     if (applyPermissions) {
       sb.append(" AND ").append(Schema.OC_ORGANIZATION).append(":")
@@ -705,16 +727,18 @@ public class SolrRequester {
         sb.append(" AND (");
         StringBuilder roleList = new StringBuilder();
         for (Role role : roles) {
-          if (roleList.length() > 0)
+          if (roleList.length() > 0) {
             roleList.append(" OR ");
+          }
           roleList.append(Schema.OC_ACL_PREFIX).append(action).append(":").append(SolrUtils.clean(role.getName()));
           if (role.getName().equalsIgnoreCase(securityService.getOrganization().getAnonymousRole())) {
             userHasAnonymousRole = true;
           }
         }
         if (!userHasAnonymousRole) {
-          if (roleList.length() > 0)
+          if (roleList.length() > 0) {
             roleList.append(" OR ");
+          }
           roleList.append(Schema.OC_ACL_PREFIX).append(action).append(":")
                   .append(SolrUtils.clean(securityService.getOrganization().getAnonymousRole()));
         }
@@ -725,20 +749,23 @@ public class SolrRequester {
     }
 
     if (!q.isIncludeEpisodes()) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       sb.append("-" + Schema.OC_MEDIATYPE + ":" + SearchResultItemType.AudioVisual);
     }
 
     if (!q.isIncludeSeries()) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       sb.append("-" + Schema.OC_MEDIATYPE + ":" + SearchResultItemType.Series);
     }
 
     if (q.getDeletedDate() == null) {
-      if (sb.length() > 0)
+      if (sb.length() > 0) {
         sb.append(" AND ");
+      }
       sb.append("-" + Schema.OC_DELETED + ":[* TO *]");
     }
 
@@ -750,8 +777,9 @@ public class SolrRequester {
       query.setRows(Integer.MAX_VALUE);
     }
 
-    if (q.getOffset() > 0)
+    if (q.getOffset() > 0) {
       query.setStart(q.getOffset());
+    }
 
     if (q.getSort() != null) {
       ORDER order = q.isSortAscending() ? ORDER.asc : ORDER.desc;

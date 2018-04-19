@@ -171,8 +171,9 @@ public class UsersEndpoint {
           @RestParameter(defaultValue = "0", description = "The page number.", isRequired = false, name = "offset", type = RestParameter.Type.STRING) }, reponses = { @RestResponse(responseCode = SC_OK, description = "The user accounts.") })
   public Response getUsers(@QueryParam("filter") String filter, @QueryParam("sort") String sort,
           @QueryParam("limit") int limit, @QueryParam("offset") int offset) throws IOException {
-    if (limit < 1)
+    if (limit < 1) {
       limit = 100;
+    }
 
     Option<String> optSort = Option.option(trimToNull(sort));
     Option<String> filterName = Option.none();
@@ -224,29 +225,34 @@ public class UsersEndpoint {
             Order order = criterion.getOrder();
             switch (criterion.getFieldName()) {
               case "name":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user2.getName()), trimToEmpty(user1.getName()));
+                }
                 return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user1.getName()), trimToEmpty(user2.getName()));
               case "username":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user2.getUsername()),
                           trimToEmpty(user1.getUsername()));
+                }
                 return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user1.getUsername()),
                         trimToEmpty(user2.getUsername()));
               case "email":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user2.getEmail()), trimToEmpty(user1.getEmail()));
+                }
                 return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user1.getEmail()), trimToEmpty(user2.getEmail()));
               case "roles":
                 String roles1 = Stream.$(user1.getRoles()).map(getRoleName).sort(sortByName).mkString(",");
                 String roles2 = Stream.$(user2.getRoles()).map(getRoleName).sort(sortByName).mkString(",");
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(roles2), trimToEmpty(roles1));
+                }
                 return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(roles1), trimToEmpty(roles2));
               case "provider":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user2.getProvider()),
                           trimToEmpty(user1.getProvider()));
+                }
                 return CASE_INSENSITIVE_ORDER.compare(trimToEmpty(user1.getProvider()),
                         trimToEmpty(user2.getProvider()));
               default:
@@ -285,10 +291,12 @@ public class UsersEndpoint {
           @FormParam("name") String name, @FormParam("email") String email, @FormParam("roles") String roles)
           throws NotFoundException {
 
-    if (StringUtils.isBlank(username))
+    if (StringUtils.isBlank(username)) {
       return RestUtil.R.badRequest("No username set");
-    if (StringUtils.isBlank(password))
+    }
+    if (StringUtils.isBlank(password)) {
       return RestUtil.R.badRequest("No password set");
+    }
 
     User existingUser = jpaUserAndRoleProvider.loadUser(username);
     if (existingUser != null) {

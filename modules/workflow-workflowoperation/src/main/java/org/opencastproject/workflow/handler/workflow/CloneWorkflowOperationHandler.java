@@ -142,16 +142,18 @@ public class CloneWorkflowOperationHandler extends AbstractWorkflowOperationHand
 
         // Take subtype either from option or from element (if option is *)
         String subtype;
-        if ("*".equals(targetFlavor.getSubtype()))
+        if ("*".equals(targetFlavor.getSubtype())) {
           subtype = element.getFlavor().getSubtype();
-        else
+        } else {
           subtype = targetFlavor.getSubtype();
+        }
 
         // Take type either from option or from element (if option is *)
-        if ("*".equals(targetFlavor.getType()))
+        if ("*".equals(targetFlavor.getType())) {
           flavor = new MediaPackageElementFlavor(element.getFlavor().getType(), subtype);
-        else
+        } else {
           flavor = new MediaPackageElementFlavor(targetFlavor.getType(), subtype);
+        }
 
         // Copy element and set new flavor
         MediaPackageElement newElement = copyElement(element);
@@ -176,8 +178,9 @@ public class CloneWorkflowOperationHandler extends AbstractWorkflowOperationHand
 
       toFileName = elementId;
       String extension = FilenameUtils.getExtension(sourceFile.getName());
-      if (!"".equals(extension))
+      if (!"".equals(extension)) {
         toFileName += "." + extension;
+      }
 
       logger.debug("Start copying element {} to target {}.", sourceFile.getPath(), toFileName);
 

@@ -218,10 +218,11 @@ public class JobTest {
       serviceRegistry.updateJob(job);
 
       jobs = serviceRegistry.getActiveJobs();
-      if (status.isActive())
+      if (status.isActive()) {
         assertEquals(2, jobs.size());
-      else
+      } else {
         assertEquals(1, jobs.size());
+      }
     }
   }
 

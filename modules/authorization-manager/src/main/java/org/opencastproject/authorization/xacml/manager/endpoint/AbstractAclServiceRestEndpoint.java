@@ -388,32 +388,39 @@ public abstract class AbstractAclServiceRestEndpoint {
     try {
       final TransitionQuery query = TransitionQuery.query();
 
-      if (StringUtils.isNotBlank(afterStr))
+      if (StringUtils.isNotBlank(afterStr)) {
         query.after(new Date(DateTimeSupport.fromUTC(afterStr)));
-
-      if (StringUtils.isNotBlank(beforeStr))
-        query.before(new Date(DateTimeSupport.fromUTC(beforeStr)));
-
-      if (StringUtils.isNotBlank(id))
-        query.withId(id);
-
-      if (StringUtils.isNotBlank(scopeStr)) {
-        if ("episode".equalsIgnoreCase(scopeStr))
-          query.withScope(AclScope.Episode);
-        else if ("series".equalsIgnoreCase(scopeStr))
-          query.withScope(AclScope.Series);
-        else
-          return badRequest();
       }
 
-      if (transitionId != null)
+      if (StringUtils.isNotBlank(beforeStr)) {
+        query.before(new Date(DateTimeSupport.fromUTC(beforeStr)));
+      }
+
+      if (StringUtils.isNotBlank(id)) {
+        query.withId(id);
+      }
+
+      if (StringUtils.isNotBlank(scopeStr)) {
+        if ("episode".equalsIgnoreCase(scopeStr)) {
+          query.withScope(AclScope.Episode);
+        } else if ("series".equalsIgnoreCase(scopeStr)) {
+          query.withScope(AclScope.Series);
+        } else {
+          return badRequest();
+        }
+      }
+
+      if (transitionId != null) {
         query.withTransitionId(transitionId);
+      }
 
-      if (managedAclId != null)
+      if (managedAclId != null) {
         query.withAclId(managedAclId);
+      }
 
-      if (done != null)
+      if (done != null) {
         query.withDone(done);
+      }
 
       final AclService aclService = aclService();
       // run query
@@ -694,8 +701,9 @@ public abstract class AbstractAclServiceRestEndpoint {
           @RestResponse(responseCode = SC_INTERNAL_SERVER_ERROR, description = "Error during deleting the ACL") })
   public Response deleteAcl(@PathParam("aclId") long aclId) throws NotFoundException {
     try {
-      if (!aclService().deleteAcl(aclId))
+      if (!aclService().deleteAcl(aclId)) {
         return conflict();
+      }
     } catch (AclServiceException e) {
       logger.warn("Error deleting manged acl with id '{}': {}", aclId, e);
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
@@ -717,14 +725,16 @@ public abstract class AbstractAclServiceRestEndpoint {
           @FormParam("workflowParams") String workflowParams) {
     final AclService aclService = aclService();
     final Option<Option<ManagedAcl>> macl = option(aclId).map(getManagedAcl(aclService));
-    if (macl.isSome() && macl.get().isNone())
+    if (macl.isSome() && macl.get().isNone()) {
       return notFound();
+    }
     final Option<ConfiguredWorkflowRef> workflow = createConfiguredWorkflowRef(workflowDefinitionId, workflowParams);
     try {
-      if (aclService.applyAclToEpisode(episodeId, Options.join(macl), workflow))
+      if (aclService.applyAclToEpisode(episodeId, Options.join(macl), workflow)) {
         return ok();
-      else
+      } else {
         return notFound();
+      }
     } catch (AclServiceException e) {
       logger.error("Error applying acl to episode {}", episodeId);
       return serverError();
@@ -749,10 +759,11 @@ public abstract class AbstractAclServiceRestEndpoint {
     for (ManagedAcl macl : aclService.getAcl(aclId)) {
       final Option<ConfiguredWorkflowRef> workflow = createConfiguredWorkflowRef(workflowDefinitionId, workflowParams);
       try {
-        if (aclService.applyAclToSeries(seriesId, macl, override, workflow))
+        if (aclService.applyAclToSeries(seriesId, macl, override, workflow)) {
           return ok();
-        else
+        } else {
           return notFound();
+        }
       } catch (AclServiceException e) {
         logger.error("Error applying acl to series {}", seriesId);
         return serverError();

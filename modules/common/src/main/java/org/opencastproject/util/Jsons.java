@@ -123,10 +123,11 @@ public final class Jsons {
     }
 
     public Obj append(Obj o) {
-      if (!ZERO_OBJ.equals(o))
+      if (!ZERO_OBJ.equals(o)) {
         return new Obj(Collections.<Prop, List>concat(props, o.getProps()));
-      else
+      } else {
         return o;
+      }
     }
 
     public String toJson() {
@@ -146,10 +147,11 @@ public final class Jsons {
     }
 
     public Arr append(Arr a) {
-      if (!ZERO_ARR.equals(a))
+      if (!ZERO_ARR.equals(a)) {
         return new Arr(Collections.<Val, List>concat(vals, a.getVals()));
-      else
+      } else {
         return a;
+      }
     }
 
     public String toJson() {

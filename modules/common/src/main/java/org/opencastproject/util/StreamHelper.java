@@ -177,8 +177,9 @@ public class StreamHelper extends Thread {
         log(line);
         foundContent = true;
       }
-      if (writer != null)
+      if (writer != null) {
         writer.flush();
+      }
     } catch (IOException e) {
       if (keepReading) {
         logger.error("Error reading process stream: {}", e.getMessage(), e);

@@ -232,31 +232,36 @@ public class ServerEndpoint {
       int vCores = server.getCores();
 
       if (query.getHostname().isSome()
-              && !StringUtils.equalsIgnoreCase(vHostname, query.getHostname().get()))
-          continue;
+              && !StringUtils.equalsIgnoreCase(vHostname, query.getHostname().get())) {
+        continue;
+      }
 
       if (query.getStatus().isSome()) {
         if (StringUtils.equalsIgnoreCase(
                 ServersListProvider.SERVER_STATUS_ONLINE,
                 query.getStatus().get())
-                && !vOnline)
+                && !vOnline) {
           continue;
+        }
         if (StringUtils.equalsIgnoreCase(
                 ServersListProvider.SERVER_STATUS_OFFLINE,
                 query.getStatus().get())
-                && vOnline)
+                && vOnline) {
           continue;
+        }
         if (StringUtils.equalsIgnoreCase(
                 ServersListProvider.SERVER_STATUS_MAINTENANCE,
                 query.getStatus().get())
-                && !vMaintenance)
+                && !vMaintenance) {
           continue;
+        }
       }
 
       if (query.getFreeText().isSome()
                 && !StringUtils.containsIgnoreCase(vHostname, query.getFreeText().get())
-                && !StringUtils.containsIgnoreCase(server.getIpAddress(), query.getFreeText().get()))
+                && !StringUtils.containsIgnoreCase(server.getIpAddress(), query.getFreeText().get())) {
         continue;
+      }
 
       JSONObject jsonServer = new JSONObject();
       jsonServer.put(KEY_ONLINE, vOnline && offlineJobProducerServices <= totalJobProducerServices / 2);

@@ -175,8 +175,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
    */
   public Audio removeAudioContent(String id) {
     MultimediaContentType element = removeContentElement(id, MultimediaContent.Type.AudioType);
-    if (element != null)
+    if (element != null) {
       return (Audio) element;
+    }
     return null;
   }
 
@@ -194,8 +195,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public Iterator<Audio> audioContent() {
     MultimediaContent<Audio> content = (MultimediaContent<Audio>) getMultimediaContent(MultimediaContent.Type.AudioType);
-    if (content != null)
+    if (content != null) {
       return content.elements();
+    }
     return null;
   }
 
@@ -222,8 +224,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
    */
   public Video removeVideoContent(String id) {
     MultimediaContentType element = removeContentElement(id, MultimediaContent.Type.VideoType);
-    if (element != null)
+    if (element != null) {
       return (Video) element;
+    }
     return null;
   }
 
@@ -241,8 +244,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public Iterator<Video> videoContent() {
     MultimediaContent<Video> content = (MultimediaContent<Video>) getMultimediaContent(MultimediaContent.Type.VideoType);
-    if (content != null)
+    if (content != null) {
       return content.elements();
+    }
     return null;
   }
 
@@ -269,8 +273,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
    */
   public AudioVisual removeAudioVisualContent(String id) {
     MultimediaContentType element = removeContentElement(id, MultimediaContent.Type.AudioVisualType);
-    if (element != null)
+    if (element != null) {
       return (AudioVisual) element;
+    }
     return null;
   }
 
@@ -288,8 +293,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public Iterator<AudioVisual> audiovisualContent() {
     MultimediaContent<AudioVisual> content = (MultimediaContent<AudioVisual>) getMultimediaContent(MultimediaContent.Type.AudioVisualType);
-    if (content != null)
+    if (content != null) {
       return content.elements();
+    }
     return null;
   }
 
@@ -299,8 +305,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public Audio getAudioById(String id) {
     MultimediaContent<Audio> content = (MultimediaContent<Audio>) getMultimediaContent(MultimediaContent.Type.AudioType);
-    if (content == null)
+    if (content == null) {
       return null;
+    }
     return content.getElementById(id);
   }
 
@@ -310,8 +317,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public AudioVisual getAudioVisualById(String id) {
     MultimediaContent<AudioVisual> content = (MultimediaContent<AudioVisual>) getMultimediaContent(MultimediaContent.Type.AudioVisualType);
-    if (content == null)
+    if (content == null) {
       return null;
+    }
     return content.getElementById(id);
   }
 
@@ -321,8 +329,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
   @SuppressWarnings("unchecked")
   public Video getVideoById(String id) {
     MultimediaContent<Video> content = (MultimediaContent<Video>) getMultimediaContent(MultimediaContent.Type.VideoType);
-    if (content == null)
+    if (content == null) {
       return null;
+    }
     return content.getElementById(id);
   }
 
@@ -337,8 +346,9 @@ public class Mpeg7CatalogImpl implements Mpeg7Catalog {
    */
   private MultimediaContentType removeContentElement(String id, MultimediaContent.Type type) {
     MultimediaContentImpl<? extends MultimediaContentType> content = multimediaContent.get(type);
-    if (content != null)
+    if (content != null) {
       return content.remove(id);
+    }
     return null;
   }
 

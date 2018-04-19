@@ -196,8 +196,9 @@ public class EncodeWorkflowOperationHandler extends AbstractWorkflowOperationHan
     List<EncodingProfile> profiles = new ArrayList<EncodingProfile>();
     for (String profileName : asList(profilesOption)) {
       EncodingProfile profile = composerService.getProfile(profileName);
-      if (profile == null)
+      if (profile == null) {
         throw new WorkflowOperationException("Encoding profile '" + profileName + "' was not found");
+      }
       profiles.add(profile);
     }
 
@@ -206,14 +207,16 @@ public class EncodeWorkflowOperationHandler extends AbstractWorkflowOperationHan
     if (StringUtils.isNotBlank(profileOption)) {
       String profileId = StringUtils.trim(profileOption);
       EncodingProfile profile = composerService.getProfile(profileId);
-      if (profile == null)
+      if (profile == null) {
         throw new WorkflowOperationException("Encoding profile '" + profileId + "' was not found");
+      }
       profiles.add(profile);
     }
 
     // Make sure there is at least one profile
-    if (profiles.isEmpty())
+    if (profiles.isEmpty()) {
       throw new WorkflowOperationException("No encoding profile was specified");
+    }
 
     // Target tags
     List<String> targetTags = asList(targetTagsOption);
@@ -289,10 +292,12 @@ public class EncodeWorkflowOperationHandler extends AbstractWorkflowOperationHan
         if (targetFlavor != null) {
           String flavorType = targetFlavor.getType();
           String flavorSubtype = targetFlavor.getSubtype();
-          if ("*".equals(flavorType))
+          if ("*".equals(flavorType)) {
             flavorType = track.getFlavor().getType();
-          if ("*".equals(flavorSubtype))
+          }
+          if ("*".equals(flavorSubtype)) {
             flavorSubtype = track.getFlavor().getSubtype();
+          }
           for (Track encodedTrack : composedTracks) {
             encodedTrack.setFlavor(new MediaPackageElementFlavor(flavorType, flavorSubtype));
             logger.debug("Composed track {} has flavor '{}'", encodedTrack.toString(), encodedTrack.getFlavor());

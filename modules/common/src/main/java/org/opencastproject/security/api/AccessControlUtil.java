@@ -90,22 +90,26 @@ public final class AccessControlUtil {
    *           if any of the arguments are null
    */
   public static boolean isAuthorized(AccessControlList acl, User user, Organization org, Object action) {
-    if (action == null || user == null || acl == null || org == null)
+    if (action == null || user == null || acl == null || org == null) {
       throw new IllegalArgumentException();
+    }
 
     // Check for the global and local admin role
-    if (user.hasRole(GLOBAL_ADMIN_ROLE) || user.hasRole(org.getAdminRole()))
+    if (user.hasRole(GLOBAL_ADMIN_ROLE) || user.hasRole(org.getAdminRole())) {
       return true;
+    }
 
     Set<Role> userRoles = user.getRoles();
     for (AccessControlEntry entry : acl.getEntries()) {
-      if (!action.toString().equals(entry.getAction()))
+      if (!action.toString().equals(entry.getAction())) {
         continue;
+      }
 
       String aceRole = entry.getRole();
       for (Role role : userRoles) {
-        if (!role.getName().equals(aceRole))
+        if (!role.getName().equals(aceRole)) {
           continue;
+        }
 
         return entry.isAllow();
       }
@@ -192,8 +196,9 @@ public final class AccessControlUtil {
         newAcl.getEntries().add(ace);
       }
     }
-    if (!foundAce)
+    if (!foundAce) {
       newAcl.getEntries().add(new AccessControlEntry(role, action, allow));
+    }
 
     return newAcl;
   }
@@ -244,10 +249,11 @@ public final class AccessControlUtil {
                       @Override
                       public List<AccessControlEntry> apply(List<AccessControlEntry> sum,
                               Either<AccessControlEntry, List<AccessControlEntry>> current) {
-                        if (current.isLeft())
+                        if (current.isLeft()) {
                           sum.add(current.left().value());
-                        else
+                        } else {
                           sum.addAll(current.right().value());
+                        }
                         return sum;
                       }
                     });
@@ -323,13 +329,15 @@ public final class AccessControlUtil {
     public int compare(AccessControlEntry o1, AccessControlEntry o2) {
       // compare role
       int compareTo = StringUtils.trimToEmpty(o1.getRole()).compareTo(StringUtils.trimToEmpty(o2.getRole()));
-      if (compareTo != 0)
+      if (compareTo != 0) {
         return compareTo;
+      }
 
       // compare action
       compareTo = StringUtils.trimToEmpty(o1.getAction()).compareTo(StringUtils.trimToEmpty(o2.getAction()));
-      if (compareTo != 0)
+      if (compareTo != 0) {
         return compareTo;
+      }
 
       // compare allow
       return Boolean.valueOf(o1.isAllow()).compareTo(o2.isAllow());

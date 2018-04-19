@@ -143,8 +143,9 @@ public final class RestUtils {
    *           if the value list is null
    */
   public static Response okJsonList(List<JValue> jsonList, int offset, int limit, long total) {
-    if (jsonList == null)
+    if (jsonList == null) {
       throw new IllegalArgumentException("The list of value must not be null.");
+    }
     JValue response = obj(f("results", arr(jsonList)), f("count", v(jsonList.size())), f("offset", v(offset)),
             f("limit", v(limit)), f("total", v(total)));
 

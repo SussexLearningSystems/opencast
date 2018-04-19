@@ -147,8 +147,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
   public List<Role> getRolesForUser(String userName) {
     ArrayList<Role> roles = new ArrayList<Role>();
     User user = loadUser(userName);
-    if (user == null)
+    if (user == null) {
       return roles;
+    }
     roles.addAll(user.getRoles());
     return roles;
   }
@@ -160,8 +161,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
    */
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     String orgId = securityService.getOrganization().getId();
     List<JpaUser> users = UserDirectoryPersistenceUtil.findUsersByQuery(orgId, query, limit, offset, emf);
     return Monadics.mlist(users).map(addProviderName).iterator();
@@ -174,8 +176,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
    */
   @Override
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     String orgId = securityService.getOrganization().getId();
 
     // This provider persists roles but is not authoritative for any roles, so return an empty set
@@ -279,8 +282,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
    *          if the user is not allowed to create other user with the given roles
    */
   public void addUser(JpaUser user) throws UnauthorizedException {
-    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles()))
+    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to set the admin role on other users");
+    }
 
     // Create a JPA user with an encoded password.
     String encodedPassword = PasswordEncoder.encode(user.getPassword(), user.getUsername());
@@ -307,8 +311,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
 
     updateGroupMembership(user);
@@ -325,17 +330,20 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
    *          if the current user is not allowed to update user with the given roles
    */
   public User updateUser(JpaUser user) throws NotFoundException, UnauthorizedException {
-    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles()))
+    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to set the admin role on other users");
+    }
 
     JpaUser updateUser = UserDirectoryPersistenceUtil.findUser(user.getUsername(), user.getOrganization().getId(), emf);
-    if (updateUser == null)
+    if (updateUser == null) {
       throw new NotFoundException("User " + user.getUsername() + " not found.");
+    }
 
     logger.debug("updateUser({})", user.getUsername());
 
-    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, updateUser.getRoles()))
+    if (!UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, updateUser.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to update an admin user");
+    }
 
     String encodedPassword = null;
     //only update Password if a value is set
@@ -418,8 +426,9 @@ public class JpaUserAndRoleProvider implements UserProvider, RoleProvider {
    */
   public void deleteUser(String username, String orgId) throws NotFoundException, UnauthorizedException, Exception {
     User user = loadUser(username, orgId);
-    if (user != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles()))
+    if (user != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, user.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to delete an admin user");
+    }
 
     // Remove the user's group membership
     groupRoleProvider.updateGroupMembershipFromRoles(username, orgId, new ArrayList<String>());

@@ -107,8 +107,9 @@ public abstract class AbstractAssetManager implements AssetManager {
   /* ------------------------------------------------------------------------------------------------------------------ */
 
   @Override public Snapshot takeSnapshot(final String owner, final MediaPackage mp) {
-    if (owner == null)
+    if (owner == null) {
       return takeSnapshot(mp);
+    }
 
     return handleException(new P1Lazy<Snapshot>() {
       @Override public Snapshot get1() {
@@ -363,8 +364,9 @@ public abstract class AbstractAssetManager implements AssetManager {
    */
   public static Opt<String> getFileNameFromUrn(MediaPackageElement mpe) {
     Opt<URI> uri = Opt.nul(mpe.getURI());
-    if (uri.isSome() && "urn".equals(uri.get().getScheme()))
+    if (uri.isSome() && "urn".equals(uri.get().getScheme())) {
       return uri.toStream().map(toString).bind(Strings.split(":")).drop(1).reverse().head();
+    }
     return Opt.none();
   }
 

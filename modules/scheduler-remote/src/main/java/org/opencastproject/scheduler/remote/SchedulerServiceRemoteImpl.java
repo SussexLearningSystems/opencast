@@ -174,9 +174,10 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
         } else {
           String hasActiveTransactionString = EntityUtils.toString(response.getEntity(), UTF_8);
           Boolean booleanObject = BooleanUtils.toBooleanObject(hasActiveTransactionString);
-          if (booleanObject == null)
+          if (booleanObject == null) {
             throw new SchedulerException("Could not parse active transaction status from the remote scheduler service: "
                     + hasActiveTransactionString);
+          }
 
           logger.info(
                   "Successfully get active transaction status of event with mediapackage id {} from the remote scheduler service",
@@ -276,10 +277,12 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
     params.add(new BasicNameValuePair("mediaPackage", MediaPackageParser.getAsXml(mediaPackage)));
     params.add(new BasicNameValuePair("wfproperties", toPropertyString(wfProperties)));
     params.add(new BasicNameValuePair("agentparameters", toPropertyString(caMetadata)));
-    if (optOut.isSome())
+    if (optOut.isSome()) {
       params.add(new BasicNameValuePair("optOut", Boolean.toString(optOut.get())));
-    if (schedulingSource.isSome())
+    }
+    if (schedulingSource.isSome()) {
       params.add(new BasicNameValuePair("source", schedulingSource.get()));
+    }
     params.add(new BasicNameValuePair("origin", origin));
     post.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 
@@ -342,10 +345,12 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
     params.add(new BasicNameValuePair("templateMp", MediaPackageParser.getAsXml(templateMp)));
     params.add(new BasicNameValuePair("wfproperties", toPropertyString(wfProperties)));
     params.add(new BasicNameValuePair("agentparameters", toPropertyString(caMetadata)));
-    if (optOut.isSome())
+    if (optOut.isSome()) {
       params.add(new BasicNameValuePair("optOut", Boolean.toString(optOut.get())));
-    if (schedulingSource.isSome())
+    }
+    if (schedulingSource.isSome()) {
       params.add(new BasicNameValuePair("source", schedulingSource.get()));
+    }
     params.add(new BasicNameValuePair("origin", modificationOrigin));
     post.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 
@@ -400,24 +405,32 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
     HttpPut put = new HttpPut("/" + eventId);
 
     List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-    if (startDateTime.isSome())
+    if (startDateTime.isSome()) {
       params.add(new BasicNameValuePair("start", Long.toString(startDateTime.get().getTime())));
-    if (endDateTime.isSome())
+    }
+    if (endDateTime.isSome()) {
       params.add(new BasicNameValuePair("end", Long.toString(endDateTime.get().getTime())));
-    if (captureAgentId.isSome())
+    }
+    if (captureAgentId.isSome()) {
       params.add(new BasicNameValuePair("agent", captureAgentId.get()));
-    if (userIds.isSome())
+    }
+    if (userIds.isSome()) {
       params.add(new BasicNameValuePair("users", StringUtils.join(userIds.get(), ",")));
-    if (mediaPackage.isSome())
+    }
+    if (mediaPackage.isSome()) {
       params.add(new BasicNameValuePair("mediaPackage", MediaPackageParser.getAsXml(mediaPackage.get())));
-    if (wfProperties.isSome())
+    }
+    if (wfProperties.isSome()) {
       params.add(new BasicNameValuePair("wfproperties", toPropertyString(wfProperties.get())));
-    if (caMetadata.isSome())
+    }
+    if (caMetadata.isSome()) {
       params.add(new BasicNameValuePair("agentparameters", toPropertyString(caMetadata.get())));
+    }
     if (optOut.isSome()) {
       params.add(new BasicNameValuePair("updateOptOut", Boolean.toString(true)));
-      if (optOut.get().isSome())
+      if (optOut.get().isSome()) {
         params.add(new BasicNameValuePair("optOut", Boolean.toString(optOut.get().get())));
+      }
     } else {
       params.add(new BasicNameValuePair("updateOptOut", Boolean.toString(false)));
     }
@@ -751,9 +764,10 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
         } else {
           String optOutString = EntityUtils.toString(response.getEntity(), UTF_8);
           Boolean booleanObject = BooleanUtils.toBooleanObject(optOutString);
-          if (booleanObject == null)
+          if (booleanObject == null) {
             throw new SchedulerException(
                     "Could not parse opt out status from the remote scheduler service: " + optOutString);
+          }
 
           logger.info(
                   "Successfully get opt out status of event with mediapackage id {} from the remote scheduler service",
@@ -875,9 +889,10 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
           String blacklistString = EntityUtils.toString(response.getEntity(), UTF_8);
 
           Boolean booleanObject = BooleanUtils.toBooleanObject(blacklistString);
-          if (booleanObject == null)
+          if (booleanObject == null) {
             throw new SchedulerException(
                     "Could not parse blacklist status from the remote scheduler service: " + blacklistString);
+          }
 
           logger.info(
                   "Successfully get blacklist status of event with mediapackage id {} from the remote scheduler service",
@@ -1224,8 +1239,9 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
     params.add(new BasicNameValuePair("mediaPackage", MediaPackageParser.getAsXml(mediaPackage)));
     params.add(new BasicNameValuePair("wfproperties", toPropertyString(wfProperties)));
     params.add(new BasicNameValuePair("agentparameters", toPropertyString(caMetadata)));
-    if (optOut.isSome())
+    if (optOut.isSome()) {
       params.add(new BasicNameValuePair("optOut", Boolean.toString(optOut.get())));
+    }
     put.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 
     final String eventId = mediaPackage.getIdentifier().compact();
@@ -1366,8 +1382,9 @@ public class SchedulerServiceRemoteImpl extends RemoteBase implements SchedulerS
 
   private String toPropertyString(Map<String, String> properties) {
     StringBuilder wfPropertiesString = new StringBuilder();
-    for (Map.Entry<String, String> entry : properties.entrySet())
+    for (Map.Entry<String, String> entry : properties.entrySet()) {
       wfPropertiesString.append(entry.getKey() + "=" + entry.getValue() + "\n");
+    }
     return wfPropertiesString.toString();
   }
 

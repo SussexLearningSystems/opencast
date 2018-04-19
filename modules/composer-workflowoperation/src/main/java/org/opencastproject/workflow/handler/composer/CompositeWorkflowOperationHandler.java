@@ -241,8 +241,9 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
     } else if (watermarkElements.size() == 0 && compositeSettings.getSourceUrlWatermark() == null) {
       logger.info("No watermark to composite");
     } else {
-      for (Attachment a : watermarkElements)
+      for (Attachment a : watermarkElements) {
         watermarkAttachment = Option.option(a);
+      }
     }
 
     Collection<Track> upperElements = compositeSettings.getUpperTrackSelector().select(mediaPackage, false);
@@ -251,10 +252,12 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
     // There is only a single track to work with.
     if ((upperElements.size() == 1 && lowerElements.size() == 0)
             || (upperElements.size() == 0 && lowerElements.size() == 1)) {
-      for (Track t : upperElements)
+      for (Track t : upperElements) {
         compositeSettings.setSingleTrack(t);
-      for (Track t : lowerElements)
+      }
+      for (Track t : lowerElements) {
         compositeSettings.setSingleTrack(t);
+      }
       return handleSingleTrack(mediaPackage, operation, compositeSettings, watermarkAttachment);
     } else {
       // Look for upper elements matching the tags and flavor
@@ -390,23 +393,27 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
       }
 
       // Find the encoding profile
-      if (encodingProfile == null)
+      if (encodingProfile == null) {
         throw new WorkflowOperationException("Encoding profile must be set!");
+      }
 
       profile = composerService.getProfile(encodingProfile);
-      if (profile == null)
+      if (profile == null) {
         throw new WorkflowOperationException("Encoding profile '" + encodingProfile + "' was not found");
+      }
 
       // Target tags
       targetTags = asList(targetTagsOption);
 
       // Target flavor
-      if (targetFlavorOption == null)
+      if (targetFlavorOption == null) {
         throw new WorkflowOperationException("Target flavor must be set!");
+      }
 
       // Output resolution
-      if (outputResolution == null)
+      if (outputResolution == null) {
         throw new WorkflowOperationException("Output resolution must be set!");
+      }
 
       if (outputResolution.equals(OUTPUT_RESOLUTION_LOWER) || outputResolution.equals(OUTPUT_RESOLUTION_UPPER)) {
         outputResolutionSource = outputResolution;
@@ -438,8 +445,9 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
 
       try {
         targetFlavor = MediaPackageElementFlavor.parseFlavor(targetFlavorOption);
-        if ("*".equals(targetFlavor.getType()) || "*".equals(targetFlavor.getSubtype()))
+        if ("*".equals(targetFlavor.getType()) || "*".equals(targetFlavor.getSubtype())) {
           throw new WorkflowOperationException("Target flavor must have a type and a subtype, '*' are not allowed!");
+        }
       } catch (IllegalArgumentException e) {
         throw new WorkflowOperationException("Target flavor '" + targetFlavorOption + "' is malformed");
       }
@@ -491,17 +499,19 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
             String layoutString) throws WorkflowOperationException {
       try {
         String[] layouts = StringUtils.split(layoutString, ";");
-        if (layouts.length < 2)
+        if (layouts.length < 2) {
           throw new WorkflowOperationException(
                   "Multiple layout doesn't contain the required layouts for (lower, upper, optional watermark)");
+        }
 
         List<HorizontalCoverageLayoutSpec> multipleLayouts = list(
                 Serializer.horizontalCoverageLayoutSpec(JsonObj.jsonObj(layouts[0])),
                 Serializer.horizontalCoverageLayoutSpec(JsonObj.jsonObj(layouts[1])));
 
         AbsolutePositionLayoutSpec watermarkLayout = null;
-        if (layouts.length > 2)
+        if (layouts.length > 2) {
           watermarkLayout = Serializer.absolutePositionLayoutSpec(JsonObj.jsonObj(layouts[2]));
+        }
 
         return Tuple.tuple(multipleLayouts, Option.option(watermarkLayout));
       } catch (Exception e) {
@@ -513,16 +523,18 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
             String layoutString) throws WorkflowOperationException {
       try {
         String[] layouts = StringUtils.split(layoutString, ";");
-        if (layouts.length < 1)
+        if (layouts.length < 1) {
           throw new WorkflowOperationException(
                   "Single layout doesn't contain the required layouts for (video, optional watermark)");
+        }
 
         HorizontalCoverageLayoutSpec singleLayout = Serializer
                 .horizontalCoverageLayoutSpec(JsonObj.jsonObj(layouts[0]));
 
         AbsolutePositionLayoutSpec watermarkLayout = null;
-        if (layouts.length > 1)
+        if (layouts.length > 1) {
           watermarkLayout = Serializer.absolutePositionLayoutSpec(JsonObj.jsonObj(layouts[1]));
+        }
 
         return Tuple.tuple(singleLayout, Option.option(watermarkLayout));
       } catch (Exception e) {
@@ -663,8 +675,9 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
               .getIdentifier(), compositeSettings.getOutputBackground());
 
       // Wait for the jobs to return
-      if (!waitForStatus(compositeJob).isSuccess())
+      if (!waitForStatus(compositeJob).isSuccess()) {
         throw new WorkflowOperationException("The composite job did not complete successfully");
+      }
 
       if (compositeJob.getPayload().length() > 0) {
 
@@ -694,11 +707,12 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
         return createResult(mediaPackage, Action.SKIP);
       }
     } finally {
-      if (compositeSettings.getSourceUrlWatermark() != null)
+      if (compositeSettings.getSourceUrlWatermark() != null) {
         workspace.deleteFromCollection(
                 COLLECTION,
                 compositeSettings.getWatermarkIdentifier() + "."
                         + FilenameUtils.getExtension(compositeSettings.getSourceUrlWatermark()));
+      }
     }
   }
 
@@ -795,8 +809,9 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
               .getIdentifier(), compositeSettings.getOutputBackground());
 
       // Wait for the jobs to return
-      if (!waitForStatus(compositeJob).isSuccess())
+      if (!waitForStatus(compositeJob).isSuccess()) {
         throw new WorkflowOperationException("The composite job did not complete successfully");
+      }
 
       if (compositeJob.getPayload().length() > 0) {
 
@@ -826,11 +841,12 @@ public class CompositeWorkflowOperationHandler extends AbstractWorkflowOperation
         return createResult(mediaPackage, Action.SKIP);
       }
     } finally {
-      if (compositeSettings.getSourceUrlWatermark() != null)
+      if (compositeSettings.getSourceUrlWatermark() != null) {
         workspace.deleteFromCollection(
                 COLLECTION,
                 compositeSettings.getWatermarkIdentifier() + "."
                         + FilenameUtils.getExtension(compositeSettings.getSourceUrlWatermark()));
+      }
     }
   }
 }

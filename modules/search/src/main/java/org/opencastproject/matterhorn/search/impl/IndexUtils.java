@@ -73,8 +73,9 @@ public final class IndexUtils {
    * @return the serialized date
    */
   public static String serializeDate(Date date) {
-    if (date == null)
+    if (date == null) {
       return null;
+    }
     return dateFormat.format(date);
   }
 
@@ -89,10 +90,12 @@ public final class IndexUtils {
    * @return the serialized search expression
    */
   public static String serializeDateRange(Date startDate, Date endDate) {
-    if (startDate == null)
+    if (startDate == null) {
       throw new IllegalArgumentException("Start date cannot be null");
-    if (endDate == null)
+    }
+    if (endDate == null) {
       throw new IllegalArgumentException("End date cannot be null");
+    }
     StringBuffer buf = new StringBuffer("[");
     buf.append(dateFormat.format(startDate));
     buf.append(" TO ");
@@ -109,8 +112,9 @@ public final class IndexUtils {
    * @return the date with its time component set to the beginning of the day
    */
   public static Date beginningOfDay(Date date) {
-    if (date == null)
+    if (date == null) {
       return null;
+    }
     Calendar c = Calendar.getInstance();
     c.setTime(date);
     c.set(Calendar.HOUR_OF_DAY, 0);
@@ -128,8 +132,9 @@ public final class IndexUtils {
    * @return the date with its time component set to the beginning of the day
    */
   public static Date endOfDay(Date date) {
-    if (date == null)
+    if (date == null) {
       return null;
+    }
     Calendar c = Calendar.getInstance();
     c.setTime(date);
     c.set(Calendar.HOUR_OF_DAY, 23);

@@ -148,8 +148,9 @@ public class AclEndpoint {
           @RestParameter(defaultValue = "0", description = "The page number.", isRequired = false, name = "offset", type = RestParameter.Type.STRING) }, reponses = { @RestResponse(responseCode = SC_OK, description = "The list of ACL's has successfully been returned") })
   public Response getAclsAsJson(@QueryParam("filter") String filter, @QueryParam("sort") String sort,
           @QueryParam("offset") int offset, @QueryParam("limit") int limit) throws IOException {
-    if (limit < 1)
+    if (limit < 1) {
       limit = 100;
+    }
     Opt<String> optSort = Opt.nul(trimToNull(sort));
     Option<String> filterName = Option.none();
     Option<String> filterText = Option.none();
@@ -186,8 +187,9 @@ public class AclEndpoint {
             Order order = criterion.getOrder();
             switch (criterion.getFieldName()) {
               case "name":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return ObjectUtils.compare(acl2.getName(), acl1.getName());
+                }
                 return ObjectUtils.compare(acl1.getName(), acl2.getName());
               default:
                 logger.info("Unkown sort type: {}", criterion.getFieldName());
@@ -214,8 +216,9 @@ public class AclEndpoint {
           @RestResponse(responseCode = SC_CONFLICT, description = "The ACL could not be deleted, there are still references on it") })
   public Response deleteAcl(@PathParam("id") long aclId) throws NotFoundException {
     try {
-      if (!aclService().deleteAcl(aclId))
+      if (!aclService().deleteAcl(aclId)) {
         return conflict();
+      }
     } catch (AclServiceException e) {
       logger.warn("Error deleting manged acl with id '{}': {}", aclId, e);
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);

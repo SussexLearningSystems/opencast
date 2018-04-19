@@ -227,9 +227,9 @@ public final class WorkspaceImpl implements Workspace {
       // Clean up
       FileUtils.deleteQuietly(targetFile);
 
-      if (linkingEnabled)
+      if (linkingEnabled) {
         logger.info("Hard links between the working file repository and the workspace enabled");
-      else {
+      } else {
         logger.warn("Hard links between the working file repository and the workspace are not possible");
         logger.warn("This will increase the overall amount of disk space used");
       }
@@ -523,10 +523,12 @@ public final class WorkspaceImpl implements Workspace {
    *           if <code>file</code> does not exist or is not a regular file
    */
   protected String md5(File file) throws IOException, IllegalArgumentException, IllegalStateException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("File must not be null");
-    if (!file.isFile())
+    }
+    if (!file.isFile()) {
       throw new IllegalArgumentException("File " + file.getAbsolutePath() + " can not be read");
+    }
 
     InputStream in = null;
     try {
@@ -572,12 +574,14 @@ public final class WorkspaceImpl implements Workspace {
         FileUtils.forceDelete(f);
 
         // Remove containing folder if a mediapackage element or a not a static collection
-        if (isMediaPackage || !isStaticCollection(collectionId))
+        if (isMediaPackage || !isStaticCollection(collectionId)) {
           FileSupport.delete(mpElementDir);
+        }
 
         // Also delete mediapackage itself when empty
-        if (isMediaPackage)
+        if (isMediaPackage) {
           FileSupport.delete(mpElementDir.getParentFile());
+        }
       }
     }
 
@@ -729,8 +733,9 @@ public final class WorkspaceImpl implements Workspace {
       FileUtils.forceMkdir(copy.getParentFile());
       FileUtils.deleteQuietly(copy);
       FileUtils.moveFile(original, copy);
-      if (!isStaticCollection(collection))
+      if (!isStaticCollection(collection)) {
         FileSupport.delete(original.getParentFile());
+      }
     }
     // move in WFR
     final URI wfrUri = wfr.moveTo(collection, filename, toMediaPackage, toMediaPackageElement, toFileName);
@@ -793,8 +798,9 @@ public final class WorkspaceImpl implements Workspace {
     wsDirectory.mkdirs();
 
     String safeFileName = PathSupport.toSafeName(FilenameUtils.getName(uriString));
-    if (StringUtils.isBlank(safeFileName))
+    if (StringUtils.isBlank(safeFileName)) {
       safeFileName = UNKNOWN_FILENAME;
+    }
     return new File(wsDirectory, safeFileName);
   }
 
@@ -822,12 +828,14 @@ public final class WorkspaceImpl implements Workspace {
    */
   private String getCollection(URI uri) {
     String path = uri.toString();
-    if (path.indexOf(WorkingFileRepository.COLLECTION_PATH_PREFIX) < 0)
+    if (path.indexOf(WorkingFileRepository.COLLECTION_PATH_PREFIX) < 0) {
       throw new IllegalArgumentException(uri + " must point to a working file repository collection");
+    }
 
     String collection = FilenameUtils.getPath(path);
-    if (collection.endsWith("/"))
+    if (collection.endsWith("/")) {
       collection = collection.substring(0, collection.length() - 1);
+    }
     collection = collection.substring(collection.lastIndexOf("/"));
     collection = collection.substring(collection.lastIndexOf("/") + 1, collection.length());
     return collection;

@@ -66,15 +66,19 @@ public class SchedulerMessageReceiverImpl extends BaseMessageReceiverImpl<Schedu
         // Load or create the corresponding recording event
         try {
           event = getOrCreateEvent(schedulerItem.getMediaPackageId(), organization, user, getSearchIndex());
-          if (isBlank(event.getCreator()))
+          if (isBlank(event.getCreator())) {
             event.setCreator(getSecurityService().getUser().getName());
-          if (event.getBlacklisted() == null)
+          }
+          if (event.getBlacklisted() == null) {
             event.setBlacklisted(false);
-          if (event.getOptedOut() == null)
+          }
+          if (event.getOptedOut() == null) {
             event.setOptedOut(false);
+          }
 
-          if (dc != null)
+          if (dc != null) {
             EventIndexUtils.updateEvent(event, dc);
+          }
         } catch (SearchIndexException e) {
           logger.error("Error retrieving the recording event from the search index: {}", getStackTrace(e));
           return;
@@ -176,8 +180,9 @@ public class SchedulerMessageReceiverImpl extends BaseMessageReceiverImpl<Schedu
           event = EventIndexUtils.getOrCreateEvent(schedulerItem.getMediaPackageId(), organization, user,
                   getSearchIndex());
           event.setReviewStatus(schedulerItem.getReviewStatus());
-          if (schedulerItem.getReviewDate() != null)
+          if (schedulerItem.getReviewDate() != null) {
             event.setReviewDate(DateTimeSupport.toUTC(schedulerItem.getReviewDate().getTime()));
+          }
         } catch (SearchIndexException e) {
           logger.error("Error retrieving the recording event from the search index: {}", getStackTrace(e));
           return;

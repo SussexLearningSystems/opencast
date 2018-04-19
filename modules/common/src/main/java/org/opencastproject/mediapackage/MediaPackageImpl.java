@@ -210,8 +210,9 @@ public final class MediaPackageImpl implements MediaPackage {
     if (duration == null && hasTracks()) {
       for (Track t : getTracks()) {
         if (t.getDuration() != null) {
-          if (duration == null || duration < t.getDuration())
+          if (duration == null || duration < t.getDuration()) {
             duration = t.getDuration();
+          }
         }
       }
     }
@@ -225,9 +226,10 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void setDuration(Long duration) throws IllegalStateException {
-    if (hasTracks())
+    if (hasTracks()) {
       throw new IllegalStateException(
               "The duration is determined by the length of the tracks and cannot be set manually");
+    }
     this.duration = duration;
   }
 
@@ -248,8 +250,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @XmlAttribute(name = "start")
   public String getStartDateAsString() {
-    if (startTime == 0)
+    if (startTime == 0) {
       return null;
+    }
     return DateTimeSupport.toUTC(startTime);
   }
 
@@ -299,10 +302,12 @@ public final class MediaPackageImpl implements MediaPackage {
   @Override
   public MediaPackageElement getElementByReference(MediaPackageReference reference) {
     for (MediaPackageElement e : this.elements) {
-      if (!reference.getType().equalsIgnoreCase(e.getElementType().toString()))
+      if (!reference.getType().equalsIgnoreCase(e.getElementType().toString())) {
         continue;
-      if (reference.getIdentifier().equals(e.getIdentifier()))
+      }
+      if (reference.getIdentifier().equals(e.getIdentifier())) {
         return e;
+      }
     }
     return null;
   }
@@ -313,8 +318,9 @@ public final class MediaPackageImpl implements MediaPackage {
   @Override
   public MediaPackageElement getElementById(String id) {
     for (MediaPackageElement element : getElements()) {
-      if (id.equals(element.getIdentifier()))
+      if (id.equals(element.getIdentifier())) {
         return element;
+      }
     }
     return null;
   }
@@ -340,13 +346,15 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public MediaPackageElement[] getElementsByTags(Collection<String> tags) {
-    if (tags == null || tags.isEmpty())
+    if (tags == null || tags.isEmpty()) {
       return getElements();
+    }
     Set<String> keep = new HashSet<String>();
     Set<String> lose = new HashSet<String>();
     for (String tag : tags) {
-      if (StringUtils.isBlank(tag))
+      if (StringUtils.isBlank(tag)) {
         continue;
+      }
       if (tag.startsWith(NEGATE_TAG_PREFIX)) {
         lose.add(tag.substring(NEGATE_TAG_PREFIX.length()));
       } else {
@@ -429,13 +437,15 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public MediaPackageElement[] getElementsByFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor cannot be null");
+    }
 
     List<MediaPackageElement> elements = new ArrayList<MediaPackageElement>();
     for (MediaPackageElement element : getElements()) {
-      if (flavor.matches(element.getFlavor()))
+      if (flavor.matches(element.getFlavor())) {
         elements.add(element);
+      }
     }
     return elements.toArray(new MediaPackageElement[elements.size()]);
   }
@@ -445,8 +455,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public boolean contains(MediaPackageElement element) {
-    if (element == null)
+    if (element == null) {
       throw new IllegalArgumentException("Media package element must not be null");
+    }
     return (elements.contains(element));
   }
 
@@ -459,8 +470,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   boolean contains(String identifier) {
     for (MediaPackageElement element : getElements()) {
-      if (element.getIdentifier().equals(identifier))
+      if (element.getIdentifier().equals(identifier)) {
         return true;
+      }
     }
     return false;
   }
@@ -502,8 +514,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public Catalog getCatalog(String catalogId) {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e.getIdentifier().equals(catalogId) && e instanceof Catalog)
+        if (e.getIdentifier().equals(catalogId) && e instanceof Catalog) {
           return (Catalog) e;
+        }
       }
     }
     return null;
@@ -546,8 +559,9 @@ public final class MediaPackageImpl implements MediaPackage {
     List<Catalog> result = new ArrayList<Catalog>();
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Catalog && e.containsTag(tag))
+        if (e instanceof Catalog && e.containsTag(tag)) {
           result.add((Catalog) e);
+        }
       }
     }
     return result.toArray(new Catalog[result.size()]);
@@ -558,8 +572,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Catalog[] getCatalogs(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
+    }
 
     // Go through catalogs and remove those that don't match
     Collection<Catalog> catalogs = loadCatalogs();
@@ -588,8 +603,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Catalog[] getCatalogs(MediaPackageReference reference, boolean includeDerived) {
-    if (reference == null)
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through catalogs and remove those that don't match
     Collection<Catalog> catalogs = loadCatalogs();
@@ -611,8 +627,9 @@ public final class MediaPackageImpl implements MediaPackage {
           r = getElement(r).getReference();
         }
 
-        if (!indirectHit)
+        if (!indirectHit) {
           candidates.remove(c);
+        }
       }
     }
 
@@ -625,10 +642,12 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Catalog[] getCatalogs(MediaPackageElementFlavor flavor, MediaPackageReference reference) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
-    if (reference == null)
+    }
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through catalogs and remove those that don't match
     Collection<Catalog> catalogs = loadCatalogs();
@@ -648,8 +667,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public boolean hasCatalogs() {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Catalog)
+        if (e instanceof Catalog) {
           return true;
+        }
       }
     }
     return false;
@@ -664,8 +684,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public Track getTrack(String trackId) {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e.getIdentifier().equals(trackId) && e instanceof Track)
+        if (e.getIdentifier().equals(trackId) && e instanceof Track) {
           return (Track) e;
+        }
       }
     }
     return null;
@@ -710,8 +731,9 @@ public final class MediaPackageImpl implements MediaPackage {
     List<Track> result = new ArrayList<Track>();
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Track && e.containsTag(tag))
+        if (e instanceof Track && e.containsTag(tag)) {
           result.add((Track) e);
+        }
       }
     }
     return result.toArray(new Track[result.size()]);
@@ -724,8 +746,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Track[] getTracks(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
+    }
 
     // Go through tracks and remove those that don't match
     Collection<Track> tracks = loadTracks();
@@ -756,8 +779,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Track[] getTracks(MediaPackageReference reference, boolean includeDerived) {
-    if (reference == null)
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through tracks and remove those that don't match
     Collection<Track> tracks = loadTracks();
@@ -779,8 +803,9 @@ public final class MediaPackageImpl implements MediaPackage {
           r = getElement(r).getReference();
         }
 
-        if (!indirectHit)
+        if (!indirectHit) {
           candidates.remove(t);
+        }
       }
     }
 
@@ -795,10 +820,12 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Track[] getTracks(MediaPackageElementFlavor flavor, MediaPackageReference reference) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
-    if (reference == null)
+    }
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through tracks and remove those that don't match
     Collection<Track> tracks = loadTracks();
@@ -820,8 +847,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public boolean hasTracks() {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Track)
+        if (e instanceof Track) {
           return true;
+        }
       }
     }
     return false;
@@ -864,8 +892,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public boolean hasUnclassifiedElements(MediaPackageElementFlavor type) {
-    if (type == null)
+    if (type == null) {
       return others > 0;
+    }
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
         if (!(e instanceof Attachment) && !(e instanceof Catalog) && !(e instanceof Track)) {
@@ -909,8 +938,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public Attachment getAttachment(String attachmentId) {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e.getIdentifier().equals(attachmentId) && e instanceof Attachment)
+        if (e.getIdentifier().equals(attachmentId) && e instanceof Attachment) {
           return (Attachment) e;
+        }
       }
     }
     return null;
@@ -955,8 +985,9 @@ public final class MediaPackageImpl implements MediaPackage {
     List<Attachment> result = new ArrayList<Attachment>();
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Attachment && e.containsTag(tag))
+        if (e instanceof Attachment && e.containsTag(tag)) {
           result.add((Attachment) e);
+        }
       }
     }
     return result.toArray(new Attachment[result.size()]);
@@ -969,8 +1000,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Attachment[] getAttachments(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
+    }
 
     // Go through attachments and remove those that don't match
     Collection<Attachment> attachments = loadAttachments();
@@ -1001,8 +1033,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Attachment[] getAttachments(MediaPackageReference reference, boolean includeDerived) {
-    if (reference == null)
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through attachments and remove those that don't match
     Collection<Attachment> attachments = loadAttachments();
@@ -1024,8 +1057,9 @@ public final class MediaPackageImpl implements MediaPackage {
           r = getElement(r).getReference();
         }
 
-        if (!indirectHit)
+        if (!indirectHit) {
           candidates.remove(a);
+        }
       }
     }
     return candidates.toArray(new Attachment[candidates.size()]);
@@ -1039,10 +1073,12 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public Attachment[] getAttachments(MediaPackageElementFlavor flavor, MediaPackageReference reference) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Unable to filter by null criterion");
-    if (reference == null)
+    }
+    if (reference == null) {
       throw new IllegalArgumentException("Unable to filter by null reference");
+    }
 
     // Go through attachments and remove those that don't match
     Collection<Attachment> attachments = loadAttachments();
@@ -1064,8 +1100,9 @@ public final class MediaPackageImpl implements MediaPackage {
   public boolean hasAttachments() {
     synchronized (elements) {
       for (MediaPackageElement e : elements) {
-        if (e instanceof Attachment)
+        if (e instanceof Attachment) {
           return true;
+        }
       }
     }
     return false;
@@ -1106,8 +1143,9 @@ public final class MediaPackageImpl implements MediaPackage {
   @Override
   public MediaPackageElement removeElementById(String id) {
     MediaPackageElement element = getElementById(id);
-    if (element == null)
+    if (element == null) {
       return null;
+    }
     remove(element);
     return element;
   }
@@ -1184,8 +1222,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public MediaPackageElement add(URI url) {
-    if (url == null)
+    if (url == null) {
       throw new IllegalArgumentException("Argument 'url' may not be null");
+    }
 
     if (mediaPackageElementBuilder == null) {
       mediaPackageElementBuilder = MediaPackageElementBuilderFactory.newInstance().newElementBuilder();
@@ -1204,10 +1243,12 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public MediaPackageElement add(URI uri, Type type, MediaPackageElementFlavor flavor) {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument 'url' may not be null");
-    if (type == null)
+    }
+    if (type == null) {
       throw new IllegalArgumentException("Argument 'type' may not be null");
+    }
 
     if (mediaPackageElementBuilder == null) {
       mediaPackageElementBuilder = MediaPackageElementBuilderFactory.newInstance().newElementBuilder();
@@ -1259,12 +1300,15 @@ public final class MediaPackageImpl implements MediaPackage {
   @Override
   public void addDerived(MediaPackageElement derivedElement, MediaPackageElement sourceElement,
           Map<String, String> properties) {
-    if (derivedElement == null)
+    if (derivedElement == null) {
       throw new IllegalArgumentException("The derived element is null");
-    if (sourceElement == null)
+    }
+    if (sourceElement == null) {
       throw new IllegalArgumentException("The source element is null");
-    if (!contains(sourceElement))
+    }
+    if (!contains(sourceElement)) {
       throw new IllegalStateException("The sourceElement needs to be part of the media package");
+    }
 
     derivedElement.referTo(sourceElement);
     addInternal(derivedElement);
@@ -1285,16 +1329,19 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public MediaPackageElement[] getDerived(MediaPackageElement sourceElement, MediaPackageElementFlavor derivateFlavor) {
-    if (sourceElement == null)
+    if (sourceElement == null) {
       throw new IllegalArgumentException("Source element cannot be null");
-    if (derivateFlavor == null)
+    }
+    if (derivateFlavor == null) {
       throw new IllegalArgumentException("Derivate flavor cannot be null");
+    }
 
     MediaPackageReference reference = new MediaPackageReferenceImpl(sourceElement);
     List<MediaPackageElement> elements = new ArrayList<MediaPackageElement>();
     for (MediaPackageElement element : getElements()) {
-      if (derivateFlavor.equals(element.getFlavor()) && reference.equals(element.getReference()))
+      if (derivateFlavor.equals(element.getFlavor()) && reference.equals(element.getReference())) {
         elements.add(element);
+      }
     }
     return elements.toArray(new MediaPackageElement[elements.size()]);
   }
@@ -1351,8 +1398,9 @@ public final class MediaPackageImpl implements MediaPackage {
    *          the element to integrate
    */
   private void integrate(MediaPackageElement element) {
-    if (element instanceof AbstractMediaPackageElement)
+    if (element instanceof AbstractMediaPackageElement) {
       ((AbstractMediaPackageElement) element).setMediaPackage(this);
+    }
   }
 
   /**
@@ -1483,10 +1531,11 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public String toString() {
-    if (identifier != null)
+    if (identifier != null) {
       return identifier.toString();
-    else
+    } else {
       return "Unknown media package";
+    }
   }
 
   /**
@@ -1559,8 +1608,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public String[] getContributors() {
-    if (contributors == null)
+    if (contributors == null) {
       return new String[] {};
+    }
     return contributors.toArray(new String[contributors.size()]);
   }
 
@@ -1571,8 +1621,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public String[] getCreators() {
-    if (creators == null)
+    if (creators == null) {
       return new String[] {};
+    }
     return creators.toArray(new String[creators.size()]);
   }
 
@@ -1613,8 +1664,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public String[] getSubjects() {
-    if (subjects == null)
+    if (subjects == null) {
       return new String[] {};
+    }
     return subjects.toArray(new String[subjects.size()]);
   }
 
@@ -1655,8 +1707,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void addContributor(String contributor) {
-    if (contributors == null)
+    if (contributors == null) {
       contributors = new TreeSet<String>();
+    }
     contributors.add(contributor);
   }
 
@@ -1667,8 +1720,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void addCreator(String creator) {
-    if (creators == null)
+    if (creators == null) {
       creators = new TreeSet<String>();
+    }
     creators.add(creator);
   }
 
@@ -1679,8 +1733,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void addSubject(String subject) {
-    if (subjects == null)
+    if (subjects == null) {
       subjects = new TreeSet<String>();
+    }
     subjects.add(subject);
   }
 
@@ -1691,8 +1746,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void removeContributor(String contributor) {
-    if (contributors != null)
+    if (contributors != null) {
       contributors.remove(contributor);
+    }
   }
 
   /**
@@ -1702,8 +1758,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void removeCreator(String creator) {
-    if (creators != null)
+    if (creators != null) {
       creators.remove(creator);
+    }
   }
 
   /**
@@ -1713,8 +1770,9 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void removeSubject(String subject) {
-    if (subjects != null)
+    if (subjects != null) {
       subjects.remove(subject);
+    }
   }
 
   /**
@@ -1724,10 +1782,11 @@ public final class MediaPackageImpl implements MediaPackage {
    */
   @Override
   public void setDate(Date date) {
-    if (date != null)
+    if (date != null) {
       this.startTime = date.getTime();
-    else
+    } else {
       this.startTime = 0;
+    }
   }
 
   /**
@@ -1778,11 +1837,13 @@ public final class MediaPackageImpl implements MediaPackage {
    * @return the element
    */
   MediaPackageElement getElement(MediaPackageReference reference) {
-    if (reference == null)
+    if (reference == null) {
       return null;
+    }
     for (MediaPackageElement e : elements) {
-      if (e.getIdentifier().equals(reference.getIdentifier()))
+      if (e.getIdentifier().equals(reference.getIdentifier())) {
         return e;
+      }
     }
     return null;
   }
@@ -1794,8 +1855,9 @@ public final class MediaPackageImpl implements MediaPackage {
    *          the new element
    */
   void addInternal(MediaPackageElement element) {
-    if (element == null)
+    if (element == null) {
       throw new IllegalArgumentException("Media package element must not be null");
+    }
     String id = null;
     if (elements.add(element)) {
       if (element instanceof Track) {
@@ -1808,8 +1870,9 @@ public final class MediaPackageImpl implements MediaPackage {
         // +
         // " instead of " + this.duration +")");
         // else
-        if (this.duration == null)
+        if (this.duration == null) {
           this.duration = duration;
+        }
       } else if (element instanceof Attachment) {
         attachments++;
         id = "attachment-" + attachments;
@@ -1826,8 +1889,9 @@ public final class MediaPackageImpl implements MediaPackage {
     if (element.getIdentifier() == null) {
       if (element instanceof AbstractMediaPackageElement) {
         element.setIdentifier(id);
-      } else
+      } else {
         throw new UnsupportedElementException(element, "Found unkown element without id");
+      }
     }
   }
 
@@ -1838,19 +1902,22 @@ public final class MediaPackageImpl implements MediaPackage {
    *          the element to remove
    */
   void removeInternal(MediaPackageElement element) {
-    if (element == null)
+    if (element == null) {
       throw new IllegalArgumentException("Media package element must not be null");
+    }
     if (elements.remove(element)) {
       if (element instanceof Track) {
         tracks--;
-        if (tracks == 0)
+        if (tracks == 0) {
           duration = null;
-      } else if (element instanceof Attachment)
+        }
+      } else if (element instanceof Attachment) {
         attachments--;
-      else if (element instanceof Catalog)
+      } else if (element instanceof Catalog) {
         catalogs--;
-      else
+      } else {
         others--;
+      }
     }
   }
 

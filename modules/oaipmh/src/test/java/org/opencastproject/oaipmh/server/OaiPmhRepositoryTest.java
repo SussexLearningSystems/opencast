@@ -349,18 +349,24 @@ public class OaiPmhRepositoryTest {
                                final String from, final String until, final String resumptionToken) {
     return new Params() {
       @Override String getParameter(String key) {
-        if ("verb".equals(key))
+        if ("verb".equals(key)) {
           return verb;
-        if ("identifier".equals(key))
+        }
+        if ("identifier".equals(key)) {
           return identifier;
-        if ("metadataPrefix".equals(key))
+        }
+        if ("metadataPrefix".equals(key)) {
           return metadataPrefix;
-        if ("from".equals(key))
+        }
+        if ("from".equals(key)) {
           return from;
-        if ("until".equals(key))
+        }
+        if ("until".equals(key)) {
           return until;
-        if ("resumptionToken".equals(key))
+        }
+        if ("resumptionToken".equals(key)) {
           return resumptionToken;
+        }
         return null;
       }
 

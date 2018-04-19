@@ -200,10 +200,12 @@ public class Person implements Blacklistable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     Person person = (Person) o;
     return name.equals(person.getName()) && email.equals(person.getEmail())
             && personTypes.equals(person.getPersonTypes());

@@ -278,15 +278,17 @@ public abstract class AbstractEventEndpoint {
   public void activate(ComponentContext cc) {
     if (cc != null) {
       String ccServerUrl = cc.getBundleContext().getProperty(OpencastConstants.SERVER_URL_PROPERTY);
-      if (StringUtils.isNotBlank(ccServerUrl))
+      if (StringUtils.isNotBlank(ccServerUrl)) {
         this.serverUrl = ccServerUrl;
+      }
 
       this.serviceUrl = (String) cc.getProperties().get(RestConstants.SERVICE_PATH_PROPERTY);
 
       String ccDefaultWorkflowDefinionId = StringUtils.trimToNull(cc.getBundleContext().getProperty(WORKFLOW_DEFINITION_DEFAULT));
 
-      if (StringUtils.isNotBlank(ccDefaultWorkflowDefinionId))
+      if (StringUtils.isNotBlank(ccDefaultWorkflowDefinionId)) {
         this.defaultWorkflowDefinionId = ccDefaultWorkflowDefinionId;
+      }
     }
 
   }
@@ -332,8 +334,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(responseCode = HttpServletResponse.SC_UNAUTHORIZED, description = "If the current user is not authorized to perform this action") })
   public Response deleteEvent(@PathParam("eventId") String id) throws NotFoundException, UnauthorizedException {
     try {
-      if (!getIndexService().removeEvent(id))
+      if (!getIndexService().removeEvent(id)) {
         return Response.serverError().build();
+      }
     } catch (NotFoundException e) {
       // If we couldn't find any trace of the event in the underlying database(s), we can get rid of it
       // entirely in the index.
@@ -408,8 +411,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getEventGeneralTab(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
 
     // Quick actions have been temporally removed from the general tab
     // ---------------------------------------------------------------
@@ -453,8 +457,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventScheduling(@PathParam("eventId") String eventId)
           throws NotFoundException, UnauthorizedException, SearchIndexException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       TechnicalMetadata technicalMetadata = getSchedulerService().getTechnicalMetadata(eventId);
@@ -476,8 +481,9 @@ public abstract class AbstractEventEndpoint {
   public Response updateEventScheduling(@PathParam("eventId") String eventId,
           @FormParam("scheduling") String scheduling)
           throws NotFoundException, UnauthorizedException, SearchIndexException {
-    if (StringUtils.isBlank(scheduling))
+    if (StringUtils.isBlank(scheduling)) {
       return RestUtil.R.badRequest("Missing parameters");
+    }
 
     try {
       final Event event = getEventOrThrowNotFoundException(eventId);
@@ -521,12 +527,14 @@ public abstract class AbstractEventEndpoint {
                 eventId, event.getOptedOut(), optOut);
       }
 
-      if (start.isNone() && end.isNone() && agentId.isNone() && agentConfiguration.isNone() && optOut.isNone())
+      if (start.isNone() && end.isNone() && agentId.isNone() && agentConfiguration.isNone() && optOut.isNone()) {
         return Response.noContent().build();
+      }
 
       if ((start.isSome() || end.isSome())
-              && end.getOr(technicalMetadata.getEndDate()).before(start.getOr(technicalMetadata.getStartDate())))
+              && end.getOr(technicalMetadata.getEndDate()).before(start.getOr(technicalMetadata.getStartDate()))) {
         return RestUtil.R.badRequest("The end date is before the start date");
+      }
 
       getSchedulerService().updateEvent(eventId, start, end, agentId, Opt.<Set<String>> none(),
               Opt.<MediaPackage> none(), Opt.<Map<String, String>> none(), agentConfiguration, optOut,
@@ -561,8 +569,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getEventComments(@PathParam("eventId") String eventId) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       List<EventComment> comments = getEventCommentService().getComments(eventId);
@@ -587,8 +596,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response hasActiveTransaction(@PathParam("eventId") String eventId) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     JSONObject json = new JSONObject();
 
@@ -612,8 +622,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventComment(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId)
           throws NotFoundException, Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       EventComment comment = getEventCommentService().getComment(commentId);
@@ -640,8 +651,9 @@ public abstract class AbstractEventEndpoint {
           @FormParam("text") String text, @FormParam("reason") String reason, @FormParam("resolved") Boolean resolved)
                   throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       EventComment dto = getEventCommentService().getComment(commentId);
@@ -658,8 +670,9 @@ public abstract class AbstractEventEndpoint {
         reason = dto.getReason();
       }
 
-      if (resolved == null)
+      if (resolved == null) {
         resolved = dto.isResolvedStatus();
+      }
 
       EventComment updatedComment = EventComment.create(dto.getId(), eventId,
               getSecurityService().getOrganization().getId(), text, dto.getAuthor(), reason, resolved,
@@ -751,11 +764,13 @@ public abstract class AbstractEventEndpoint {
   public Response createEventComment(@PathParam("eventId") String eventId, @FormParam("text") String text,
           @FormParam("reason") String reason, @FormParam("resolved") Boolean resolved) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
-    if (StringUtils.isBlank(text))
+    if (StringUtils.isBlank(text)) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
 
     User author = getSecurityService().getUser();
     try {
@@ -782,8 +797,9 @@ public abstract class AbstractEventEndpoint {
   public Response resolveEventComment(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId)
           throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       EventComment dto = getEventCommentService().getComment(commentId);
@@ -814,8 +830,9 @@ public abstract class AbstractEventEndpoint {
   public Response deleteEventComment(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId)
           throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       getEventCommentService().deleteComment(commentId);
@@ -842,22 +859,25 @@ public abstract class AbstractEventEndpoint {
   public Response deleteEventCommentReply(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId,
           @PathParam("replyId") long replyId) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     EventComment comment = null;
     EventCommentReply reply = null;
     try {
       comment = getEventCommentService().getComment(commentId);
       for (EventCommentReply r : comment.getReplies()) {
-        if (r.getId().isNone() || replyId != r.getId().get().longValue())
+        if (r.getId().isNone() || replyId != r.getId().get().longValue()) {
           continue;
+        }
         reply = r;
         break;
       }
 
-      if (reply == null)
+      if (reply == null) {
         throw new NotFoundException("Reply with id " + replyId + " not found!");
+      }
 
       comment.removeReply(reply);
 
@@ -886,26 +906,30 @@ public abstract class AbstractEventEndpoint {
                           @RestResponse(responseCode = SC_OK, description = "The updated comment as JSON.") })
   public Response updateEventCommentReply(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId,
           @PathParam("replyId") long replyId, @FormParam("text") String text) throws Exception {
-    if (StringUtils.isBlank(text))
+    if (StringUtils.isBlank(text)) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
 
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     EventComment comment = null;
     EventCommentReply reply = null;
     try {
       comment = getEventCommentService().getComment(commentId);
       for (EventCommentReply r : comment.getReplies()) {
-        if (r.getId().isNone() || replyId != r.getId().get().longValue())
+        if (r.getId().isNone() || replyId != r.getId().get().longValue()) {
           continue;
+        }
         reply = r;
         break;
       }
 
-      if (reply == null)
+      if (reply == null) {
         throw new NotFoundException("Reply with id " + replyId + " not found!");
+      }
 
       EventCommentReply updatedReply = EventCommentReply.create(reply.getId(), text.trim(), reply.getAuthor(),
               reply.getCreationDate(), new Date());
@@ -937,12 +961,14 @@ public abstract class AbstractEventEndpoint {
                           @RestResponse(responseCode = SC_OK, description = "The updated comment as JSON.") })
   public Response createEventCommentReply(@PathParam("eventId") String eventId, @PathParam("commentId") long commentId,
           @FormParam("text") String text, @FormParam("resolved") Boolean resolved) throws Exception {
-    if (StringUtils.isBlank(text))
+    if (StringUtils.isBlank(text)) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
 
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     EventComment comment = null;
     try {
@@ -1006,8 +1032,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getEventMetadata(@PathParam("eventId") String eventId) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     MetadataList metadataList = new MetadataList();
     List<EventCatalogUIAdapter> catalogUIAdapters = getIndexService().getEventCatalogUIAdapters();
@@ -1020,8 +1047,9 @@ public abstract class AbstractEventEndpoint {
             EventUtils.getEventMetadata(optEvent.get(), getIndexService().getCommonEventCatalogUIAdapter()));
 
     final String wfState = optEvent.get().getWorkflowState();
-    if (wfState != null && WorkflowUtil.isActive(WorkflowInstance.WorkflowState.valueOf(wfState)))
+    if (wfState != null && WorkflowUtil.isActive(WorkflowInstance.WorkflowState.valueOf(wfState))) {
       metadataList.setLocked(Locked.WORKFLOW_RUNNING);
+    }
 
     return okJson(metadataList.toJSON());
   }
@@ -1037,8 +1065,9 @@ public abstract class AbstractEventEndpoint {
   public Response updateEventMetadata(@PathParam("eventId") String id, @FormParam("metadata") String metadataJSON)
           throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
 
     try {
       MetadataList metadataList = getIndexService().updateAllEventMetadata(id, metadataJSON, getIndex());
@@ -1056,8 +1085,9 @@ public abstract class AbstractEventEndpoint {
           @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getAssetList(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
     MediaPackage mp = getIndexService().getEventMediapackage(optEvent.get());
     int attachments = mp.getAttachments().length;
     int catalogs = mp.getCatalogs().length;
@@ -1075,8 +1105,9 @@ public abstract class AbstractEventEndpoint {
           @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getAttachmentsList(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
     MediaPackage mp = getIndexService().getEventMediapackage(optEvent.get());
     return okJson(arr(getEventMediaPackageElements(mp.getAttachments())));
   }
@@ -1094,8 +1125,9 @@ public abstract class AbstractEventEndpoint {
     MediaPackage mp = getMediaPackageByEventId(eventId);
 
     Attachment attachment = mp.getAttachment(id);
-    if (attachment == null)
+    if (attachment == null) {
       return notFound("Cannot find an attachment with id '%s'.", id);
+    }
     return okJson(attachmentToJSON(attachment));
   }
 
@@ -1107,8 +1139,9 @@ public abstract class AbstractEventEndpoint {
           @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getCatalogList(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
     MediaPackage mp = getIndexService().getEventMediapackage(optEvent.get());
     return okJson(arr(getEventMediaPackageElements(mp.getCatalogs())));
   }
@@ -1126,8 +1159,9 @@ public abstract class AbstractEventEndpoint {
     MediaPackage mp = getMediaPackageByEventId(eventId);
 
     Catalog catalog = mp.getCatalog(id);
-    if (catalog == null)
+    if (catalog == null) {
       return notFound("Cannot find a catalog with id '%s'.", id);
+    }
     return okJson(catalogToJSON(catalog));
   }
 
@@ -1139,8 +1173,9 @@ public abstract class AbstractEventEndpoint {
           @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getMediaList(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
     MediaPackage mp = getIndexService().getEventMediapackage(optEvent.get());
     return okJson(arr(getEventMediaPackageElements(mp.getTracks())));
   }
@@ -1158,8 +1193,9 @@ public abstract class AbstractEventEndpoint {
     MediaPackage mp = getMediaPackageByEventId(eventId);
 
     Track track = mp.getTrack(id);
-    if (track == null)
+    if (track == null) {
       return notFound("Cannot find media with id '%s'.", id);
+    }
     return okJson(trackToJSON(track));
   }
 
@@ -1171,8 +1207,9 @@ public abstract class AbstractEventEndpoint {
           @RestResponse(description = "No event with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getPublicationList(@PathParam("eventId") String id) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
     MediaPackage mp = getIndexService().getEventMediapackage(optEvent.get());
     return okJson(arr(getEventPublications(mp.getPublications())));
   }
@@ -1197,8 +1234,9 @@ public abstract class AbstractEventEndpoint {
       }
     }
 
-    if (publication == null)
+    if (publication == null) {
       return notFound("Cannot find publication with id '%s'.", id);
+    }
     return okJson(publicationToJSON(publication));
   }
 
@@ -1212,8 +1250,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventWorkflows(@PathParam("eventId") String id)
           throws UnauthorizedException, SearchIndexException, JobEndpointException {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
 
     try {
       if (!optEvent.get().hasRecordingStarted()) {
@@ -1247,8 +1286,9 @@ public abstract class AbstractEventEndpoint {
   public Response updateEventWorkflow(@PathParam("eventId") String id, @FormParam("configuration") String configuration)
           throws SearchIndexException, UnauthorizedException {
     Opt<Event> optEvent = getIndexService().getEvent(id, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", id);
+    }
 
     if (!optEvent.get().hasRecordingStarted()) {
       try {
@@ -1273,11 +1313,13 @@ public abstract class AbstractEventEndpoint {
 
         Map<String, String> workflowConfig = new HashMap<>((JSONObject) configJSON.get("configuration"));
         Map<String, String> oldWorkflowConfig = new HashMap<>(getSchedulerService().getWorkflowConfig(id));
-        if (!oldWorkflowConfig.equals(workflowConfig))
+        if (!oldWorkflowConfig.equals(workflowConfig)) {
           workflowConfigOpt = Opt.some(workflowConfig);
+        }
 
-        if (caMetadataOpt.isNone() && workflowConfigOpt.isNone())
+        if (caMetadataOpt.isNone() && workflowConfigOpt.isNone()) {
           return Response.noContent().build();
+        }
 
         getSchedulerService().updateEvent(id, Opt.<Date> none(), Opt.<Date> none(), Opt.<String> none(),
                 Opt.<Set<String>> none(), Opt.<MediaPackage> none(), workflowConfigOpt, caMetadataOpt,
@@ -1306,8 +1348,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventWorkflow(@PathParam("eventId") String eventId, @PathParam("workflowId") String workflowId)
           throws JobEndpointException, SearchIndexException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     long workflowInstanceId;
     try {
@@ -1337,8 +1380,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventOperations(@PathParam("eventId") String eventId, @PathParam("workflowId") String workflowId)
           throws JobEndpointException, SearchIndexException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     long workflowInstanceId;
     try {
@@ -1368,8 +1412,9 @@ public abstract class AbstractEventEndpoint {
   public Response getEventOperation(@PathParam("eventId") String eventId, @PathParam("workflowId") String workflowId,
           @PathParam("operationPosition") Integer operationPosition) throws JobEndpointException, SearchIndexException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     long workflowInstanceId;
     try {
@@ -1463,8 +1508,9 @@ public abstract class AbstractEventEndpoint {
                   @RestResponse(responseCode = SC_OK, description = "The access information ") })
   public Response getEventAccessInformation(@PathParam("eventId") String eventId) throws Exception {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     // Add all available ACLs to the response
     JSONArray systemAclsJson = new JSONArray();
@@ -1491,8 +1537,9 @@ public abstract class AbstractEventEndpoint {
 
     AccessControlList activeAcl = new AccessControlList();
     try {
-      if (optEvent.get().getAccessPolicy() != null)
+      if (optEvent.get().getAccessPolicy() != null) {
         activeAcl = AccessControlParser.parseAcl(optEvent.get().getAccessPolicy());
+      }
     } catch (Exception e) {
       logger.error("Unable to parse access policy because: {}", ExceptionUtils.getStackTrace(e));
     }
@@ -1504,8 +1551,9 @@ public abstract class AbstractEventEndpoint {
     episodeAccessJson.put("privileges", AccessInformationUtil.serializePrivilegesByRole(activeAcl));
     episodeAccessJson.put("transitions", transitionsJson);
     if (StringUtils.isNotBlank(optEvent.get().getWorkflowState())
-            && WorkflowUtil.isActive(WorkflowInstance.WorkflowState.valueOf(optEvent.get().getWorkflowState())))
+            && WorkflowUtil.isActive(WorkflowInstance.WorkflowState.valueOf(optEvent.get().getWorkflowState()))) {
       episodeAccessJson.put("locked", true);
+    }
 
     JSONObject jsonReturnObj = new JSONObject();
     jsonReturnObj.put("episode_access", episodeAccessJson);
@@ -1524,26 +1572,30 @@ public abstract class AbstractEventEndpoint {
                           @RestResponse(responseCode = SC_NOT_FOUND, description = "If the event has not been found.") })
   public Response addEventTransition(@PathParam("eventId") String eventId,
           @FormParam("transition") String transitionStr) throws SearchIndexException {
-    if (StringUtils.isBlank(eventId) || StringUtils.isBlank(transitionStr))
+    if (StringUtils.isBlank(eventId) || StringUtils.isBlank(transitionStr)) {
       return RestUtil.R.badRequest("Missing parameters");
+    }
 
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       final org.codehaus.jettison.json.JSONObject t = new org.codehaus.jettison.json.JSONObject(transitionStr);
       Option<ConfiguredWorkflowRef> workflowRef;
-      if (t.has("workflow_id"))
+      if (t.has("workflow_id")) {
         workflowRef = Option.some(ConfiguredWorkflowRef.workflow(t.getString("workflow_id")));
-      else
+      } else {
         workflowRef = Option.none();
+      }
 
       Option<Long> managedAclId;
-      if (t.has("acl_id"))
+      if (t.has("acl_id")) {
         managedAclId = Option.some(t.getLong("acl_id"));
-      else
+      } else {
         managedAclId = Option.none();
+      }
 
       getAclService().addEpisodeTransition(eventId, managedAclId,
               new Date(DateTimeSupport.fromUTC(t.getString("application_date"))), workflowRef);
@@ -1573,26 +1625,30 @@ public abstract class AbstractEventEndpoint {
   public Response updateEventTransition(@PathParam("eventId") String eventId,
           @PathParam("transitionId") long transitionId, @FormParam("transition") String transitionStr)
                   throws NotFoundException, SearchIndexException {
-    if (StringUtils.isBlank(transitionStr))
+    if (StringUtils.isBlank(transitionStr)) {
       return RestUtil.R.badRequest("Missing parameters");
+    }
 
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       final org.codehaus.jettison.json.JSONObject t = new org.codehaus.jettison.json.JSONObject(transitionStr);
       Option<ConfiguredWorkflowRef> workflowRef;
-      if (t.has("workflow_id"))
+      if (t.has("workflow_id")) {
         workflowRef = Option.some(ConfiguredWorkflowRef.workflow(t.getString("workflow_id")));
-      else
+      } else {
         workflowRef = Option.none();
+      }
 
       Option<Long> managedAclId;
-      if (t.has("acl_id"))
+      if (t.has("acl_id")) {
         managedAclId = Option.some(t.getLong("acl_id"));
-      else
+      } else {
         managedAclId = Option.none();
+      }
 
       getAclService().updateEpisodeTransition(transitionId, managedAclId,
               new Date(DateTimeSupport.fromUTC(t.getString("application_date"))), workflowRef);
@@ -1716,8 +1772,9 @@ public abstract class AbstractEventEndpoint {
   public Response deleteEventTransition(@PathParam("eventId") String eventId,
           @PathParam("transitionId") long transitionId) throws NotFoundException, SearchIndexException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       return notFound("Cannot find an event with id '%s'.", eventId);
+    }
 
     try {
       getAclService().deleteEpisodeTransition(transitionId);
@@ -1739,20 +1796,27 @@ public abstract class AbstractEventEndpoint {
             .getMetadataByAdapter(getIndexService().getCommonEventCatalogUIAdapter());
     if (optMetadataByAdapter.isSome()) {
       MetadataCollection collection = optMetadataByAdapter.get();
-      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_CREATED.getLocalName()))
+      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_CREATED.getLocalName())) {
         collection.removeField(collection.getOutputFields().get(DublinCore.PROPERTY_CREATED.getLocalName()));
-      if (collection.getOutputFields().containsKey("duration"))
+      }
+      if (collection.getOutputFields().containsKey("duration")) {
         collection.removeField(collection.getOutputFields().get("duration"));
-      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_IDENTIFIER.getLocalName()))
+      }
+      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_IDENTIFIER.getLocalName())) {
         collection.removeField(collection.getOutputFields().get(DublinCore.PROPERTY_IDENTIFIER.getLocalName()));
-      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_SOURCE.getLocalName()))
+      }
+      if (collection.getOutputFields().containsKey(DublinCore.PROPERTY_SOURCE.getLocalName())) {
         collection.removeField(collection.getOutputFields().get(DublinCore.PROPERTY_SOURCE.getLocalName()));
-      if (collection.getOutputFields().containsKey("startDate"))
+      }
+      if (collection.getOutputFields().containsKey("startDate")) {
         collection.removeField(collection.getOutputFields().get("startDate"));
-      if (collection.getOutputFields().containsKey("startTime"))
+      }
+      if (collection.getOutputFields().containsKey("startTime")) {
         collection.removeField(collection.getOutputFields().get("startTime"));
-      if (collection.getOutputFields().containsKey("location"))
+      }
+      if (collection.getOutputFields().containsKey("location")) {
         collection.removeField(collection.getOutputFields().get("location"));
+      }
       metadataList.add(getIndexService().getCommonEventCatalogUIAdapter(), collection);
     }
     return okJson(metadataList.toJSON());
@@ -1888,8 +1952,9 @@ public abstract class AbstractEventEndpoint {
           Opt<Event> eventOpt = getIndexService().getEvent(event.getIdentifier().compact(), getIndex());
           if (eventOpt.isSome()) {
             final Event e = eventOpt.get();
-            if (StringUtils.isNotEmpty(eventId) && eventId.equals(e.getIdentifier()))
+            if (StringUtils.isNotEmpty(eventId) && eventId.equals(e.getIdentifier())) {
               continue;
+            }
             eventsJSON.add(obj(f("start", v(e.getTechnicalStartTime())), f("end", v(e.getTechnicalEndTime())),
                     f("title", v(e.getTitle()))));
           } else {
@@ -1897,8 +1962,9 @@ public abstract class AbstractEventEndpoint {
                     event.getIdentifier().compact());
           }
         }
-        if (!eventsJSON.isEmpty())
+        if (!eventsJSON.isEmpty()) {
           return conflictJson(arr(eventsJSON));
+        }
       }
       return Response.noContent().build();
     } catch (Exception e) {
@@ -1953,26 +2019,36 @@ public abstract class AbstractEventEndpoint {
 
     Map<String, String> filters = RestUtils.parseFilter(filter);
     for (String name : filters.keySet()) {
-      if (EventListQuery.FILTER_PRESENTERS_BIBLIOGRAPHIC_NAME.equals(name))
+      if (EventListQuery.FILTER_PRESENTERS_BIBLIOGRAPHIC_NAME.equals(name)) {
         query.withPresenter(filters.get(name));
-      if (EventListQuery.FILTER_PRESENTERS_TECHNICAL_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_PRESENTERS_TECHNICAL_NAME.equals(name)) {
         query.withTechnicalPresenters(filters.get(name));
-      if (EventListQuery.FILTER_CONTRIBUTORS_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_CONTRIBUTORS_NAME.equals(name)) {
         query.withContributor(filters.get(name));
-      if (EventListQuery.FILTER_LOCATION_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_LOCATION_NAME.equals(name)) {
         query.withLocation(filters.get(name));
-      if (EventListQuery.FILTER_AGENT_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_AGENT_NAME.equals(name)) {
         query.withAgentId(filters.get(name));
-      if (EventListQuery.FILTER_TEXT_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_TEXT_NAME.equals(name)) {
         query.withText(QueryPreprocessor.sanitize(filters.get(name)));
-      if (EventListQuery.FILTER_SERIES_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_SERIES_NAME.equals(name)) {
         query.withSeriesId(filters.get(name));
-      if (EventListQuery.FILTER_STATUS_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_STATUS_NAME.equals(name)) {
         query.withEventStatus(filters.get(name));
-      if (EventListQuery.FILTER_OPTEDOUT_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_OPTEDOUT_NAME.equals(name)) {
         query.withOptedOut(Boolean.parseBoolean(filters.get(name)));
-      if (EventListQuery.FILTER_REVIEW_STATUS_NAME.equals(name))
+      }
+      if (EventListQuery.FILTER_REVIEW_STATUS_NAME.equals(name)) {
         query.withReviewStatus(filters.get(name));
+      }
       if (EventListQuery.FILTER_COMMENTS_NAME.equals(name)) {
         switch (Comments.valueOf(filters.get(name))) {
           case NONE:
@@ -2054,11 +2130,14 @@ public abstract class AbstractEventEndpoint {
       }
     }
 
-    if (optLimit.isSome())
+    if (optLimit.isSome()) {
       query.withLimit(optLimit.get());
+    }
     if (optOffset.isSome())
+     {
       query.withOffset(offset);
     // TODO: Add other filters to the query
+    }
 
     SearchResult<Event> results = null;
     try {
@@ -2088,8 +2167,9 @@ public abstract class AbstractEventEndpoint {
   private MediaPackage getMediaPackageByEventId(String eventId)
           throws SearchIndexException, NotFoundException, IndexServiceException {
     Opt<Event> optEvent = getIndexService().getEvent(eventId, getIndex());
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       throw new NotFoundException(format("Cannot find an event with id '%s'.", eventId));
+    }
     return getIndexService().getEventMediapackage(optEvent.get());
   }
 

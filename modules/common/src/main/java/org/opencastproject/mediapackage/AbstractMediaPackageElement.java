@@ -161,8 +161,9 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   protected AbstractMediaPackageElement(String id, Type elementType, MediaPackageElementFlavor flavor, URI uri,
           Long size, Checksum checksum, MimeType mimeType) {
-    if (elementType == null)
+    if (elementType == null) {
       throw new IllegalArgumentException("Argument 'elementType' is null");
+    }
     this.id = id;
     this.elementType = elementType;
     this.flavor = flavor;
@@ -194,8 +195,9 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public void addTag(String tag) {
-    if (tag == null)
+    if (tag == null) {
       throw new IllegalArgumentException("Tag must not be null");
+    }
     tags.add(tag);
   }
 
@@ -204,8 +206,9 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public void removeTag(String tag) {
-    if (tag == null)
+    if (tag == null) {
       return;
+    }
     tags.remove(tag);
   }
 
@@ -214,8 +217,9 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public boolean containsTag(String tag) {
-    if (tag == null || tags == null)
+    if (tag == null || tags == null) {
       return false;
+    }
     return tags.contains(tag);
   }
 
@@ -224,11 +228,13 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public boolean containsTag(Collection<String> tags) {
-    if (tags == null || tags.size() == 0)
+    if (tags == null || tags.size() == 0) {
       return true;
+    }
     for (String tag : tags) {
-      if (containsTag(tag))
+      if (containsTag(tag)) {
         return true;
+      }
     }
     return false;
   }
@@ -246,8 +252,9 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public void clearTags() {
-    if (tags != null)
+    if (tags != null) {
       tags.clear();
+    }
   }
 
   /**
@@ -450,15 +457,19 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof MediaPackageElement))
+    if (!(obj instanceof MediaPackageElement)) {
       return false;
+    }
     MediaPackageElement e = (MediaPackageElement) obj;
-    if (mediaPackage != null && e.getMediaPackage() != null && !mediaPackage.equals(e.getMediaPackage()))
+    if (mediaPackage != null && e.getMediaPackage() != null && !mediaPackage.equals(e.getMediaPackage())) {
       return false;
-    if (id != null && !id.equals(e.getIdentifier()))
+    }
+    if (id != null && !id.equals(e.getIdentifier())) {
       return false;
-    if (uri != null && !uri.equals(e.getURI()))
+    }
+    if (uri != null && !uri.equals(e.getURI())) {
       return false;
+    }
     return true;
   }
 
@@ -482,17 +493,21 @@ public abstract class AbstractMediaPackageElement implements MediaPackageElement
   @Override
   public Node toManifest(Document document, MediaPackageSerializer serializer) throws MediaPackageException {
     Element node = document.createElement(elementType.toString().toLowerCase());
-    if (id != null)
+    if (id != null) {
       node.setAttribute("id", id);
+    }
 
     // Flavor
-    if (flavor != null)
+    if (flavor != null) {
       node.setAttribute("type", flavor.toString());
+    }
 
     // Reference
-    if (reference != null)
-      if (mediaPackage == null || !reference.matches(new MediaPackageReferenceImpl(mediaPackage)))
+    if (reference != null) {
+      if (mediaPackage == null || !reference.matches(new MediaPackageReferenceImpl(mediaPackage))) {
         node.setAttribute("ref", reference.toString());
+      }
+    }
 
     // Description
     if (description != null) {

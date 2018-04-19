@@ -137,8 +137,9 @@ public class SpatioTemporalDecompositionImpl implements SpatioTemporalDecomposit
   @Override
   public VideoText getVideoText(String id) {
     for (VideoText videoText : videoTexts) {
-      if (id.equals(videoText.getIdentifier()))
+      if (id.equals(videoText.getIdentifier())) {
         return videoText;
+      }
     }
     return null;
   }

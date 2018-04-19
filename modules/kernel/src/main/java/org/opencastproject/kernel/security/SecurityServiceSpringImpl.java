@@ -89,8 +89,9 @@ public class SecurityServiceSpringImpl implements SecurityService {
   @Override
   public User getUser() throws IllegalStateException {
     Organization org = getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set in security context");
+    }
 
     User delegatedUser = delegatedUserHolder.get();
 

@@ -76,8 +76,9 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
     Set<T> result = new LinkedHashSet<T>();
 
     // If no flavors and tags are set, return empty list
-    if (flavors.isEmpty() && tags.isEmpty())
+    if (flavors.isEmpty() && tags.isEmpty()) {
       return result;
+    }
 
     Class type = getParametrizedType(result);
     elementLoop: for (MediaPackageElement e : elements) {
@@ -86,8 +87,9 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
       if (type.isAssignableFrom(e.getClass())) {
 
         for (String tag : e.getTags()) {
-          if (excludeTags.contains(tag))
+          if (excludeTags.contains(tag)) {
             continue elementLoop;
+          }
         }
 
         // Any of the flavors?
@@ -99,15 +101,18 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
           }
         }
 
-        if (flavors.isEmpty())
+        if (flavors.isEmpty()) {
           matchesFlavor = true;
+        }
 
         // If the elements selection is done by tags AND flavors
-        if (withTagsAndFlavors && matchesFlavor && e.containsTag(tags))
+        if (withTagsAndFlavors && matchesFlavor && e.containsTag(tags)) {
           result.add((T) e);
+        }
         // Otherwise if only one of these parameters is necessary to select an element
-        if (!withTagsAndFlavors && ((!flavors.isEmpty() && matchesFlavor) || (!tags.isEmpty() && e.containsTag(tags))))
+        if (!withTagsAndFlavors && ((!flavors.isEmpty() && matchesFlavor) || (!tags.isEmpty() && e.containsTag(tags)))) {
           result.add((T) e);
+        }
       }
     }
 
@@ -153,8 +158,9 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    *           if the flavors list is <code>null</code>
    */
   public void setFlavors(List<MediaPackageElementFlavor> flavors) {
-    if (flavors == null)
+    if (flavors == null) {
       throw new IllegalArgumentException("List of flavors must not be null");
+    }
     this.flavors = flavors;
   }
 
@@ -166,10 +172,12 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    * @param flavor
    */
   public void addFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
-    if (!flavors.contains(flavor))
+    }
+    if (!flavors.contains(flavor)) {
       flavors.add(flavor);
+    }
   }
 
   /**
@@ -180,11 +188,13 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    * @param flavor
    */
   public void addFlavor(String flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
+    }
     MediaPackageElementFlavor f = MediaPackageElementFlavor.parseFlavor(flavor);
-    if (!flavors.contains(f))
+    if (!flavors.contains(f)) {
       flavors.add(f);
+    }
   }
 
   /**
@@ -198,12 +208,14 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    *          the flavor to add
    */
   public void addFlavorAt(int index, MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
+    }
     flavors.add(index, flavor);
     for (int i = index + 1; i < flavors.size(); i++) {
-      if (flavors.get(i).equals(flavor))
+      if (flavors.get(i).equals(flavor)) {
         flavors.remove(i);
+      }
     }
   }
 
@@ -218,13 +230,15 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    *          the flavor to add
    */
   public void addFlavorAt(int index, String flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
+    }
     MediaPackageElementFlavor f = MediaPackageElementFlavor.parseFlavor(flavor);
     flavors.add(index, f);
     for (int i = index + 1; i < flavors.size(); i++) {
-      if (flavors.get(i).equals(f))
+      if (flavors.get(i).equals(f)) {
         flavors.remove(i);
+      }
     }
   }
 
@@ -235,8 +249,9 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    *          the flavor to remove
    */
   public void removeFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
+    }
     flavors.remove(flavor);
   }
 
@@ -247,8 +262,9 @@ public abstract class AbstractMediaPackageElementSelector<T extends MediaPackage
    *          the flavor to remove
    */
   public void removeFlavor(String flavor) {
-    if (flavor == null)
+    if (flavor == null) {
       throw new IllegalArgumentException("Flavor must not be null");
+    }
     flavors.remove(MediaPackageElementFlavor.parseFlavor(flavor));
   }
 

@@ -102,21 +102,24 @@ public class AttachTranscriptionOperationHandler extends AbstractWorkflowOperati
 
     // Get job id.
     String jobId = StringUtils.trimToNull(operation.getConfiguration(TRANSCRIPTION_JOB_ID));
-    if (jobId == null)
+    if (jobId == null) {
       throw new WorkflowOperationException(TRANSCRIPTION_JOB_ID + " missing");
+    }
 
     // Check which tags/flavors have been configured
     String targetTagOption = StringUtils.trimToNull(operation.getConfiguration(TARGET_TAG));
     String targetFlavorOption = StringUtils.trimToNull(operation.getConfiguration(TARGET_FLAVOR));
     String captionFormatOption = StringUtils.trimToNull(operation.getConfiguration(TARGET_CAPTION_FORMAT));
     // Target flavor is mandatory if target-caption-format was NOT informed and no conversion is done
-    if (targetFlavorOption == null && captionFormatOption == null)
+    if (targetFlavorOption == null && captionFormatOption == null) {
       throw new WorkflowOperationException(TARGET_FLAVOR + " missing");
+    }
     // Target flavor is optional if target-caption-format was informed because the default flavor
     // will be "captions/<format>". If informed, will override the default.
     MediaPackageElementFlavor flavor = null;
-    if (targetFlavorOption != null)
+    if (targetFlavorOption != null) {
       flavor = MediaPackageElementFlavor.parseFlavor(targetFlavorOption);
+    }
 
     try {
       // Get transcription file from the service
@@ -133,14 +136,16 @@ public class AttachTranscriptionOperationHandler extends AbstractWorkflowOperati
       }
 
       // Set the target flavor if informed
-      if (flavor != null)
+      if (flavor != null) {
         transcription.setFlavor(flavor);
+      }
 
       // Add tags
       if (targetTagOption != null) {
         for (String tag : asList(targetTagOption)) {
-          if (StringUtils.trimToNull(tag) != null)
+          if (StringUtils.trimToNull(tag) != null) {
             transcription.addTag(tag);
+          }
         }
       }
 

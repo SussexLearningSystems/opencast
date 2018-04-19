@@ -97,8 +97,9 @@ public class JobImpl implements Job {
     this.version = version;
     this.jobType = jobType;
     this.operation = operation;
-    if (arguments != null)
+    if (arguments != null) {
       this.arguments.addAll(arguments);
+    }
     this.status = status;
     this.createdHost = createdHost;
     this.processingHost = processingHost;
@@ -113,8 +114,9 @@ public class JobImpl implements Job {
     this.dispatchable = dispatchable;
     this.uri = uri;
     this.load = load;
-    if (blockedJobIds != null)
+    if (blockedJobIds != null) {
       this.blockedJobIds.addAll(blockedJobIds);
+    }
     this.blockingJobId = blockingJobId;
   }
 
@@ -175,8 +177,9 @@ public class JobImpl implements Job {
 
   @Override
   public void setArguments(List<String> arguments) {
-    if (arguments != null)
+    if (arguments != null) {
       this.arguments = unmodifiableList(arguments);
+    }
   }
 
   @Override
@@ -277,8 +280,9 @@ public class JobImpl implements Job {
 
   @Override
   public int getSignature() {
-    if (arguments == null)
+    if (arguments == null) {
       return jobType.hashCode();
+    }
 
     return jobType.hashCode() + arguments.hashCode();
   }
@@ -355,11 +359,13 @@ public class JobImpl implements Job {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
+    }
 
-    if (o == null || getClass() != o.getClass())
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
 
     JobImpl job = (JobImpl) o;
 

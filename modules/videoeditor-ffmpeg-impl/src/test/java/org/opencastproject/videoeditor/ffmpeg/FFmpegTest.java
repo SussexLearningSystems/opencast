@@ -72,8 +72,9 @@ public class FFmpegTest {
       int status = p.waitFor();
       stdout.stopReading();
       stderr.stopReading();
-      if (status != 0)
+      if (status != 0) {
         throw new IllegalStateException();
+      }
     } catch (Throwable t) {
       logger.warn("Skipping ffmpeg video editor service tests due to unsatisifed or erroneus ffmpeg installation");
       ffmpegInstalled = false;

@@ -367,9 +367,10 @@ VideoSegmenterService, ManagedService {
             "Error reading the video file in the workspace", e);
       }
 
-      if (track.getDuration() == null)
+      if (track.getDuration() == null) {
         throw new MediaPackageException("Track " + track
             + " does not have a duration");
+      }
       logger.info("Track {} loaded, duration is {} s", mediaUrl,
           track.getDuration() / 1000);
 

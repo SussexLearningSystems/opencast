@@ -83,8 +83,9 @@ public class TesseractTextExtractorTest {
       int status = p.waitFor();
       stdout.stopReading();
       stderr.stopReading();
-      if (status != 0)
+      if (status != 0) {
         throw new IllegalStateException();
+      }
     } catch (Throwable t) {
       logger.warn("Skipping text analysis tests due to unsatisifed tesseract installation");
       logger.warn(t.getMessage(), t);
@@ -138,8 +139,9 @@ public class TesseractTextExtractorTest {
    */
   @Test
   public void testAnalyze() throws Exception {
-    if (!tesseractInstalled)
+    if (!tesseractInstalled) {
       return;
+    }
 
     TextFrame frame = analyzer.extract(testFile);
     assertTrue(frame.hasText());

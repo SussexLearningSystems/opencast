@@ -108,8 +108,9 @@ public abstract class BundleInfoRestEndpoint {
         final String bundleVersion = infos.get(0).getBundleVersion();
         final Option<String> buildNumber = infos.get(0).getBuildNumber();
         for (BundleInfo a : infos) {
-          if (ne(a.getBundleVersion(), bundleVersion) || ne(a.getBuildNumber(), buildNumber))
+          if (ne(a.getBundleVersion(), bundleVersion) || ne(a.getBuildNumber(), buildNumber)) {
             return ok(TEXT_PLAIN_TYPE, "false");
+          }
         }
         return ok(TEXT_PLAIN_TYPE, "true");
       }

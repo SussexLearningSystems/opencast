@@ -57,8 +57,9 @@ public final class PropertiesUtil {
    */
   public static Map<String, String> toMap(Properties properties) {
     Map<String, String> map = new HashMap<String, String>();
-    for (final String name : properties.stringPropertyNames())
+    for (final String name : properties.stringPropertyNames()) {
       map.put(name, properties.getProperty(name));
+    }
     return map;
   }
 

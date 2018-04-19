@@ -44,8 +44,9 @@ public final class OsgiUtil {
    */
   public static String getContextProperty(ComponentContext cc, String key) {
     String p = cc.getBundleContext().getProperty(key);
-    if (StringUtils.isBlank(p))
+    if (StringUtils.isBlank(p)) {
       throw new RuntimeException("Please provide bundle context property " + key);
+    }
     return p;
   }
 
@@ -57,8 +58,9 @@ public final class OsgiUtil {
    */
   public static String getComponentProperty(ComponentContext cc, String key) {
     String p = (String) cc.getProperties().get(key);
-    if (StringUtils.isBlank(p))
+    if (StringUtils.isBlank(p)) {
       throw new RuntimeException("Please provide component context property " + key);
+    }
     return p;
   }
 
@@ -70,11 +72,13 @@ public final class OsgiUtil {
    */
   public static String getCfg(Dictionary d, String key) throws ConfigurationException {
     Object p = d.get(key);
-    if (p == null)
+    if (p == null) {
       throw new ConfigurationException(key, "does not exist");
+    }
     String ps = p.toString();
-    if (StringUtils.isBlank(ps))
+    if (StringUtils.isBlank(ps)) {
       throw new ConfigurationException(key, "is blank");
+    }
     return ps;
   }
 

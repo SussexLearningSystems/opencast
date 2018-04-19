@@ -416,8 +416,9 @@ public final class Functions {
     return new Function<Option<A>, Option<A>>() {
       @Override
       public Option<A> apply(Option<A> a) {
-        for (A x : a)
+        for (A x : a) {
           f.apply(x);
+        }
         return a;
       }
     };

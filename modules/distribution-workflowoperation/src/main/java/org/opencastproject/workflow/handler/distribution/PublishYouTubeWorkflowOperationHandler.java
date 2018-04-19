@@ -146,8 +146,9 @@ public class PublishYouTubeWorkflowOperationHandler extends AbstractWorkflowOper
       }
 
       // Wait until the youtube publication job has returned
-      if (!waitForStatus(youtubeJob).isSuccess())
+      if (!waitForStatus(youtubeJob).isSuccess()) {
         throw new WorkflowOperationException("The youtube publication jobs did not complete successfully");
+      }
 
       // All the jobs have passed
       Job job = serviceRegistry.getJob(youtubeJob.getId());

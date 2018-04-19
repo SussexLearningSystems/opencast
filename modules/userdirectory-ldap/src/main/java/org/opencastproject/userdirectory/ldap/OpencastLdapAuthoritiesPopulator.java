@@ -86,8 +86,9 @@ public class OpencastLdapAuthoritiesPopulator implements LdapAuthoritiesPopulato
     this.attributeNames = new HashSet<>();
     for (String attributeName : attributeNames.split(",")) {
       String temp = attributeName.trim();
-      if (!temp.isEmpty())
+      if (!temp.isEmpty()) {
         this.attributeNames.add(temp);
+      }
     }
     if (this.attributeNames.size() == 0) {
       throw new IllegalArgumentException("At least one valid attribute must be provided");
@@ -106,33 +107,38 @@ public class OpencastLdapAuthoritiesPopulator implements LdapAuthoritiesPopulato
     this.groupRoleProvider = groupRoleProvider;
 
     this.uppercase = uppercase;
-    if (uppercase)
+    if (uppercase) {
       debug("Roles will be converted to uppercase");
-    else
+    } else {
       debug("Roles will NOT be converted to uppercase");
+    }
 
-    if (uppercase)
+    if (uppercase) {
       this.prefix = StringUtils.trimToEmpty(prefix).replaceAll(ROLE_CLEAN_REGEXP, ROLE_CLEAN_REPLACEMENT).toUpperCase();
-    else
+    } else {
       this.prefix = StringUtils.trimToEmpty(prefix).replaceAll(ROLE_CLEAN_REGEXP, ROLE_CLEAN_REPLACEMENT);
+    }
     debug("Role prefix set to: {}", this.prefix);
 
-    if (aExcludedPrefixes != null)
+    if (aExcludedPrefixes != null) {
       for (String origExcludedPrefix : aExcludedPrefixes) {
         String excludedPrefix;
-        if (uppercase)
+        if (uppercase) {
           excludedPrefix = StringUtils.trimToEmpty(origExcludedPrefix).toUpperCase();
-        else
+        } else {
           excludedPrefix = StringUtils.trimToEmpty(origExcludedPrefix);
+        }
         if (!excludedPrefix.isEmpty()) {
           excludedPrefixes.add(excludedPrefix);
         }
       }
+    }
 
-    if (additionalAuthorities == null)
+    if (additionalAuthorities == null) {
       this.additionalAuthorities = new String[0];
-    else
+    } else {
       this.additionalAuthorities = additionalAuthorities;
+    }
 
     if (logger.isDebugEnabled()) {
       debug("Authenticated users will receive the following extra roles:");
@@ -182,8 +188,9 @@ public class OpencastLdapAuthoritiesPopulator implements LdapAuthoritiesPopulato
         authorities.add(new SimpleGrantedAuthority(existingRole.getName()));
       }
       // Convert GrantedAuthority's into JaxbRole's
-      for (GrantedAuthority authority : authorities)
+      for (GrantedAuthority authority : authorities) {
         roles.add(new JaxbRole(authority.getAuthority(), JaxbOrganization.fromOrganization(organization)));
+      }
       JaxbUser user = new JaxbUser(username, LdapUserProviderInstance.PROVIDER_NAME,
               JaxbOrganization.fromOrganization(organization), roles.toArray(new JaxbRole[0]));
 
@@ -266,20 +273,22 @@ public class OpencastLdapAuthoritiesPopulator implements LdapAuthoritiesPopulato
          * considerations
          */
         String authority;
-        if (uppercase)
+        if (uppercase) {
           authority = StringUtils.trimToEmpty(value).replaceAll(ROLE_CLEAN_REGEXP, ROLE_CLEAN_REPLACEMENT)
                   .toUpperCase();
-        else
+        } else {
           authority = StringUtils.trimToEmpty(value).replaceAll(ROLE_CLEAN_REGEXP, ROLE_CLEAN_REPLACEMENT);
+        }
 
         // Ignore the empty parts
         if (!authority.isEmpty()) {
           // Check if this role is a group role and assign the groups appropriately
           List<Role> groupRoles;
-          if (groupRoleProvider != null)
+          if (groupRoleProvider != null) {
             groupRoles = groupRoleProvider.getRolesForGroup(authority);
-          else
+          } else {
             groupRoles = Collections.emptyList();
+          }
 
           // Try to add the prefix if appropriate
           String prefix = this.prefix;
@@ -292,8 +301,9 @@ public class OpencastLdapAuthoritiesPopulator implements LdapAuthoritiesPopulato
                 break;
               }
             }
-            if (hasExcludePrefix)
+            if (hasExcludePrefix) {
               prefix = "";
+            }
           }
 
           authority = (prefix + authority).replaceAll(ROLE_CLEAN_REGEXP, ROLE_CLEAN_REPLACEMENT);

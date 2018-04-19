@@ -101,8 +101,9 @@ public class EventCommentDto {
   public static EventCommentDto from(EventComment comment) {
     EventCommentDto dto = new EventCommentDto();
 
-    if (comment.getId().isSome())
+    if (comment.getId().isSome()) {
       dto.id = comment.getId().get().longValue();
+    }
     dto.organization = comment.getOrganization();
     dto.eventId = comment.getEventId();
     dto.text = comment.getText();

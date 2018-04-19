@@ -57,10 +57,12 @@ public class EventIdPK implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == this)
+    if (obj == this) {
       return true;
-    if (!(obj instanceof EventIdPK))
+    }
+    if (!(obj instanceof EventIdPK)) {
       return false;
+    }
     EventIdPK pk = (EventIdPK) obj;
     return EqualsUtil.eq(pk.getMediaPackageId(), mediaPackageId) && EqualsUtil.eq(pk.getOrganization(), organization);
   }

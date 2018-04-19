@@ -131,10 +131,14 @@ public class SakaiUserProviderFactory implements ManagedServiceFactory {
     logger.debug("updated SakaiUserProviderFactory");
 
     String organization = (String) properties.get(ORGANIZATION_KEY);
-    if (StringUtils.isBlank(organization)) throw new ConfigurationException(ORGANIZATION_KEY, "is not set");
+    if (StringUtils.isBlank(organization)) {
+      throw new ConfigurationException(ORGANIZATION_KEY, "is not set");
+    }
 
     String url = (String) properties.get(SAKAI_URL_KEY);
-    if (StringUtils.isBlank(url)) throw new ConfigurationException(SAKAI_URL_KEY, "is not set");
+    if (StringUtils.isBlank(url)) {
+      throw new ConfigurationException(SAKAI_URL_KEY, "is not set");
+    }
 
     String userDn = (String) properties.get(SAKAI_SEARCH_USER);
     String password = (String) properties.get(SEARCH_PASSWORD);

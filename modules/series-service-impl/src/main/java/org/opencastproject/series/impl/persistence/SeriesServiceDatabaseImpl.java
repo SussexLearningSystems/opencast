@@ -576,8 +576,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
       logger.error("Could not retrieve opt out status for series '{}': {}", seriesId, ExceptionUtils.getStackTrace(e));
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -615,8 +616,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
               ExceptionUtils.getStackTrace(e));
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -638,8 +640,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
       tx = em.getTransaction();
       tx.begin();
       SeriesEntity entity = getSeriesEntity(seriesId, em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Series with ID " + seriesId + " does not exist");
+      }
 
       entity.setOptOut(optOut);
       em.merge(entity);
@@ -653,8 +656,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
       logger.error("Could not update series opted out status: {}", e.getMessage());
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -701,8 +705,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
       }
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
     return success;
   }
@@ -735,8 +740,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
       }
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
     return success;
   }
@@ -752,17 +758,18 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
         data = Opt.none();
       } else {
         Map<String, byte[]> elements = series.getElements();
-        if (elements.containsKey(type))
+        if (elements.containsKey(type)) {
           data = Opt.some(elements.get(type));
-        else {
+        } else {
           data = Opt.none();
         }
       }
     } catch (Exception e) {
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
     return data;
   }
@@ -782,8 +789,9 @@ public class SeriesServiceDatabaseImpl implements SeriesServiceDatabase {
     } catch (Exception e) {
       throw new SeriesServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
     return elements;
   }

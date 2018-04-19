@@ -94,8 +94,9 @@ public class MessageReceiverImpl extends MessageBaseFacility implements MessageR
     MessageConsumer consumer = null;
     try {
       consumer = createConsumer(destinationId, type);
-      if (consumer != null)
-          return consumer.receive();
+      if (consumer != null) {
+        return consumer.receive();
+      }
       logger.trace("Consumer could not be created.");
       return null;
     } finally {

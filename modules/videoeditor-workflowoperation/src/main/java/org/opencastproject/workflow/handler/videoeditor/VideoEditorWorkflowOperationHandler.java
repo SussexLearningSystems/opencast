@@ -279,8 +279,9 @@ public class VideoEditorWorkflowOperationHandler extends ResumableWorkflowOperat
     Catalog[] targetSmilCatalogs = mp.getCatalogs(targetSmilFlavor);
     if (targetSmilCatalogs == null || targetSmilCatalogs.length == 0) {
 
-      if (!interactive)
+      if (!interactive) {
         return skip(workflowInstance, context);
+      }
 
       // Create new empty SMIL to fill it from editor UI
       try {
@@ -489,8 +490,9 @@ public class VideoEditorWorkflowOperationHandler extends ResumableWorkflowOperat
           case 1:
             // If the whole duration was not defined in the mediapackage, we cannot tell whether or not this PAR
             // component represents the whole duration or not, therefore we don't bother to try
-            if (mp.getDuration() < 0)
+            if (mp.getDuration() < 0) {
               break;
+            }
 
             SmilMediaContainer parElement = (SmilMediaContainer) filteredSmil.getBody().getMediaElements().get(0);
             boolean skip = true;

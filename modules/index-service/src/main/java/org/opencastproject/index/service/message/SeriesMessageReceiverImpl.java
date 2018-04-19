@@ -102,8 +102,9 @@ public class SeriesMessageReceiverImpl extends BaseMessageReceiverImpl<SeriesIte
 
           List<ManagedAcl> acls = aclServiceFactory.serviceFor(getSecurityService().getOrganization()).getAcls();
           Option<ManagedAcl> managedAcl = AccessInformationUtil.matchAcls(acls, seriesItem.getAcl());
-          if (managedAcl.isSome())
+          if (managedAcl.isSome()) {
             series.setManagedAcl(managedAcl.get().getName());
+          }
 
           series.setAccessPolicy(AccessControlParser.toJsonSilent(seriesItem.getAcl()));
         } catch (SearchIndexException e) {
@@ -134,8 +135,9 @@ public class SeriesMessageReceiverImpl extends BaseMessageReceiverImpl<SeriesIte
       case UpdateProperty:
         logger.debug("Received update property of series {} for index {}", seriesItem.getSeriesId(), getSearchIndex().getIndexName());
 
-        if (!THEME_PROPERTY_NAME.equals(seriesItem.getPropertyName()))
+        if (!THEME_PROPERTY_NAME.equals(seriesItem.getPropertyName())) {
           break;
+        }
 
         // Load or create the corresponding series
         try {

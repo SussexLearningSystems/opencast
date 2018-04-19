@@ -106,8 +106,9 @@ public final class JaxbRole implements Role {
   }
 
   public static JaxbRole fromRole(Role role) {
-    if (role instanceof JaxbRole)
+    if (role instanceof JaxbRole) {
       return (JaxbRole) role;
+    }
     JaxbOrganization org = JaxbOrganization.fromOrganization(role.getOrganization());
     return new JaxbRole(role.getName(), org, role.getDescription(), role.getType());
   }
@@ -167,8 +168,9 @@ public final class JaxbRole implements Role {
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Role))
+    if (!(obj instanceof Role)) {
       return false;
+    }
     Role other = (Role) obj;
     return name.equals(other.getName()) && organization.equals(other.getOrganization());
   }

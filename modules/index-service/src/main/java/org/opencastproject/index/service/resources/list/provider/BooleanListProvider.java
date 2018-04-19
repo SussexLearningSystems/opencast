@@ -56,11 +56,13 @@ public class BooleanListProvider implements ResourceListProvider {
     String listNameTrimmed = StringUtils.trimToEmpty(listName);
 
     if (StringUtils.equalsIgnoreCase(YES, listNameTrimmed)
-            || StringUtils.equalsIgnoreCase(YES_NO, listNameTrimmed))
+            || StringUtils.equalsIgnoreCase(YES_NO, listNameTrimmed)) {
       result.put("true", YES);
+    }
     if (StringUtils.equalsIgnoreCase(NO, listNameTrimmed)
-            || StringUtils.equalsIgnoreCase(YES_NO, listNameTrimmed))
+            || StringUtils.equalsIgnoreCase(YES_NO, listNameTrimmed)) {
       result.put("false", NO);
+    }
 
     return result;
   }
@@ -72,8 +74,9 @@ public class BooleanListProvider implements ResourceListProvider {
    * @return boolean value wrapped in a {@link Option} or {@link Option#none()}
    */
   public static <Boolean> Option<Boolean> parseOptValue(Option<String> filterValue) {
-    if (filterValue.isSome())
+    if (filterValue.isSome()) {
       return parseValue(filterValue.get());
+    }
 
     return Option.none();
   }
@@ -87,12 +90,14 @@ public class BooleanListProvider implements ResourceListProvider {
   public static <Boolean> Option<Boolean> parseValue(String filterValue) {
     String value = StringUtils.trimToEmpty(filterValue);
     if (StringUtils.equalsIgnoreCase(YES, value)
-            || StringUtils.equalsIgnoreCase("true", value))
+            || StringUtils.equalsIgnoreCase("true", value)) {
       return (Option<Boolean>) Option.option(true);
-    else if (StringUtils.equalsIgnoreCase(NO, value)
-            || StringUtils.equalsIgnoreCase("false", value))
+    } else if (StringUtils.equalsIgnoreCase(NO, value)
+            || StringUtils.equalsIgnoreCase("false", value)) {
       return (Option<Boolean>) Option.option(false);
-    else return Option.<Boolean> none();
+    } else {
+      return Option.<Boolean> none();
+    }
   }
 
   @Override

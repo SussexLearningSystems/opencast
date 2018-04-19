@@ -96,8 +96,9 @@ public final class DateTimeSupport {
       s = s.substring(0, s.length() - 1); // cut off the Z
     }
     String[] parts = s.split("T");
-    if (parts.length != 2)
+    if (parts.length != 2) {
       throw new IllegalArgumentException("UTC date string is malformed");
+    }
 
     long utc = 0;
 

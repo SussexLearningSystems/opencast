@@ -383,8 +383,9 @@ public class SchedulerServiceImplTest {
 
   protected static MediaPackage generateEvent(Opt<String> id) throws MediaPackageException {
     MediaPackage mp = MediaPackageBuilderFactory.newInstance().newMediaPackageBuilder().createNew();
-    if (id.isSome())
+    if (id.isSome()) {
       mp.setIdentifier(new IdImpl(id.get()));
+    }
     return mp;
   }
 

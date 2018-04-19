@@ -51,11 +51,13 @@ public final class EnumSupport {
    */
   @SuppressWarnings("unchecked")
   public static <E extends Enum<?>> E fromString(Class<E> enumClass, String value) {
-    if (value == null)
+    if (value == null) {
       return null;
+    }
     value = value.trim();
-    if (value.length() == 0)
+    if (value.length() == 0) {
       return null;
+    }
     Method m = null;
     try {
       m = enumClass.getDeclaredMethod("valueOf", String.class);

@@ -147,8 +147,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
   public List<Role> getRolesForUser(String userName) {
     ArrayList<Role> roles = new ArrayList<Role>();
     User user = loadUser(userName);
-    if (user != null)
+    if (user != null) {
       roles.addAll(user.getRoles());
+    }
     return roles;
   }
 
@@ -159,8 +160,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
    */
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     String orgId = securityService.getOrganization().getId();
     List<User> users = new ArrayList<User>();
     for (JpaUserReference userRef : findUserReferencesByQuery(orgId, query, limit, offset, emf)) {
@@ -207,8 +209,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
    */
   private User loadUser(String userName, String organization) {
     JpaUserReference userReference = findUserReference(userName, organization, emf);
-    if (userReference != null)
+    if (userReference != null) {
       return userReference.toUser(PROVIDER_NAME);
+    }
     return null;
   }
 
@@ -273,8 +276,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -304,8 +308,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -344,8 +349,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -376,8 +382,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
       q.setParameter("org", orgId);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -403,8 +410,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
       q.setParameter("org", orgId);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -418,8 +426,9 @@ public class JpaUserReferenceProvider implements UserReferenceProvider, UserProv
       q.setParameter("org", orgId);
       return ((Number) q.getSingleResult()).longValue();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

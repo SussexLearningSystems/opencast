@@ -117,7 +117,9 @@ public class SilenceDetectorTest {
 
   @Test
   public void testSilenceDetection() throws Exception {
-    if (this.skipTests) return;
+    if (this.skipTests) {
+      return;
+    }
     final URI trackUri = getResource("/testspeech.mp4");
     FFmpegSilenceDetector sd = init(trackUri);
     assertNotNull(sd.getMediaSegments());
@@ -127,7 +129,9 @@ public class SilenceDetectorTest {
 
   @Test
   public void testSilenceDetectionLongVoice() throws Exception {
-    if (this.skipTests) return;
+    if (this.skipTests) {
+      return;
+    }
     final URI trackUri = getResource("/testspeech.mp4");
     Properties props = new Properties();
     /* Set minumum voice length to something longer than the actual recording */
@@ -140,7 +144,9 @@ public class SilenceDetectorTest {
 
   @Test
   public void testSilenceDetectionOnSilence() throws Exception {
-    if (this.skipTests) return;
+    if (this.skipTests) {
+      return;
+    }
     final URI trackUri = getResource("/silent.mp4");
     FFmpegSilenceDetector sd = init(trackUri);
     assertNotNull(sd.getMediaSegments());
@@ -150,7 +156,9 @@ public class SilenceDetectorTest {
 
   @Test
   public void testMisconfiguration() throws Exception {
-    if (this.skipTests) return;
+    if (this.skipTests) {
+      return;
+    }
     final URI trackUri = getResource("/nostreams.mp4");
     Properties props = new Properties();
     props.setProperty(SilenceDetectionProperties.SILENCE_PRE_LENGTH, "6000");
@@ -165,7 +173,9 @@ public class SilenceDetectorTest {
 
   @Test
   public void testNoAudio() throws Exception {
-    if (this.skipTests) return;
+    if (this.skipTests) {
+      return;
+    }
     final URI trackUri = getResource("/nostreams.mp4");
     try {
       FFmpegSilenceDetector sd = init(trackUri, false);

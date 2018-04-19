@@ -102,17 +102,18 @@ public abstract class Option<A> implements Iterable<A> {
 
   /** Throw <code>none</code> if none. */
   public <T extends Throwable> Option<A> orError(T none) throws T {
-    if (isSome())
+    if (isSome()) {
       return this;
-    else
+    } else {
       throw none;
+    }
   }
 
   /** Throw <code>none</code> if none. */
   public <T extends Throwable> Option<A> orError(Class<T> none) throws T {
-    if (isSome())
+    if (isSome()) {
       return this;
-    else {
+    } else {
       T t;
       try {
         t = none.newInstance();
@@ -127,10 +128,11 @@ public abstract class Option<A> implements Iterable<A> {
 
   /** Throw exception returned by <code>none</code> if none. */
   public <T extends Throwable> Option<A> orError(Function0<T> none) throws T {
-    if (isSome())
+    if (isSome()) {
       return this;
-    else
+    } else {
       throw none.apply();
+    }
   }
 
   public <B> Option<Tuple<A, B>> and(Option<B> b) {
@@ -188,8 +190,9 @@ public abstract class Option<A> implements Iterable<A> {
 
   /** Create a new some. */
   public static <A> Option<A> some(final A a) {
-    if (a == null)
+    if (a == null) {
       throw new Error("null must not be wrapped in a some");
+    }
     return new Option<A>() {
       @Override
       public <B> B fold(Match<A, B> visitor) {
@@ -404,10 +407,11 @@ public abstract class Option<A> implements Iterable<A> {
 
   /** Wrap an arbitrary object into an option with <code>null</code> being mapped to none. */
   public static <A> Option<A> option(A a) {
-    if (a != null)
+    if (a != null) {
       return some(a);
-    else
+    } else {
       return none();
+    }
   }
 
   /** Convert an <code>Opt</code> into an <code>Option</code>. */

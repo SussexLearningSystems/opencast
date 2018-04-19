@@ -134,10 +134,11 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
     if (searchTerms != null) {
       for (Map.Entry<String, Set<Object>> entry : searchTerms.entrySet()) {
         Set<Object> values = entry.getValue();
-        if (values.size() == 1)
+        if (values.size() == 1) {
           booleanQuery.must(new TermsQueryBuilder(entry.getKey(), values.iterator().next()));
-        else
+        } else {
           booleanQuery.must(new TermsQueryBuilder(entry.getKey(), values.toArray(new String[values.size()])));
+        }
       }
       this.queryBuilder = booleanQuery;
     }
@@ -146,10 +147,11 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
     if (negativeSearchTerms != null) {
       for (Map.Entry<String, Set<Object>> entry : negativeSearchTerms.entrySet()) {
         Set<Object> values = entry.getValue();
-        if (values.size() == 1)
+        if (values.size() == 1) {
           booleanQuery.mustNot(new TermsQueryBuilder(entry.getKey(), values.iterator().next()));
-        else
+        } else {
           booleanQuery.mustNot(new TermsQueryBuilder(entry.getKey(), values.toArray(new String[values.size()])));
+        }
       }
       this.queryBuilder = booleanQuery;
     }
@@ -231,8 +233,9 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
     fieldName = StringUtils.trim(fieldName);
 
     // Make sure the data structures are set up accordingly
-    if (searchTerms == null)
+    if (searchTerms == null) {
       searchTerms = new HashMap<String, Set<Object>>();
+    }
     Set<Object> termValues = searchTerms.get(fieldName);
     if (termValues == null) {
       termValues = new HashSet<Object>();
@@ -275,8 +278,9 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
     fieldName = StringUtils.trim(fieldName);
 
     // Make sure the data structures are set up accordingly
-    if (dateRanges == null)
+    if (dateRanges == null) {
       dateRanges = new HashSet<DateRange>();
+    }
 
     // Add the term
     DateRange dateRange = new DateRange(fieldName, startDate, endDate);
@@ -299,8 +303,9 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
     fieldName = StringUtils.trim(fieldName);
 
     // Make sure the data structures are set up accordingly
-    if (negativeSearchTerms == null)
+    if (negativeSearchTerms == null) {
       negativeSearchTerms = new HashMap<String, Set<Object>>();
+    }
     Set<Object> termValues = negativeSearchTerms.get(fieldName);
     if (termValues == null) {
       termValues = new HashSet<Object>();
@@ -334,8 +339,9 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
    *          the field name
    */
   protected void andEmpty(String fieldName) {
-    if (emptyFields == null)
+    if (emptyFields == null) {
       emptyFields = new HashSet<String>();
+    }
     emptyFields.add(StringUtils.trim(fieldName));
   }
 
@@ -346,8 +352,9 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
    *          the field name
    */
   protected void andNotEmpty(String fieldName) {
-    if (nonEmptyFields == null)
+    if (nonEmptyFields == null) {
       nonEmptyFields = new HashSet<String>();
+    }
     nonEmptyFields.add(StringUtils.trim(fieldName));
   }
 
@@ -420,10 +427,12 @@ public abstract class AbstractElasticsearchQueryBuilder<T extends SearchQuery> i
      */
     QueryBuilder getQueryBuilder() {
       RangeQueryBuilder rqb = new RangeQueryBuilder(field);
-      if (startDate != null)
+      if (startDate != null) {
         rqb.from(DateTimeSupport.toUTC(startDate.getTime()));
-      if (endDate != null)
+      }
+      if (endDate != null) {
         rqb.to(DateTimeSupport.toUTC(endDate.getTime()));
+      }
       return rqb;
     }
 

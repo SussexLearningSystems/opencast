@@ -112,10 +112,12 @@ public class PersonType {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     PersonType type = (PersonType) o;
     return name.equals(type.getName()) && function.equals(type.getFunction());
   }

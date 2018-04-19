@@ -159,8 +159,9 @@ public class JpaUserReference {
           JpaOrganization organization, Set<JpaRole> roles) {
     this(username, name, email, loginMechanism, lastLogin, organization);
     for (Role role : roles) {
-      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId()))
+      if (role.getOrganization() == null || !organization.getId().equals(role.getOrganization().getId())) {
         throw new IllegalArgumentException("Role " + role + " is not from the same organization!");
+      }
     }
     this.roles = roles;
   }
@@ -224,8 +225,9 @@ public class JpaUserReference {
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof JpaUserReference))
+    if (!(obj instanceof JpaUserReference)) {
       return false;
+    }
     JpaUserReference other = (JpaUserReference) obj;
     return username.equals(other.getUsername()) && organization.equals(other.getOrganization());
   }

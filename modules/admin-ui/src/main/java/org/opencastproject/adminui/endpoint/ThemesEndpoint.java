@@ -192,17 +192,21 @@ public class ThemesEndpoint {
       optLimit = Option.none();
     }
 
-    if (optLimit.isSome())
+    if (optLimit.isSome()) {
       query.withLimit(optLimit.get());
-    if (optOffset.isSome())
+    }
+    if (optOffset.isSome()) {
       query.withOffset(offset);
+    }
 
     Map<String, String> filters = RestUtils.parseFilter(filter);
     for (String name : filters.keySet()) {
-      if (ThemesListQuery.FILTER_CREATOR_NAME.equals(name))
+      if (ThemesListQuery.FILTER_CREATOR_NAME.equals(name)) {
         query.withCreator(filters.get(name));
-      if (ThemesListQuery.FILTER_TEXT_NAME.equals(name))
+      }
+      if (ThemesListQuery.FILTER_TEXT_NAME.equals(name)) {
         query.withText(QueryPreprocessor.sanitize(filters.get(name)));
+      }
     }
 
     if (optSort.isSome()) {
@@ -265,8 +269,9 @@ public class ThemesEndpoint {
           @RestResponse(description = "No theme with this identifier was found.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getThemeResponse(@PathParam("themeId") long id) throws Exception {
     Opt<org.opencastproject.index.service.impl.index.theme.Theme> theme = getTheme(id);
-    if (theme.isNone())
+    if (theme.isNone()) {
       return notFound("Cannot find a theme with id '%s'", id);
+    }
 
     return okJson(themeToJSON(theme.get(), true));
   }
@@ -279,8 +284,9 @@ public class ThemesEndpoint {
           @RestResponse(description = "Theme with the given id does not exist", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response getThemeUsage(@PathParam("themeId") long themeId) throws Exception {
     Opt<org.opencastproject.index.service.impl.index.theme.Theme> theme = getTheme(themeId);
-    if (theme.isNone())
+    if (theme.isNone()) {
       return notFound("Cannot find a theme with id {}", themeId);
+    }
 
     SeriesSearchQuery query = new SeriesSearchQuery(securityService.getOrganization().getId(),
             securityService.getUser()).withTheme(themeId);
@@ -398,38 +404,54 @@ public class ThemesEndpoint {
     try {
       Theme origTheme = themesServiceDatabase.getTheme(themeId);
 
-      if (isDefault == null)
+      if (isDefault == null) {
         isDefault = origTheme.isDefault();
-      if (StringUtils.isBlank(name))
+      }
+      if (StringUtils.isBlank(name)) {
         name = origTheme.getName();
-      if (StringUtils.isEmpty(description))
+      }
+      if (StringUtils.isEmpty(description)) {
         description = origTheme.getDescription();
-      if (bumperActive == null)
+      }
+      if (bumperActive == null) {
         bumperActive = origTheme.isBumperActive();
-      if (StringUtils.isEmpty(bumperFile))
+      }
+      if (StringUtils.isEmpty(bumperFile)) {
         bumperFile = origTheme.getBumperFile();
-      if (trailerActive == null)
+      }
+      if (trailerActive == null) {
         trailerActive = origTheme.isTrailerActive();
-      if (StringUtils.isEmpty(trailerFile))
+      }
+      if (StringUtils.isEmpty(trailerFile)) {
         trailerFile = origTheme.getTrailerFile();
-      if (titleSlideActive == null)
+      }
+      if (titleSlideActive == null) {
         titleSlideActive = origTheme.isTitleSlideActive();
-      if (StringUtils.isEmpty(titleSlideMetadata))
+      }
+      if (StringUtils.isEmpty(titleSlideMetadata)) {
         titleSlideMetadata = origTheme.getTitleSlideMetadata();
-      if (StringUtils.isEmpty(titleSlideBackground))
+      }
+      if (StringUtils.isEmpty(titleSlideBackground)) {
         titleSlideBackground = origTheme.getTitleSlideBackground();
-      if (licenseSlideActive == null)
+      }
+      if (licenseSlideActive == null) {
         licenseSlideActive = origTheme.isLicenseSlideActive();
-      if (StringUtils.isEmpty(licenseSlideBackground))
+      }
+      if (StringUtils.isEmpty(licenseSlideBackground)) {
         licenseSlideBackground = origTheme.getLicenseSlideBackground();
-      if (StringUtils.isEmpty(licenseSlideDescription))
+      }
+      if (StringUtils.isEmpty(licenseSlideDescription)) {
         licenseSlideDescription = origTheme.getLicenseSlideDescription();
-      if (watermarkActive == null)
+      }
+      if (watermarkActive == null) {
         watermarkActive = origTheme.isWatermarkActive();
-      if (StringUtils.isEmpty(watermarkFile))
+      }
+      if (StringUtils.isEmpty(watermarkFile)) {
         watermarkFile = origTheme.getWatermarkFile();
-      if (StringUtils.isEmpty(watermarkPosition))
+      }
+      if (StringUtils.isEmpty(watermarkPosition)) {
         watermarkPosition = origTheme.getWatermarkPosition();
+      }
 
       Theme theme = new Theme(origTheme.getId(), origTheme.getCreationDate(), isDefault, origTheme.getCreator(), name,
               StringUtils.trimToNull(description), BooleanUtils.toBoolean(bumperActive),
@@ -629,16 +651,21 @@ public class ThemesEndpoint {
    *           If there was an error while persisting the file.
    */
   private void persistReferencedFiles(Theme theme) throws NotFoundException, IOException {
-    if (isNotBlank(theme.getBumperFile()))
+    if (isNotBlank(theme.getBumperFile())) {
       staticFileService.persistFile(theme.getBumperFile());
-    if (isNotBlank(theme.getLicenseSlideBackground()))
+    }
+    if (isNotBlank(theme.getLicenseSlideBackground())) {
       staticFileService.persistFile(theme.getLicenseSlideBackground());
-    if (isNotBlank(theme.getTitleSlideBackground()))
+    }
+    if (isNotBlank(theme.getTitleSlideBackground())) {
       staticFileService.persistFile(theme.getTitleSlideBackground());
-    if (isNotBlank(theme.getTrailerFile()))
+    }
+    if (isNotBlank(theme.getTrailerFile())) {
       staticFileService.persistFile(theme.getTrailerFile());
-    if (isNotBlank(theme.getWatermarkFile()))
+    }
+    if (isNotBlank(theme.getWatermarkFile())) {
       staticFileService.persistFile(theme.getWatermarkFile());
+    }
   }
 
   /**
@@ -652,16 +679,21 @@ public class ThemesEndpoint {
    *           If there was an error while persisting the file.
    */
   private void deleteReferencedFiles(Theme theme) throws NotFoundException, IOException {
-    if (isNotBlank(theme.getBumperFile()))
+    if (isNotBlank(theme.getBumperFile())) {
       staticFileService.deleteFile(theme.getBumperFile());
-    if (isNotBlank(theme.getLicenseSlideBackground()))
+    }
+    if (isNotBlank(theme.getLicenseSlideBackground())) {
       staticFileService.deleteFile(theme.getLicenseSlideBackground());
-    if (isNotBlank(theme.getTitleSlideBackground()))
+    }
+    if (isNotBlank(theme.getTitleSlideBackground())) {
       staticFileService.deleteFile(theme.getTitleSlideBackground());
-    if (isNotBlank(theme.getTrailerFile()))
+    }
+    if (isNotBlank(theme.getTrailerFile())) {
       staticFileService.deleteFile(theme.getTrailerFile());
-    if (isNotBlank(theme.getWatermarkFile()))
+    }
+    if (isNotBlank(theme.getWatermarkFile())) {
       staticFileService.deleteFile(theme.getWatermarkFile());
+    }
   }
 
   /**
@@ -699,10 +731,12 @@ public class ThemesEndpoint {
    */
   private void updateReferencedFile(String original, String updated) throws NotFoundException, IOException {
     if (EqualsUtil.ne(original, updated)) {
-      if (isNotBlank(original))
+      if (isNotBlank(original)) {
         staticFileService.deleteFile(original);
-      if (isNotBlank(updated))
+      }
+      if (isNotBlank(updated)) {
         staticFileService.persistFile(updated);
+      }
     }
   }
 

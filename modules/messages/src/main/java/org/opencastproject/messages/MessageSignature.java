@@ -209,10 +209,12 @@ public class MessageSignature {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     MessageSignature msgSig = (MessageSignature) o;
     return name.equals(msgSig.getName()) && sender.equals(msgSig.getSender())
             && signature.equals(msgSig.getSignature()) && creationDate.equals(msgSig.getCreationDate())
@@ -232,8 +234,9 @@ public class MessageSignature {
   public Obj toJson() {
 
     Obj replyJson = Jsons.ZERO_OBJ;
-    if (replyTo.isSome())
+    if (replyTo.isSome()) {
       replyJson = replyTo.get().toJson();
+    }
 
     Obj creatorObj = Jsons.obj(Jsons.p("name", creator.getName()), Jsons.p("username", creator.getUsername()),
             Jsons.p("email", creator.getEmail()));

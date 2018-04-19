@@ -41,10 +41,11 @@ public class Language {
     this.displayName = LanguageFileUtil.getDisplayLanguageFromLanguageCode(languageCode);
 
     String[] localCodes = languageCode.split("_");
-    if (localCodes.length > 1)
+    if (localCodes.length > 1) {
       this.locale = new Locale(localCodes[0], localCodes[1]);
-    else
+    } else {
       this.locale = new Locale(localCodes[0]);
+    }
   }
 
   public static Language defaultLanguage() {
@@ -102,23 +103,30 @@ public class Language {
    */
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     Language other = (Language) obj;
     if (code == null) {
-      if (other.code != null)
+      if (other.code != null) {
         return false;
-    } else if (!code.equals(other.code))
+      }
+    } else if (!code.equals(other.code)) {
       return false;
+    }
     if (displayName == null) {
-      if (other.displayName != null)
+      if (other.displayName != null) {
         return false;
-    } else if (!displayName.equals(other.displayName))
+      }
+    } else if (!displayName.equals(other.displayName)) {
       return false;
+    }
     return true;
   }
 

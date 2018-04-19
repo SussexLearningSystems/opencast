@@ -81,16 +81,18 @@ public final class DublinCoreMetadataUtil {
           setDuration(dc, field, ename);
         } else if (field.getType() == Type.DATE) {
           // DC created should only be modified by changing the start date, see MH-12250
-          if (! DublinCore.PROPERTY_CREATED.equals(ename))
+          if (! DublinCore.PROPERTY_CREATED.equals(ename)) {
             setDate(dc, field, ename);
+          }
         } else if (field.getType() == MetadataField.Type.MIXED_TEXT || field.getType() == Type.ITERABLE_TEXT) {
           setIterableString(dc, field, ename);
         } else {
-          if (field.isRequired() && StringUtils.isBlank(field.getValue().get().toString()))
+          if (field.isRequired() && StringUtils.isBlank(field.getValue().get().toString())) {
             throw new IllegalArgumentException(
                     String.format(
                             "The event metadata field with id '%s' and the metadata type '%s' is required and can not be empty!.",
                             field.getInputID(), field.getType()));
+          }
           dc.set(ename, field.getValue().get().toString());
         }
       } else if (field.getValue().isNone() && field.isRequired()) {

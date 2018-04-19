@@ -100,13 +100,15 @@ public class ServicesListProvider implements ResourceListProvider {
 
     for (ServiceRegistration serviceRegistration : serviceRegistrations) {
       if (servicesQuery.getHostname().isSome()
-              && !StringUtils.equals(servicesQuery.getHostname().get(), serviceRegistration.getHost()))
+              && !StringUtils.equals(servicesQuery.getHostname().get(), serviceRegistration.getHost())) {
         continue;
+      }
 
       if (servicesQuery.getActions().isSome()
               && servicesQuery.getActions().get()
-              && serviceRegistration.getServiceState() == ServiceState.NORMAL)
+              && serviceRegistration.getServiceState() == ServiceState.NORMAL) {
         continue;
+      }
 
       result.put(serviceRegistration.getServiceType(), serviceRegistration.getServiceType());
     }

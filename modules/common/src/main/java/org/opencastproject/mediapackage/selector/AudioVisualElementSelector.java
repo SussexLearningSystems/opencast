@@ -100,8 +100,9 @@ public class AudioVisualElementSelector extends AbstractMediaPackageElementSelec
    *          the flavor
    */
   public void setAudioFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor != null)
+    if (flavor != null) {
       addFlavor(flavor);
+    }
     audioFlavor = flavor;
   }
 
@@ -156,8 +157,9 @@ public class AudioVisualElementSelector extends AbstractMediaPackageElementSelec
    *          the flavor
    */
   public void setVideoFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor != null)
+    if (flavor != null) {
       addFlavor(flavor);
+    }
     videoFlavor = flavor;
   }
 
@@ -224,12 +226,14 @@ public class AudioVisualElementSelector extends AbstractMediaPackageElementSelec
           result.add(t);
         }
       }
-      if ((foundAudio || audioFlavor == null) && (foundVideo || videoFlavor == null))
+      if ((foundAudio || audioFlavor == null) && (foundVideo || videoFlavor == null)) {
         break;
+      }
     }
 
-    if ((!foundAudio && requireAudio) || (!foundVideo && requireVideo))
+    if ((!foundAudio && requireAudio) || (!foundVideo && requireVideo)) {
       result.clear();
+    }
 
     // We were lucky, a combination was found!
     return result;

@@ -267,13 +267,15 @@ public abstract class AbstractIndexProducer implements IndexProducer {
                   MessageSender.DestinationType.Queue);
           executor.execute(future);
           BaseMessage message = (BaseMessage) future.get();
-          if (message == null || !(message.getObject() instanceof IndexRecreateObject))
+          if (message == null || !(message.getObject() instanceof IndexRecreateObject)) {
             continue;
+          }
 
           IndexRecreateObject indexObject = (IndexRecreateObject) message.getObject();
           if (!indexObject.getService().equals(getService())
-                  || !indexObject.getStatus().equals(IndexRecreateObject.Status.Start))
+                  || !indexObject.getStatus().equals(IndexRecreateObject.Status.Start)) {
             continue;
+          }
           logger.info("Index '{}' has received a start repopulating command for service '{}'.",
                   indexObject.getIndexName(), getService());
           repopulate(indexObject.getIndexName());

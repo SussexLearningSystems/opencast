@@ -273,8 +273,9 @@ public class ComposerServiceRemoteImpl extends RemoteBase implements ComposerSer
       List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
       params.add(new BasicNameValuePair("sourceTrack", MediaPackageElementParser.getAsXml(sourceTrack)));
       params.add(new BasicNameValuePair("profileId", profileId));
-      if (properties != null)
+      if (properties != null) {
         params.add(new BasicNameValuePair("properties", mapToString(properties)));
+      }
       post.setEntity(new UrlEncodedFormEntity(params));
     } catch (Exception e) {
       throw new EncoderException(e);
@@ -363,8 +364,9 @@ public class ComposerServiceRemoteImpl extends RemoteBase implements ComposerSer
    * @return string represented specified time array
    */
   protected String buildTimeArray(double[] times) {
-    if (times.length == 0)
+    if (times.length == 0) {
       return "";
+    }
 
     StringBuilder builder = new StringBuilder();
     builder.append(Double.toString(times[0]));
@@ -436,8 +438,9 @@ public class ComposerServiceRemoteImpl extends RemoteBase implements ComposerSer
     try {
       List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
       params.add(new BasicNameValuePair("profileId", profileId));
-      if (outputDimension != null)
+      if (outputDimension != null) {
         params.add(new BasicNameValuePair("outputDimension", Serializer.json(outputDimension).toJson()));
+      }
       params.add(new BasicNameValuePair("outputFrameRate", String.format(Locale.US, "%f", outputFrameRate)));
       params.add(new BasicNameValuePair("sourceTracks", MediaPackageElementParser.getArrayAsXml(Arrays.asList(tracks))));
       post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

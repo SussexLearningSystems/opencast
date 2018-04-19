@@ -167,8 +167,9 @@ public final class AclServiceImpl implements AclService {
           throws AclServiceException {
     try {
       Option<MediaPackage> mediaPackage = Option.none();
-      if (assetManager != null)
+      if (assetManager != null) {
         mediaPackage = getFromAssetManagerByMpId(episodeId);
+      }
 
       Option<AccessControlList> aclOpt = Option.option(acl);
       // the episode service is the source of authority for the retrieval of media packages
@@ -179,8 +180,9 @@ public final class AclServiceImpl implements AclService {
           public void esome(final AccessControlList acl) {
             // update in episode service
             MediaPackage mp = authorizationService.setAcl(episodeSvcMp, AclScope.Episode, acl).getA();
-            if (assetManager != null)
+            if (assetManager != null) {
               assetManager.takeSnapshot(mp);
+            }
           }
 
           // if none EpisodeACLTransition#isDelete returns true so delete the episode ACL
@@ -188,14 +190,16 @@ public final class AclServiceImpl implements AclService {
           public void enone() {
             // update in episode service
             MediaPackage mp = authorizationService.removeAcl(episodeSvcMp, AclScope.Episode);
-            if (assetManager != null)
+            if (assetManager != null) {
               assetManager.takeSnapshot(mp);
+            }
           }
 
         });
         // apply optional workflow
-        for (ConfiguredWorkflowRef workflowRef : workflow)
+        for (ConfiguredWorkflowRef workflowRef : workflow) {
           applyWorkflow(list(episodeSvcMp), workflowRef);
+        }
         return true;
       }
       // not found
@@ -238,13 +242,15 @@ public final class AclServiceImpl implements AclService {
         //
         // delete in episode service
         List<MediaPackage> mediaPackages = new ArrayList<>();
-        if (assetManager != null)
+        if (assetManager != null) {
           mediaPackages = getFromAssetManagerBySeriesId(seriesId);
+        }
 
         for (MediaPackage mp : mediaPackages) {
           // remove episode xacml and update in archive service
-          if (assetManager != null)
+          if (assetManager != null) {
             assetManager.takeSnapshot(authorizationService.removeAcl(mp, AclScope.Episode));
+          }
         }
       }
       // update in series service
@@ -360,8 +366,9 @@ public final class AclServiceImpl implements AclService {
   public boolean deleteAcl(long id) throws AclServiceException, NotFoundException {
     final TransitionQuery query = TransitionQuery.query().withDone(false).withAclId(id);
     final TransitionResult result = persistence.getByQuery(organization, query);
-    if (result.getEpisodeTransistions().size() > 0 || result.getSeriesTransistions().size() > 0)
+    if (result.getEpisodeTransistions().size() > 0 || result.getSeriesTransistions().size() > 0) {
       return false;
+    }
     Option<ManagedAcl> deletedAcl = getAcl(id);
     if (aclDb.deleteAcl(organization, id)) {
       if (deletedAcl.isSome()) {

@@ -209,15 +209,17 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
   @SuppressWarnings("unchecked")
   public Iterator<User> getUsers() {
     Organization org = securityService.getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set");
+    }
 
     // Find all users from the user providers
     Stream<User> users = Stream.empty();
     for (final UserProvider userProvider : userProviders) {
       String providerOrgId = userProvider.getOrganization();
-      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId))
+      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId)) {
         continue;
+      }
       users = users.append(IteratorUtils.toList(userProvider.getUsers())).sort(userComparator);
     }
     return users.iterator();
@@ -232,14 +234,16 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
   @SuppressWarnings("unchecked")
   public Iterator<Role> getRoles() {
     Organization org = securityService.getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set");
+    }
 
     Stream<Role> roles = Stream.empty();
     for (RoleProvider roleProvider : roleProviders) {
       String providerOrgId = roleProvider.getOrganization();
-      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId))
+      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId)) {
         continue;
+      }
       roles = roles.append(IteratorUtils.toList(roleProvider.getRoles())).sort(roleComparator);
     }
     return roles.iterator();
@@ -296,8 +300,9 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
         }
       }
 
-      if (user == null)
+      if (user == null) {
         return null;
+      }
 
       // Add additional roles from role providers
       Set<JaxbRole> roles = new HashSet<JaxbRole>();
@@ -354,8 +359,9 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
   public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException,
           org.springframework.dao.DataAccessException {
     User user = loadUser(userName);
-    if (user == null)
+    if (user == null) {
       throw new UsernameNotFoundException(userName);
+    }
 
     // Store the user in the security service
     securityService.setUser(user);
@@ -369,8 +375,9 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
     if (!InMemoryUserAndRoleProvider.PROVIDER_NAME.equals(user.getProvider())) {
       for (RoleProvider roleProvider : roleProviders) {
         List<Role> rolesForUser = roleProvider.getRolesForUser(userName);
-        for (Role role : rolesForUser)
+        for (Role role : rolesForUser) {
           authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
       }
     }
 
@@ -428,18 +435,21 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
   @Override
   @SuppressWarnings("unchecked")
   public Iterator<User> findUsers(String query, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     Organization org = securityService.getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set");
+    }
 
     // Find all users from the user providers
     Stream<User> users = Stream.empty();
     for (final UserProvider userProvider : userProviders) {
       String providerOrgId = userProvider.getOrganization();
-      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId))
+      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId)) {
         continue;
+      }
       users = users.append(IteratorUtils.toList(userProvider.findUsers(query, 0, 0))).sort(userComparator);
     }
     return users.drop(offset).apply(limit > 0 ? StreamOp.<User> id().take(limit) : StreamOp.<User> id()).iterator();
@@ -448,18 +458,21 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
   @Override
   @SuppressWarnings("unchecked")
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     Organization org = securityService.getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set");
+    }
 
     // Find all roles from the role providers
     Stream<Role> roles = Stream.empty();
     for (RoleProvider roleProvider : roleProviders) {
       String providerOrgId = roleProvider.getOrganization();
-      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId))
+      if (!ALL_ORGANIZATIONS.equals(providerOrgId) && !org.getId().equals(providerOrgId)) {
         continue;
+      }
       roles = roles.append(IteratorUtils.toList(roleProvider.findRoles(query, target, 0, 0))).sort(roleComparator);
     }
     return roles.drop(offset).apply(limit > 0 ? StreamOp.<Role> id().take(limit) : StreamOp.<Role> id()).iterator();
@@ -481,8 +494,9 @@ public class UserAndRoleDirectoryServiceImpl implements UserDirectoryService, Us
     }
 
     Organization org = securityService.getOrganization();
-    if (org == null)
+    if (org == null) {
       throw new IllegalStateException("No organization is set");
+    }
 
     cache.invalidate(tuple(org.getId(), userName));
     logger.trace("Invalidated user {} from user directories", userName);

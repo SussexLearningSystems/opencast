@@ -76,15 +76,18 @@ public final class FileSupport {
    * @return the moved file
    */
   public static File move(File sourceLocation, File targetDirectory) throws IOException {
-    if (!targetDirectory.isDirectory())
+    if (!targetDirectory.isDirectory()) {
       throw new IllegalArgumentException("Target location must be a directory");
+    }
 
-    if (!targetDirectory.exists())
+    if (!targetDirectory.exists()) {
       targetDirectory.mkdirs();
+    }
 
     File targetFile = new File(targetDirectory, sourceLocation.getName());
-    if (sourceLocation.renameTo(targetFile))
+    if (sourceLocation.renameTo(targetFile)) {
       return targetFile;
+    }
 
     // Rename doesn't work, so use copy / delete instead
     copy(sourceLocation, targetDirectory);
@@ -165,8 +168,9 @@ public final class FileSupport {
       // If dest is not an "absolute file", getParentFile may return null, even if there *is* a parent file.
       // That's why "getAbsoluteFile" is used here
       dest.getAbsoluteFile().getParentFile().mkdirs();
-      if (dest.exists())
+      if (dest.exists()) {
         delete(dest);
+      }
 
       FileChannel sourceChannel = null;
       FileChannel targetChannel = null;
@@ -189,8 +193,9 @@ public final class FileSupport {
           if ((sourceChannel != null) && (targetChannel != null) && (size < sourceFile.length())) {
             // Failing back to using FileChannels *but* with chunks and not altogether
             logger.info("Trying to copy the file in chunks using Channels");
-            while (size < sourceFile.length())
+            while (size < sourceFile.length()) {
               size += targetChannel.transferFrom(sourceChannel, size, chunk);
+            }
           }
         }
       } catch (IOException ioe) {
@@ -198,19 +203,25 @@ public final class FileSupport {
           logger.warn("Got IOException using Channels for copying in chunks. Trying to use stream copy instead...");
           int copied = 0;
           byte[] buffer = new byte[bufferSize];
-          while ((copied = sourceStream.read(buffer, 0, buffer.length)) != -1)
+          while ((copied = sourceStream.read(buffer, 0, buffer.length)) != -1) {
             targetStream.write(buffer, 0, copied);
-        } else
+          }
+        } else {
           throw ioe;
+        }
       } finally {
-        if (sourceChannel != null)
+        if (sourceChannel != null) {
           sourceChannel.close();
-        if (sourceStream != null)
+        }
+        if (sourceStream != null) {
           sourceStream.close();
-        if (targetChannel != null)
+        }
+        if (targetChannel != null) {
           targetChannel.close();
-        if (targetStream != null)
+        }
+        if (targetStream != null) {
           targetStream.close();
+        }
       }
 
       if (sourceFile.length() != dest.length()) {
@@ -240,14 +251,18 @@ public final class FileSupport {
    *           if copying fails
    */
   public static void copyContent(File sourceDirectory, File targetDirectory, boolean overwrite) throws IOException {
-    if (sourceDirectory == null)
+    if (sourceDirectory == null) {
       throw new IllegalArgumentException("Source directory must not by null");
-    if (!sourceDirectory.isDirectory())
+    }
+    if (!sourceDirectory.isDirectory()) {
       throw new IllegalArgumentException(sourceDirectory.getAbsolutePath() + " is not a directory");
-    if (targetDirectory == null)
+    }
+    if (targetDirectory == null) {
       throw new IllegalArgumentException("Target directory must not by null");
-    if (!targetDirectory.isDirectory())
+    }
+    if (!targetDirectory.isDirectory()) {
       throw new IllegalArgumentException(targetDirectory.getAbsolutePath() + " is not a directory");
+    }
 
     for (File content : sourceDirectory.listFiles()) {
       copy(content, targetDirectory, overwrite);
@@ -361,8 +376,9 @@ public final class FileSupport {
     final Path sourcePath = requireNonNull(sourceLocation).toPath();
     final Path targetPath = requireNonNull(targetLocation).toPath();
 
-    if (!exists(sourcePath))
+    if (!exists(sourcePath)) {
       throw new IllegalArgumentException(format("Source %s does not exist", sourcePath));
+    }
 
     logger.debug("Creating hard link from {} to {}", sourcePath, targetPath);
     try {
@@ -511,18 +527,21 @@ public final class FileSupport {
    *          <code>true</code> to do a recursive deletes for directories
    */
   public static boolean delete(File f, boolean recurse) throws IOException {
-    if (f == null)
+    if (f == null) {
       return false;
-    if (!f.exists())
+    }
+    if (!f.exists()) {
       return false;
+    }
     if (f.isDirectory()) {
       String[] children = f.list();
       if (children == null) {
         throw new IOException("Cannot list content of directory " + f.getAbsolutePath());
       }
       if (children != null) {
-        if (children.length > 0 && !recurse)
+        if (children.length > 0 && !recurse) {
           return false;
+        }
         for (String child : children) {
           delete(new File(f, child), true);
         }
@@ -581,10 +600,12 @@ public final class FileSupport {
    *           if the directory is write protected
    */
   public static void setTempDirectory(File tmpDir) throws IllegalArgumentException, IllegalStateException {
-    if (tmpDir == null || !tmpDir.isDirectory())
+    if (tmpDir == null || !tmpDir.isDirectory()) {
       throw new IllegalArgumentException(tmpDir + " is not a directory");
-    if (!tmpDir.canWrite())
+    }
+    if (!tmpDir.canWrite()) {
       throw new IllegalStateException(tmpDir + " is not writable");
+    }
     FileSupport.tmpDir = tmpDir;
   }
 
@@ -609,14 +630,18 @@ public final class FileSupport {
    */
   public static File getTempDirectory(String subdir) {
     File tmp = new File(getTempDirectory(), subdir);
-    if (!tmp.exists())
+    if (!tmp.exists()) {
       tmp.mkdirs();
-    if (!tmp.isDirectory())
+    }
+    if (!tmp.isDirectory()) {
       throw new IllegalStateException(tmp + " is not a directory!");
-    if (!tmp.canRead())
+    }
+    if (!tmp.canRead()) {
       throw new IllegalStateException("Temp directory " + tmp + " is not readable!");
-    if (!tmp.canWrite())
+    }
+    if (!tmp.canWrite()) {
       throw new IllegalStateException("Temp directory " + tmp + " is not writable!");
+    }
     return tmp;
   }
 

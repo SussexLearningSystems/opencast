@@ -163,12 +163,14 @@ public class TasksEndpoint {
     }
 
     String workflowId = (String) metadataJson.get("workflow");
-    if (StringUtils.isBlank(workflowId))
+    if (StringUtils.isBlank(workflowId)) {
       return RestUtil.R.badRequest("No workflow set");
+    }
 
     List eventIds = (List) metadataJson.get("eventIds");
-    if (eventIds == null)
-        return RestUtil.R.badRequest("No eventIds set");
+    if (eventIds == null) {
+      return RestUtil.R.badRequest("No eventIds set");
+    }
 
     Map<String, String> configuration = (Map<String, String>) metadataJson.get("configuration");
     if (configuration == null) {

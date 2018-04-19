@@ -139,8 +139,9 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
       return defaultOrganization;
     }
     Organization org = cache.get(id);
-    if (org == null)
+    if (org == null) {
       throw new NotFoundException();
+    }
     return org;
   }
 
@@ -151,8 +152,9 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
       return defaultOrganization;
     }
     Organization org = cache.get(url);
-    if (org == null)
+    if (org == null) {
       throw new NotFoundException();
+    }
     return org;
   }
 
@@ -175,9 +177,10 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
    */
   public void addOrganization(Organization organization) {
     boolean contains = persistence.containsOrganization(organization.getId());
-    if (contains)
+    if (contains) {
       throw new IllegalStateException("Can not add an organization with id '" + organization.getId()
               + "' since an organization with that identifier has already been registered");
+    }
     persistence.storeOrganization(organization);
     cache.invalidate();
     fireOrganizationRegistered(organization);
@@ -204,10 +207,12 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
     final String server = (String) properties.get(ORG_SERVER_KEY);
 
     // Make sure the configuration meets the minimum requirements
-    if (StringUtils.isBlank(id))
+    if (StringUtils.isBlank(id)) {
       throw new ConfigurationException(ORG_ID_KEY, ORG_ID_KEY + " must be set");
-    if (StringUtils.isBlank(server))
+    }
+    if (StringUtils.isBlank(server)) {
       throw new ConfigurationException(ORG_SERVER_KEY, ORG_SERVER_KEY + " must be set");
+    }
 
     String[] serverUrls = StringUtils.split(server, ",");
 
@@ -275,16 +280,19 @@ public class OrganizationDirectoryServiceImpl implements OrganizationDirectorySe
 
   @Override
   public void addOrganizationDirectoryListener(OrganizationDirectoryListener listener) {
-    if (listener == null)
+    if (listener == null) {
       return;
-    if (!listeners.contains(listener))
+    }
+    if (!listeners.contains(listener)) {
       listeners.add(listener);
+    }
   }
 
   @Override
   public void removeOrganizationDirectoryListener(OrganizationDirectoryListener listener) {
-    if (listener == null)
+    if (listener == null) {
       return;
+    }
     listeners.remove(listener);
   }
 

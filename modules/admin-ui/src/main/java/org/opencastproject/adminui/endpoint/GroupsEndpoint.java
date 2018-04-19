@@ -208,10 +208,12 @@ public class GroupsEndpoint {
       }
     }
 
-    if (optLimit.isSome())
+    if (optLimit.isSome()) {
       query.withLimit(optLimit.get());
-    if (optOffset.isSome())
+    }
+    if (optOffset.isSome()) {
       query.withOffset(optOffset.get());
+    }
 
     SearchResult<Group> results;
     try {
@@ -312,8 +314,9 @@ public class GroupsEndpoint {
       @RestResponse(responseCode = SC_NOT_FOUND, description = "Group not found")})
   public Response getGroup(@PathParam("id") String groupId) throws NotFoundException, SearchIndexException {
     Opt<Group> groupOpt = indexService.getGroup(groupId, searchIndex);
-    if (groupOpt.isNone())
+    if (groupOpt.isNone()) {
       throw new NotFoundException("Group " + groupId + " does not exist.");
+    }
 
     Group group = groupOpt.get();
     return RestUtils.okJson(obj(f("id", v(group.getIdentifier())), f("name", v(group.getName(), Jsons.BLANK)),

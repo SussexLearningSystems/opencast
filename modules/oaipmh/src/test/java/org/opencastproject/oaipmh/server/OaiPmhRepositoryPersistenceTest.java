@@ -220,18 +220,24 @@ public class OaiPmhRepositoryPersistenceTest {
     return new Params() {
       @Override
       String getParameter(String key) {
-        if ("verb".equals(key))
+        if ("verb".equals(key)) {
           return verb;
-        if ("identifier".equals(key))
+        }
+        if ("identifier".equals(key)) {
           return identifier;
-        if ("metadataPrefix".equals(key))
+        }
+        if ("metadataPrefix".equals(key)) {
           return metadataPrefix;
-        if ("from".equals(key))
+        }
+        if ("from".equals(key)) {
           return from;
-        if ("until".equals(key))
+        }
+        if ("until".equals(key)) {
           return until;
-        if ("resumptionToken".equals(key))
+        }
+        if ("resumptionToken".equals(key)) {
           return resumptionToken;
+        }
         return null;
       }
 
@@ -265,10 +271,12 @@ public class OaiPmhRepositoryPersistenceTest {
               .getResource("/series-dublincore.xml").toURI());
       expect(workspace.read(EasyMock.anyObject())).andAnswer(() -> {
         final String uri = getCurrentArguments()[0].toString();
-        if ("dublincore.xml".equals(uri))
+        if ("dublincore.xml".equals(uri)) {
           return new FileInputStream(episodeDublinCore);
-        if ("series-dublincore.xml".equals(uri))
+        }
+        if ("series-dublincore.xml".equals(uri)) {
           return new FileInputStream(seriesDublinCore);
+        }
         throw new Error("Workspace mock does not know about file " + uri);
       }).anyTimes();
       EasyMock.replay(workspace);
@@ -296,8 +304,9 @@ public class OaiPmhRepositoryPersistenceTest {
           return new Date();
         }
       };
-      for (MediaPackage mp : mps)
+      for (MediaPackage mp : mps) {
         db.store(mp, REPOSITORY_ID);
+      }
       return db;
     } catch (Exception e) {
       return chuck(e);

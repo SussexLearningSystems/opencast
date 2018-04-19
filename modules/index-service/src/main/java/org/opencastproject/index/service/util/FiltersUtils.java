@@ -57,8 +57,9 @@ public final class FiltersUtils {
    */
   public static <A> ResourceListFilter<A> generateFilter(final Option<A> value, final String name, final String label,
           final SourceType type, final Option<String> valuesListName) throws IllegalArgumentException {
-    if (StringUtils.isBlank(name) || StringUtils.isBlank(label) || type == null)
+    if (StringUtils.isBlank(name) || StringUtils.isBlank(label) || type == null) {
       throw new IllegalArgumentException("The filter label, name or type must not be null!");
+    }
 
     return new AbstractListFilter<A>(value) {
 

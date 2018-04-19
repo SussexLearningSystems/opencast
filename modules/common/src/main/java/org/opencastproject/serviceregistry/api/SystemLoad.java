@@ -106,8 +106,9 @@ public class SystemLoad {
    *        The specific host from the map, if present.  If the node is not present, or the host value is null, this method returns null.
    */
   public NodeLoad get(String host) {
-    if (host != null && this.containsHost(host))
+    if (host != null && this.containsHost(host)) {
       return nodeLoads.get(host);
+    }
     return null;
   }
 
@@ -119,8 +120,9 @@ public class SystemLoad {
    *          True if the host is present, false if the host is not, or the host variable is null.
    */
   public boolean containsHost(String host) {
-    if (host != null)
+    if (host != null) {
       return nodeLoads.containsKey(host);
+    }
     return false;
   }
 

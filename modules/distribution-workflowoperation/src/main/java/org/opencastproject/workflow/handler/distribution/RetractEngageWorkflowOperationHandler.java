@@ -129,8 +129,9 @@ public class RetractEngageWorkflowOperationHandler extends AbstractWorkflowOpera
     super.activate(cc);
     BundleContext bundleContext = cc.getBundleContext();
 
-    if (StringUtils.isNotBlank(bundleContext.getProperty(STREAMING_URL_PROPERTY)))
+    if (StringUtils.isNotBlank(bundleContext.getProperty(STREAMING_URL_PROPERTY))) {
       distributeStreaming = true;
+    }
     }
 
   /**
@@ -189,8 +190,9 @@ public class RetractEngageWorkflowOperationHandler extends AbstractWorkflowOpera
 
       logger.info("Removing media package {} from the search index", mediaPackage);
       Job deleteFromSearch = searchService.delete(mediaPackage.getIdentifier().toString());
-      if (!waitForStatus(deleteFromSearch).isSuccess())
+      if (!waitForStatus(deleteFromSearch).isSuccess()) {
         throw new WorkflowOperationException("Removing media package from search did not complete successfully");
+      }
 
       logger.debug("Remove from search operation complete");
 

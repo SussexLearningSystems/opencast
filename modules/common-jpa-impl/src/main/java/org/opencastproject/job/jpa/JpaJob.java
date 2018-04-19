@@ -335,10 +335,12 @@ public class JpaJob {
       this.jobType = processorServiceRegistration.getServiceType();
     }
 
-    if (rootJob != null)
+    if (rootJob != null) {
       rootJobId = rootJob.id;
-    if (parentJob != null)
+    }
+    if (parentJob != null) {
       parentJobId = parentJob.id;
+    }
   }
 
   public void setProcessorServiceRegistration(ServiceRegistrationJpaImpl processorServiceRegistration) {

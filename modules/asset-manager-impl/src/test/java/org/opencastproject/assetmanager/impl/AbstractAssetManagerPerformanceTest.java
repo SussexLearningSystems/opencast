@@ -106,7 +106,9 @@ public class AbstractAssetManagerPerformanceTest extends AbstractAssetManagerTes
       }
     });
     // q.delete(q.propertiesOf(namespace)).where(q.organizationId(orgId).and(q.mediaPackageId(mpId))).run();
-    if (true) return;
+    if (true) {
+      return;
+    }
     benchmark("delete snapshots", new P1Lazy<P2<Unit, Integer>>() {
       @Override public P2<Unit, Integer> get1() {
         final Iterator<String> randomStrings = new ImmutableIteratorArrayAdapter<>(RANDOM_STRINGS);

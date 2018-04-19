@@ -74,8 +74,9 @@ public class SeriesSearchQuery extends AbstractSearchQuery {
     this.organization = organization;
     this.user = user;
     this.actions.add(Permissions.Action.READ.toString());
-    if (!user.getOrganization().getId().equals(organization))
+    if (!user.getOrganization().getId().equals(organization)) {
       throw new IllegalStateException("User's organization must match search organization");
+    }
   }
 
   /**
@@ -88,8 +89,9 @@ public class SeriesSearchQuery extends AbstractSearchQuery {
    * @return the enhanced search query
    */
   public SeriesSearchQuery withIdentifier(String id) {
-    if (StringUtils.isBlank(id))
+    if (StringUtils.isBlank(id)) {
       throw new IllegalArgumentException("Identifier cannot be null");
+    }
     this.identifiers.add(id);
     return this;
   }
@@ -146,8 +148,9 @@ public class SeriesSearchQuery extends AbstractSearchQuery {
    * @return the enhanced search query
    */
   public SeriesSearchQuery withAction(Action action) {
-    if (action == null)
+    if (action == null) {
       throw new IllegalArgumentException("Action cannot be null");
+    }
     clearExpectations();
     this.actions.add(action.toString());
     return this;
@@ -194,8 +197,9 @@ public class SeriesSearchQuery extends AbstractSearchQuery {
    * @return the enhanced search query
    */
   public SeriesSearchQuery withSubject(String subject) {
-    if (StringUtils.isBlank(subject))
+    if (StringUtils.isBlank(subject)) {
       throw new IllegalArgumentException("Subject cannot be null");
+    }
     clearExpectations();
     this.subjects.add(subject);
     return this;
@@ -370,8 +374,9 @@ public class SeriesSearchQuery extends AbstractSearchQuery {
    * @return the enhanced search query
    */
   public SeriesSearchQuery withOrganizer(String organizer) {
-    if (StringUtils.isBlank(organizer))
+    if (StringUtils.isBlank(organizer)) {
       throw new IllegalArgumentException("Organizer cannot be null");
+    }
     clearExpectations();
     this.organizers.add(organizer);
     return this;

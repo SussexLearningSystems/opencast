@@ -323,8 +323,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     Track inspectedTrack = (Track) MediaPackageElementParser.getFromXml(inspectionJob.getPayload());
     inspectedTrack.setIdentifier(targetTrackId);
 
-    if (profile.getMimeType() != null)
+    if (profile.getMimeType() != null) {
       inspectedTrack.setMimeType(MimeTypes.parseMimeType(profile.getMimeType()));
+    }
 
     return some(inspectedTrack);
   }
@@ -389,8 +390,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
 
       List<String> tags = profile.getTags();
       for (String tag : tags) {
-        if (encodingOutput.getName().endsWith(profile.getSuffix(tag)))
+        if (encodingOutput.getName().endsWith(profile.getSuffix(tag))) {
           inspectedTrack.addTag(tag);
+        }
       }
 
       encodedTracks.add(inspectedTrack);
@@ -485,8 +487,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     }
 
     // trim did not return a file
-    if (!output.exists() || output.length() == 0)
+    if (!output.exists() || output.length() == 0) {
       return none();
+    }
 
     // Put the file in the workspace
     URI workspaceURI = putToCollection(job, output, "trimmed file");
@@ -656,8 +659,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
           params.put("upper", upperLaidOutElement.get().getElement().getURI().toString());
         }
         params.put("lower", lowerLaidOutElement.getElement().getURI().toString());
-        if (watermarkFile != null)
+        if (watermarkFile != null) {
           params.put("watermark", watermarkOption.get().getElement().getURI().toString());
+        }
         params.put("profile", profile.getIdentifier());
         params.put("properties", properties.toString());
         incident().recordFailure(job, COMPOSITE_FAILED, e, params, detailsFor(e, encoderEngine));
@@ -685,8 +689,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
       Track inspectedTrack = (Track) MediaPackageElementParser.getFromXml(inspectionJob.getPayload());
       inspectedTrack.setIdentifier(targetTrackId);
 
-      if (profile.getMimeType() != null)
+      if (profile.getMimeType() != null) {
         inspectedTrack.setMimeType(MimeTypes.parseMimeType(profile.getMimeType()));
+      }
 
       return some(inspectedTrack);
     } catch (Exception e) {
@@ -811,8 +816,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     }
 
     // concat did not return a file
-    if (!output.exists() || output.length() == 0)
+    if (!output.exists() || output.length() == 0) {
       return none();
+    }
 
     // Put the file in the workspace
     URI workspaceURI = putToCollection(job, output, "concatenated file");
@@ -823,8 +829,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     Track inspectedTrack = (Track) MediaPackageElementParser.getFromXml(inspectionJob.getPayload());
     inspectedTrack.setIdentifier(targetTrackId);
 
-    if (profile.getMimeType() != null)
+    if (profile.getMimeType() != null) {
       inspectedTrack.setMimeType(MimeTypes.parseMimeType(profile.getMimeType()));
+    }
 
     return some(inspectedTrack);
   }
@@ -869,8 +876,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     logger.info("Converting image attachment {} into video {}", sourceImage.getIdentifier(), targetTrackId);
 
     Map<String, String> properties = new HashMap<>();
-    if (time == -1)
+    if (time == -1) {
       time = 0D;
+    }
 
     DecimalFormatSymbols ffmpegFormat = new DecimalFormatSymbols();
     ffmpegFormat.setDecimalSeparator('.');
@@ -892,8 +900,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     }
 
     // encoding did not return a file
-    if (!output.exists() || output.length() == 0)
+    if (!output.exists() || output.length() == 0) {
       return none();
+    }
 
     // Put the file in the workspace
     URI workspaceURI = putToCollection(job, output, "converted image file");
@@ -904,8 +913,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     Track inspectedTrack = (Track) MediaPackageElementParser.getFromXml(inspectionJob.getPayload());
     inspectedTrack.setIdentifier(targetTrackId);
 
-    if (profile.getMimeType() != null)
+    if (profile.getMimeType() != null) {
       inspectedTrack.setMimeType(MimeTypes.parseMimeType(profile.getMimeType()));
+    }
 
     return some(inspectedTrack);
   }
@@ -917,11 +927,13 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
    */
   @Override
   public Job image(Track sourceTrack, String profileId, double... times) throws EncoderException, MediaPackageException {
-    if (sourceTrack == null)
+    if (sourceTrack == null) {
       throw new IllegalArgumentException("SourceTrack cannot be null");
+    }
 
-    if (times.length == 0)
+    if (times.length == 0) {
       throw new IllegalArgumentException("At least one time argument has to be specified");
+    }
 
     List<String> parameters = new ArrayList<>();
     parameters.add(profileId);
@@ -942,8 +954,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
   @Override
   public Job image(Track sourceTrack, String profileId, Map<String, String> properties) throws EncoderException,
           MediaPackageException {
-    if (sourceTrack == null)
+    if (sourceTrack == null) {
       throw new IllegalArgumentException("SourceTrack cannot be null");
+    }
 
     List<String> arguments = new ArrayList<String>();
     arguments.add(profileId);
@@ -976,8 +989,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
    */
   protected List<Attachment> image(Job job, Track sourceTrack, String profileId, double... times)
           throws EncoderException, MediaPackageException {
-    if (sourceTrack == null)
+    if (sourceTrack == null) {
       throw new EncoderException("SourceTrack cannot be null");
+    }
 
     validateVideoStream(job, sourceTrack);
 
@@ -1022,8 +1036,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
    */
   protected List<Attachment> image(Job job, Track sourceTrack, String profileId, Map<String, String> properties)
           throws EncoderException, MediaPackageException {
-    if (sourceTrack == null)
+    if (sourceTrack == null) {
       throw new EncoderException("SourceTrack cannot be null");
+    }
 
     validateVideoStream(job, sourceTrack);
 
@@ -1124,8 +1139,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
    */
   @Override
   public Job convertImage(Attachment image, String profileId) throws EncoderException, MediaPackageException {
-    if (image == null)
+    if (image == null) {
       throw new IllegalArgumentException("Source image cannot be null");
+    }
 
     String[] parameters = new String[2];
     parameters[0] = profileId;
@@ -1193,8 +1209,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     }
 
     // encoding did not return a file
-    if (!output.exists() || output.length() == 0)
+    if (!output.exists() || output.length() == 0) {
       return none();
+    }
 
     // Put the file in the workspace
     URI workspaceURI = putToCollection(job, output, "converted image file");
@@ -1295,8 +1312,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
           String dimensionString = arguments.get(1);
           String frameRateString = arguments.get(2);
           Dimension outputDimension = null;
-          if (StringUtils.isNotBlank(dimensionString))
+          if (StringUtils.isNotBlank(dimensionString)) {
             outputDimension = Serializer.dimension(JsonObj.jsonObj(dimensionString));
+          }
           float outputFrameRate = NumberUtils.toFloat(frameRateString, -1.0f);
           List<Track> tracks = new ArrayList<>();
           for (int i = 3; i < arguments.size(); i++) {
@@ -1519,8 +1537,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
       // Add video scaling and check for audio
       int characterCount = 0;
       for (int i = 0; i < files.size(); i++) {
-        if ((i % 25) == 0)
+        if ((i % 25) == 0) {
           characterCount++;
+        }
         sb.append("[").append(i).append(":v]").append(fpsFilter)
                 .append("scale=iw*min(").append(dimension.getWidth()).append("/iw\\,")
                 .append(dimension.getHeight()).append("/ih):ih*min(").append(dimension.getWidth()).append("/iw\\,")
@@ -1532,15 +1551,17 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
           sb.append((char) character);
         }
         sb.append("];");
-        if (tracks.get(i).hasAudio())
+        if (tracks.get(i).hasAudio()) {
           hasAudio = true;
+        }
       }
 
       // Add silent audio streams if at least one audio stream is available
       if (hasAudio) {
         for (int i = 0; i < files.size(); i++) {
-          if (!tracks.get(i).hasAudio())
+          if (!tracks.get(i).hasAudio()) {
             sb.append("aevalsrc=0::d=1[silent").append(i + 1).append("];");
+          }
         }
       }
     }
@@ -1548,8 +1569,9 @@ public class ComposerServiceImpl extends AbstractJobProducer implements Composer
     // Add concat segments
     int characterCount = 0;
     for (int i = 0; i < files.size(); i++) {
-      if ((i % 25) == 0)
+      if ((i % 25) == 0) {
         characterCount++;
+      }
 
       int character = ('a' + i + 1 - ((characterCount - 1) * 25));
       if (!onlyAudio) {

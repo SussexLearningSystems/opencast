@@ -506,13 +506,15 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .where(withOrganization(query).and(query.mediaPackageId(mediaPackageId)).and(query.version().isLatest()))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       // Check for active transactions
       Opt<String> source = record.get().getProperties().apply(Properties.getStringOpt(SOURCE_CONFIG));
-      if (source.isSome() && persistence.hasTransaction(source.get()))
+      if (source.isSome() && persistence.hasTransaction(source.get())) {
         return true;
+      }
 
       return false;
     } catch (NotFoundException e) {
@@ -529,8 +531,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
     logger.debug(format("Transaction for source %s | create", schedulingSource));
     try {
       boolean hasTransaction = persistence.hasTransaction(schedulingSource);
-      if (hasTransaction)
+      if (hasTransaction) {
         throw new SchedulerConflictException("Transaction already exists");
+      }
 
       SchedulerTransaction transaction = new SchedulerTransactionImpl(schedulingSource);
       persistence.storeTransaction(transaction.getId(), schedulingSource);
@@ -566,8 +569,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
     notNull(optOutStatus, "optOutStatus");
     notNull(schedulingSource, "schedulingSource");
     notNull(trxId, "trxId");
-    if (endDateTime.before(startDateTime))
+    if (endDateTime.before(startDateTime)) {
       throw new IllegalArgumentException("The end date is before the start date");
+    }
 
     final String mediaPackageId = mediaPackage.getIdentifier().compact();
 
@@ -835,24 +839,28 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .where(withOrganization(query).and(query.mediaPackageId(mpId).and(query.version().isLatest())
                       .and(query.hasPropertiesOf(p.namespace()))));
       Opt<ARecord> optEvent = select.run().getRecords().head();
-      if (optEvent.isNone())
+      if (optEvent.isNone()) {
         throw new NotFoundException("No event found while updating event " + mpId);
+      }
 
       ARecord record = optEvent.get();
-      if (record.getSnapshot().isNone())
+      if (record.getSnapshot().isNone()) {
         throw new NotFoundException("No mediapackage found while updating event " + mpId);
+      }
 
       Opt<DublinCoreCatalog> dublinCoreOpt = loadEpisodeDublinCoreFromAsset(record.getSnapshot().get());
-      if (dublinCoreOpt.isNone())
+      if (dublinCoreOpt.isNone()) {
         throw new NotFoundException("No dublincore found while updating event " + mpId);
+      }
 
       verifyActive(mpId, record);
 
       Date start = record.getProperties().apply(Properties.getDate(START_DATE_CONFIG));
       Date end = record.getProperties().apply(Properties.getDate(END_DATE_CONFIG));
 
-      if ((startDateTime.isSome() || endDateTime.isSome()) && endDateTime.getOr(end).before(startDateTime.getOr(start)))
+      if ((startDateTime.isSome() || endDateTime.isSome()) && endDateTime.getOr(end).before(startDateTime.getOr(start))) {
         throw new SchedulerException("The end date is before the start date");
+      }
 
       String agentId = record.getProperties().apply(Properties.getString(AGENT_CONFIG));
       Opt<String> seriesId = Opt.nul(record.getSnapshot().get().getMediaPackage().getSeries());
@@ -919,8 +927,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
         caProperties = caMetadataToUpdate;
       }
 
-      if (captureAgentId.isSome())
+      if (captureAgentId.isSome()) {
         propertiesChanged = true;
+      }
 
       Opt<AccessControlList> acl = Opt.none();
       Opt<DublinCoreCatalog> dublinCore = Opt.none();
@@ -1000,16 +1009,19 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
   private Opt<AccessControlList> loadEpisodeAclFromAsset(Snapshot snapshot) {
     Option<MediaPackageElement> acl = mlist(snapshot.getMediaPackage().getElements())
             .filter(MediaPackageSupport.Filters.isEpisodeAcl).headOpt();
-    if (acl.isNone())
+    if (acl.isNone()) {
       return Opt.none();
+    }
 
     Opt<Asset> asset = assetManager.getAsset(snapshot.getVersion(),
             snapshot.getMediaPackage().getIdentifier().compact(), acl.get().getIdentifier());
-    if (asset.isNone())
+    if (asset.isNone()) {
       return Opt.none();
+    }
 
-    if (Availability.OFFLINE.equals(asset.get().getAvailability()))
+    if (Availability.OFFLINE.equals(asset.get().getAvailability())) {
       return Opt.none();
+    }
 
     InputStream inputStream = null;
     try {
@@ -1026,16 +1038,19 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
   private Opt<DublinCoreCatalog> loadEpisodeDublinCoreFromAsset(Snapshot snapshot) {
     Option<MediaPackageElement> dcCatalog = mlist(snapshot.getMediaPackage().getElements())
             .filter(MediaPackageSupport.Filters.isEpisodeDublinCore).headOpt();
-    if (dcCatalog.isNone())
+    if (dcCatalog.isNone()) {
       return Opt.none();
+    }
 
     Opt<Asset> asset = assetManager.getAsset(snapshot.getVersion(),
             snapshot.getMediaPackage().getIdentifier().compact(), dcCatalog.get().getIdentifier());
-    if (asset.isNone())
+    if (asset.isNone()) {
       return Opt.none();
+    }
 
-    if (Availability.OFFLINE.equals(asset.get().getAvailability()))
+    if (Availability.OFFLINE.equals(asset.get().getAvailability())) {
       return Opt.none();
+    }
 
     InputStream inputStream = null;
     try {
@@ -1100,8 +1115,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                 .where(withOrganization(query).and(query.mediaPackageId(mediaPackageId))).name("delete all properties")
                 .run();
 
-        if (StringUtils.isNotEmpty(agentId))
+        if (StringUtils.isNotEmpty(agentId)) {
           touchLastEntry(agentId);
+        }
       }
 
       // Delete scheduler snapshot
@@ -1109,8 +1125,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .where(withOrganization(query).and(query.mediaPackageId(mediaPackageId)))
               .name("delete episode").run();
 
-      if (deletedProperties + deletedSnapshots == 0)
+      if (deletedProperties + deletedSnapshots == 0) {
         throw new NotFoundException();
+      }
 
       messageSender.sendObjectMessage(SchedulerItem.SCHEDULER_QUEUE, MessageSender.DestinationType.Queue,
               SchedulerItem.delete(mediaPackageId));
@@ -1129,8 +1146,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
 
     try {
       Opt<MediaPackage> mp = getEventMediaPackage(mediaPackageId);
-      if (mp.isNone())
+      if (mp.isNone()) {
         throw new NotFoundException();
+      }
 
       return mp.get();
     } catch (NotFoundException e) {
@@ -1153,12 +1171,14 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace())))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       Opt<DublinCoreCatalog> dublinCore = loadEpisodeDublinCoreFromAsset(record.get().getSnapshot().get());
-      if (dublinCore.isNone())
+      if (dublinCore.isNone()) {
         throw new NotFoundException("No dublincore catalog found " + mediaPackageId);
+      }
 
       return dublinCore.get();
     } catch (NotFoundException e) {
@@ -1185,8 +1205,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace())))
               .run();
       final Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       return getTechnicalMetadata(record.get(), p);
     } catch (NotFoundException e) {
@@ -1209,12 +1230,14 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace())))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       Opt<AccessControlList> acl = loadEpisodeAclFromAsset(record.get().getSnapshot().get());
-      if (acl.isNone())
+      if (acl.isNone()) {
         return null;
+      }
 
       return acl.get();
     } catch (NotFoundException e) {
@@ -1238,8 +1261,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .run();
 
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       return record.get().getProperties().group(toKey, toValue);
     } catch (NotFoundException e) {
@@ -1264,8 +1288,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .run();
 
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       return record.get().getProperties().group(toKey, toValue);
     } catch (NotFoundException e) {
@@ -1287,8 +1312,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .select(p.optOut().target()).where(withOrganization(query).and(query.mediaPackageId(mediaPackageId))
                       .and(query.version().isLatest()).and(p.optOut().exists()))
               .run().getRecords().bind(ARecords.getProperties).head();
-      if (optOut.isNone())
+      if (optOut.isNone()) {
         throw new NotFoundException();
+      }
 
       return optOut.get().getValue().get(Value.BOOLEAN);
     } catch (NotFoundException e) {
@@ -1328,12 +1354,14 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .run();
 
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       Opt<MediaPackage> mp = record.bind(recordToMp);
-      if (mp.isNone())
+      if (mp.isNone()) {
         throw new NotFoundException();
+      }
 
       String agentId = record.get().getProperties().apply(Properties.getString(AGENT_CONFIG));
       Date start = record.get().getProperties().apply(Properties.getDate(START_DATE_CONFIG));
@@ -1355,8 +1383,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
     try {
       boolean isBlacklisted = false;
       if (persistence.isBlacklisted(agentId, start, end)
-              || persistence.isBlacklisted(new ArrayList<>(presenters), start, end))
+              || persistence.isBlacklisted(new ArrayList<>(presenters), start, end)) {
         isBlacklisted = true;
+      }
       return isBlacklisted;
     } catch (SchedulerServiceDatabaseException e) {
       logger.error("Failed to get blacklist status of event with mediapackage '{}': {}", mediaPackageId,
@@ -1524,13 +1553,15 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
         Interval currentInterval = new Interval(start.getTime(), end.getTime());
 
         List<Interval> intervals = invervalMap.get(agentId);
-        if (intervals == null)
+        if (intervals == null) {
           intervals = new ArrayList<>();
+        }
 
         boolean overlaps = false;
         for (Interval i : intervals) {
-          if (!i.overlaps(currentInterval))
+          if (!i.overlaps(currentInterval)) {
             continue;
+          }
 
           overlaps = true;
           break;
@@ -1631,8 +1662,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
         blacklisted = false;
 
         // Skip blacklisted events
-        if (blacklisted)
+        if (blacklisted) {
           continue;
+        }
 
         Opt<MediaPackage> optMp = record.getSnapshot().map(episodeToMp);
 
@@ -1684,8 +1716,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
       return cal.getCalendar().toString();
 
     } catch (Exception e) {
-      if (e instanceof SchedulerException)
+      if (e instanceof SchedulerException) {
         throw e;
+      }
       logger.error("Failed getting calendar: {}", getStackTrace(e));
       throw new SchedulerException(e);
     }
@@ -1705,8 +1738,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace()))))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       Date now = new Date();
       assetManager.setProperty(p.reviewDate().mk(mediaPackageId, now));
@@ -1734,8 +1768,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace()))))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       return record.get().getProperties().apply(getStringOpt(REVIEW_STATUS_CONFIG)).map(toReviewStatus).getOr(UNSENT);
     } catch (NotFoundException e) {
@@ -1752,8 +1787,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
 
     try {
       String lastModified = lastModifiedCache.getIfPresent(captureAgentId);
-      if (lastModified != null)
+      if (lastModified != null) {
         return lastModified;
+      }
 
       populateLastModifiedCache();
 
@@ -1823,8 +1859,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(query.hasPropertiesOf(p.namespace()))))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       Opt<String> recordingState = record.get().getProperties().apply(Properties.getStringOpt(RECORDING_STATE_CONFIG));
       Opt<Long> lastHeard = record.get().getProperties().apply(Properties.getLongOpt(RECORDING_LAST_HEARD_CONFIG));
@@ -1871,8 +1908,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                       .and(p.recordingLastHeard().exists()))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone() || record.get().getProperties().isEmpty())
+      if (record.isNone() || record.get().getProperties().isEmpty()) {
         throw new NotFoundException();
+      }
 
       String recordingState = record.get().getProperties().apply(Properties.getString(RECORDING_STATE_CONFIG));
       Long lastHeard = record.get().getProperties().apply(Properties.getLong(RECORDING_LAST_HEARD_CONFIG));
@@ -1896,8 +1934,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               .and(query.mediaPackageId(id).and(query.version().isLatest())).and(query.hasPropertiesOf(p.namespace())))
               .run();
       Opt<ARecord> record = result.getRecords().head();
-      if (record.isNone())
+      if (record.isNone()) {
         throw new NotFoundException();
+      }
 
       query = assetManager.createQuery();
       p = new Props(query);
@@ -2073,8 +2112,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
           String captureAgentId, Opt<String> seriesId, Opt<DublinCoreCatalog> dublinCore) {
     Map<String, String> properties = new HashMap<>();
     for (Entry<String, String> entry : caMetadata.entrySet()) {
-      if (entry.getKey().startsWith(WORKFLOW_CONFIG_PREFIX))
+      if (entry.getKey().startsWith(WORKFLOW_CONFIG_PREFIX)) {
         continue;
+      }
       properties.put(entry.getKey(), entry.getValue());
     }
     for (Entry<String, String> entry : wfProperties.entrySet()) {
@@ -2120,8 +2160,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
 
   private String toPropertyString(Map<String, String> properties) {
     StringBuilder wfPropertiesString = new StringBuilder();
-    for (Map.Entry<String, String> entry : properties.entrySet())
+    for (Map.Entry<String, String> entry : properties.entrySet()) {
       wfPropertiesString.append(entry.getKey() + "=" + entry.getValue() + "\n");
+    }
     return wfPropertiesString.toString();
   }
 
@@ -2133,8 +2174,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                     .and(query.hasPropertiesOf(p.namespace())))
             .run();
     Opt<ARecord> record = result.getRecords().head();
-    if (record.isNone())
+    if (record.isNone()) {
       return Opt.none();
+    }
 
     return record.bind(recordToMp);
   }
@@ -2194,8 +2236,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
             .group(toKey, toValue);
 
     Recording recording = null;
-    if (recordingStatus.isSome() && lastHeard.isSome())
+    if (recordingStatus.isSome() && lastHeard.isSome()) {
       recording = new RecordingImpl(record.getMediaPackageId(), recordingStatus.get(), lastHeard.get());
+    }
 
     return new TechnicalMetadataImpl(record.getMediaPackageId(), agentId, start, end, optOut, presenters, wfProperties,
             caMetadata, Opt.nul(recording));
@@ -2222,8 +2265,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
   }
 
   private void sendRecordingUpdate(Recording recording) {
-    if (RecordingState.UNKNOWN.equals(recording.getState()))
+    if (RecordingState.UNKNOWN.equals(recording.getState())) {
       return;
+    }
 
     messageSender.sendObjectMessage(SchedulerItem.SCHEDULER_QUEUE, MessageSender.DestinationType.Queue, SchedulerItem
             .updateRecordingStatus(recording.getID(), recording.getState(), recording.getLastCheckinTime()));
@@ -2314,8 +2358,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
             MediaPackage mediaPackage, Map<String, String> wfProperties, Map<String, String> caMetadata,
             Opt<Boolean> optOut) throws NotFoundException, UnauthorizedException, SchedulerException {
       try {
-        if (!persistence.hasTransaction(schedulingSource))
+        if (!persistence.hasTransaction(schedulingSource)) {
           throw new NotFoundException("No transaction found with id " + id);
+        }
       } catch (SchedulerServiceDatabaseException e) {
         logger.error("Unable to get transaction {}", id);
         throw new SchedulerException(e);
@@ -2329,8 +2374,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
 
       // Check if already a transaction on the same source is available for the given mediapackage
       AResult result = query.select(query.nothing()).where(predicate.and(trxp.transactionId().exists())).run();
-      if (result.getRecords().head().isSome())
+      if (result.getRecords().head().isSome()) {
         throw new SchedulerException("Only one invocation per transaction and mediapackage identifier allowed!");
+      }
 
       result = query.select(query.nothing()).where(predicate).run();
       Opt<ARecord> record = result.getRecords().head();
@@ -2486,8 +2532,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
             // skip start, end, agent, presenters, optout
             PropertyName fqn = prop.getId().getFqn();
             if (fqn.equals(trxP.start().name()) || fqn.equals(trxP.end().name()) || fqn.equals(trxP.agent().name())
-                    || fqn.equals(trxP.presenters().name()) || fqn.equals(trxP.optOut().name()))
+                    || fqn.equals(trxP.presenters().name()) || fqn.equals(trxP.optOut().name())) {
               continue;
+            }
             mergedProperties.add(prop);
           }
           trxProperties = mergedProperties;
@@ -2534,11 +2581,13 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
               Opt.some($(trxCAProperties).group(toKey, toValue)), Opt.some(optOut));
 
       // Touch last entries
-      if (oldAgentId.isSome())
+      if (oldAgentId.isSome()) {
         touchLastEntry(oldAgentId.get());
+      }
 
-      if (newAgentId.isSome())
+      if (newAgentId.isSome()) {
         touchLastEntry(newAgentId.get());
+      }
     }
 
     private void persistTransactionEvent(AQueryBuilder query, Props p, TrxProps trxP, ARecord record,
@@ -2546,8 +2595,9 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
       // Override properties
       for (Property prop : trxProperties) {
         // ignore transaction id
-        if (trxP.transactionId().name().getName().equals(prop.getId().getName()))
+        if (trxP.transactionId().name().getName().equals(prop.getId().getName())) {
           continue;
+        }
         assetManager.setProperty(
                 Property.mk(PropertyId.mk(prop.getId().getMediaPackageId(), p.namespace(), prop.getId().getName()),
                         prop.getValue()));
@@ -2803,9 +2853,10 @@ public class SchedulerServiceImpl extends AbstractIndexProducer implements Sched
                               IndexRecreateObject
                                       .update(indexName, IndexRecreateObject.Service.Scheduler, total, current));
                     }
-                    if (recordingStatus.isSome() && lastHeard.isSome())
+                    if (recordingStatus.isSome() && lastHeard.isSome()) {
                       sendRecordingUpdate(
                               new RecordingImpl(record.getMediaPackageId(), recordingStatus.get(), lastHeard.get()));
+                    }
                     current++;
                   }
                 } catch (Exception e) {

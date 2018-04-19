@@ -78,8 +78,9 @@ public class WaveformServiceEndpoint extends AbstractJobProducerEndpoint {
   public Response createWaveformImage(@FormParam("track") String track) {
     try {
       MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(track);
-      if (!Track.TYPE.equals(sourceTrack.getElementType()))
+      if (!Track.TYPE.equals(sourceTrack.getElementType())) {
         return Response.status(Response.Status.BAD_REQUEST).entity("Track element must be of type track").build();
+      }
 
       Job job = waveformService.createWaveformImage((Track) sourceTrack);
       return Response.ok().entity(new JaxbJob(job)).build();

@@ -111,14 +111,16 @@ public class ExportWorkflowPropertiesWOH extends AbstractWorkflowOperationHandle
       workflowProps = loadPropertiesFromXml(workspace, existingPropsElem.get().getURI());
 
       // Remove specified keys
-      for (String key : keys)
+      for (String key : keys) {
         workflowProps.remove(key);
+      }
     }
 
     // Extend with specified properties
     for (String key : workflowInstance.getConfigurationKeys()) {
-      if (keys.isEmpty() || keys.contains(key))
+      if (keys.isEmpty() || keys.contains(key)) {
         workflowProps.put(key, workflowInstance.getConfiguration(key));
+      }
     }
 
     // Store properties as an attachment
@@ -144,8 +146,9 @@ public class ExportWorkflowPropertiesWOH extends AbstractWorkflowOperationHandle
     }
 
     // Update attachment
-    if (existingPropsElem.isSome())
+    if (existingPropsElem.isSome()) {
       mediaPackage.remove(existingPropsElem.get());
+    }
     mediaPackage.add(attachment);
 
     logger.info("Added properties from {} as Attachment with flavor {}", workflowInstance, targetFlavorString);

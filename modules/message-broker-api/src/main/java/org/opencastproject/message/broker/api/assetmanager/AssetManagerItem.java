@@ -134,8 +134,9 @@ public abstract class AssetManagerItem implements MessageItem, Serializable {
     }
 
     public Opt<DublinCoreCatalog> getEpisodeDublincore() {
-      if (episodeDublincore == null)
+      if (episodeDublincore == null) {
         return Opt.none();
+      }
 
       try (InputStream is = IOUtils.toInputStream(episodeDublincore, "UTF-8")) {
         return Opt.some(DublinCores.read(is));

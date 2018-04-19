@@ -81,23 +81,29 @@ public class EventsListProvider implements ResourceListProvider {
     Map<String, String> list = new HashMap<String, String>();
 
     if (CONTRIBUTORS.equals(listName)) {
-      for (String contributor : index.getEventContributors())
+      for (String contributor : index.getEventContributors()) {
         list.put(contributor, contributor);
+      }
     } else if (PRESENTERS_BIBLIOGRAPHIC.equals(listName)) {
-      for (String presenter : index.getEventPresenters())
+      for (String presenter : index.getEventPresenters()) {
         list.put(presenter, presenter);
+      }
     } else if (PRESENTERS_TECHNICAL.equals(listName)) {
-      for (String presenter : index.getEventTechnicalPresenters())
+      for (String presenter : index.getEventTechnicalPresenters()) {
         list.put(presenter, presenter);
+      }
     } else if (LOCATION.equals(listName)) {
-      for (String location : index.getEventLocations())
+      for (String location : index.getEventLocations()) {
         list.put(location, location);
+      }
     } else if (SUBJECT.equals(listName)) {
-      for (String subject : index.getEventSubjects())
+      for (String subject : index.getEventSubjects()) {
         list.put(subject, subject);
+      }
     } else if (PROGRESS.equals(listName)) {
-      for (WorkflowState progress : WorkflowState.values())
+      for (WorkflowState progress : WorkflowState.values()) {
         list.put(progress.toString(), progress.toString());
+      }
     } else if (STATUS.equals(listName)) {
       list.put("EVENTS.EVENTS.STATUS.SCHEDULED", "EVENTS.EVENTS.STATUS.SCHEDULED");
       list.put("EVENTS.EVENTS.STATUS.OPTEDOUT", "EVENTS.EVENTS.STATUS.OPTEDOUT");
@@ -116,8 +122,9 @@ public class EventsListProvider implements ResourceListProvider {
         list.put(status.name(), "EVENTS.EVENTS.REVIEW_STATUS." + status.name());
       }
     } else if (COMMENTS.equals(listName)) {
-      for (Comments comments : Comments.values())
+      for (Comments comments : Comments.values()) {
         list.put(comments.toString(), comments.toString());
+      }
     }
 
     return list;

@@ -235,8 +235,9 @@ public abstract class OaiPmhRepository {
   private XmlGen handleListMetadataFormats(final Params p) {
     for (String id : p.getIdentifier()) {
       final SearchResult res = getPersistence().search(queryRepo(getRepositoryId()).mediaPackageId(id).build());
-      if (res.getItems().size() != 1)
+      if (res.getItems().size() != 1) {
         return createIdDoesNotExistResponse(p);
+      }
     }
     return new OaiVerbXmlGen(this, p) {
       @Override
@@ -443,8 +444,9 @@ public abstract class OaiPmhRepository {
       final boolean otherParamExists = p.getMetadataPrefix().isSome() || p.getFrom().isSome() || p.getUntil().isSome()
               || p.getSet().isSome();
 
-      if (resumptionTokenExists && otherParamExists || !resumptionTokenExists && !otherParamExists)
+      if (resumptionTokenExists && otherParamExists || !resumptionTokenExists && !otherParamExists) {
         return createBadArgumentResponse(p);
+      }
       final Option<Date> from = p.getFrom().map(asDate).map(granulate);
 
       final Function<Date, Date> untilAdjustment = getRepositoryTimeGranularity() == Granularity.DAY ? addDay(1)
@@ -456,8 +458,10 @@ public abstract class OaiPmhRepository {
         }
       }
       if (otherParamExists && p.getMetadataPrefix().isNone())
+       {
         return createBadArgumentResponse(p);
       // <- params are ok
+      }
 
       final Option<Date> until = untilGranularity.orElse(some(currentDate()));
 
@@ -571,8 +575,9 @@ public abstract class OaiPmhRepository {
       @Override
       public Element create() {
         final List<Node> content = new ArrayList<Node>(createContent(params.getSet()));
-        if (content.size() == 0)
+        if (content.size() == 0) {
           return createNoRecordsMatchResponse(params.getParams()).create();
+        }
         content.add(resumptionToken(params.getResumptionToken(), params.getMetadataPrefix(), params.getResult(),
                                     params.getUntil(), params.getSet()));
         return oai(

@@ -167,8 +167,9 @@ public final class HttpUtil {
       public HttpResponse xapply(HttpResponse response) {
         final int sc = response.getStatusLine().getStatusCode();
         for (int s : status) {
-          if (sc == s)
+          if (sc == s) {
             return response;
+          }
         }
         String responseBody;
         try {

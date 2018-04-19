@@ -156,47 +156,56 @@ public class CatalogBuilderPlugin implements MediaPackageElementBuilderPlugin {
 
       // size
       String documentSize = xpath.evaluate("size/text()", elementNode).trim();
-      if (!"".equals(documentSize))
+      if (!"".equals(documentSize)) {
         size = Long.parseLong(documentSize);
+      }
 
       // checksum
       String checksumValue = (String) xpath.evaluate("checksum/text()", elementNode, XPathConstants.STRING);
       String checksumType = (String) xpath.evaluate("checksum/@type", elementNode, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(checksumValue) && checksumType != null)
+      if (StringUtils.isNotEmpty(checksumValue) && checksumType != null) {
         checksum = Checksum.create(checksumType.trim(), checksumValue.trim());
+      }
 
       // mimetype
       String mimeTypeValue = (String) xpath.evaluate("mimetype/text()", elementNode, XPathConstants.STRING);
-      if (StringUtils.isNotEmpty(mimeTypeValue))
+      if (StringUtils.isNotEmpty(mimeTypeValue)) {
         mimeType = MimeTypes.parseMimeType(mimeTypeValue);
+      }
 
       // create the catalog
       Catalog dc = CatalogImpl.fromURI(url);
-      if (StringUtils.isNotEmpty(id))
+      if (StringUtils.isNotEmpty(id)) {
         dc.setIdentifier(id);
+      }
 
       // Add url
       dc.setURI(url);
 
       // Add flavor
-      if (flavor != null)
+      if (flavor != null) {
         dc.setFlavor(MediaPackageElementFlavor.parseFlavor(flavor));
+      }
 
       // Add reference
-      if (StringUtils.isNotEmpty(reference))
+      if (StringUtils.isNotEmpty(reference)) {
         dc.referTo(MediaPackageReferenceImpl.fromString(reference));
+      }
 
       // Set size
-      if (size > 0)
+      if (size > 0) {
         dc.setSize(size);
+      }
 
       // Set checksum
-      if (checksum != null)
+      if (checksum != null) {
         dc.setChecksum(checksum);
+      }
 
       // Set Mimetype
-      if (mimeType != null)
+      if (mimeType != null) {
         dc.setMimeType(mimeType);
+      }
 
       // Tags
       NodeList tagNodes = (NodeList) xpath.evaluate("tags/tag", elementNode, XPathConstants.NODESET);

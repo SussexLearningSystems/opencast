@@ -156,14 +156,17 @@ public final class Period {
 
   public Obj toJson() {
     List<Prop> props = new ArrayList<>();
-    for (Long identifier : id)
+    for (Long identifier : id) {
       props.add(Jsons.p("id", identifier));
+    }
     props.add(Jsons.p("start", DateTimeSupport.toUTC(start.getTime())));
     props.add(Jsons.p("end", DateTimeSupport.toUTC(end.getTime())));
-    for (String p : purpose)
+    for (String p : purpose) {
       props.add(Jsons.p("purpose", p));
-    for (String c : comment)
+    }
+    for (String c : comment) {
       props.add(Jsons.p("comment", c));
+    }
 
     return Jsons.obj(props.toArray(new Prop[props.size()]));
   }

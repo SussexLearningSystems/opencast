@@ -157,10 +157,12 @@ public final class EventCommentReply {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     EventCommentReply reply = (EventCommentReply) o;
     return text.equals(reply.getText()) && creationDate.equals(reply.getCreationDate())
             && modificationDate.equals(reply.getModificationDate()) && author.equals(reply.getAuthor());
@@ -181,8 +183,9 @@ public final class EventCommentReply {
             Jsons.p("email", author.getEmail()));
 
     Val idValue = Jsons.ZERO_VAL;
-    if (id.isSome())
+    if (id.isSome()) {
       idValue = Jsons.v(id.get());
+    }
 
     return Jsons.obj(Jsons.p("id", idValue), Jsons.p("text", text), Jsons.p("author", authorObj),
             Jsons.p("creationDate", DateTimeSupport.toUTC(creationDate.getTime())),
@@ -194,8 +197,9 @@ public final class EventCommentReply {
             f("email", v(author.getEmail(), BLANK)));
 
     JValue idValue = com.entwinemedia.fn.data.json.Jsons.ZERO;
-    if (id.isSome())
+    if (id.isSome()) {
       idValue = v(id.get());
+    }
 
     List<Field> fields = new ArrayList<>();
     fields.add(f("id", idValue));

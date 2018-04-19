@@ -487,8 +487,9 @@ public final class SearchServiceImpl extends AbstractJobProducer implements Sear
   @Override
   public SearchResult getForAdministrativeRead(SearchQuery q) throws SearchException, UnauthorizedException {
     User user = securityService.getUser();
-    if (!user.hasRole(GLOBAL_ADMIN_ROLE) && !user.hasRole(user.getOrganization().getAdminRole()))
+    if (!user.hasRole(GLOBAL_ADMIN_ROLE) && !user.hasRole(user.getOrganization().getAdminRole())) {
       throw new UnauthorizedException(user, getClass().getName() + ".getForAdministrativeRead");
+    }
 
     try {
       return solrRequester.getForAdministrativeRead(q);
@@ -549,8 +550,9 @@ public final class SearchServiceImpl extends AbstractJobProducer implements Sear
           securityService.setUser(null);
         }
       }
-      if (errors > 0)
+      if (errors > 0) {
         logger.error("Skipped {} erroneous search entries while populating the search index", errors);
+      }
       logger.info("Finished populating search index");
     }
   }
@@ -628,14 +630,16 @@ public final class SearchServiceImpl extends AbstractJobProducer implements Sear
   /** Dynamic reference. */
   public void setStaticMetadataService(StaticMetadataService mdService) {
     this.mdServices.add(mdService);
-    if (indexManager != null)
+    if (indexManager != null) {
       indexManager.setStaticMetadataServices(mdServices);
+    }
   }
 
   public void unsetStaticMetadataService(StaticMetadataService mdService) {
     this.mdServices.remove(mdService);
-    if (indexManager != null)
+    if (indexManager != null) {
       indexManager.setStaticMetadataServices(mdServices);
+    }
   }
 
   public void setMpeg7CatalogService(Mpeg7CatalogService mpeg7CatalogService) {
@@ -732,8 +736,9 @@ public final class SearchServiceImpl extends AbstractJobProducer implements Sear
    */
   protected void setMediaPackageSerializer(MediaPackageSerializer serializer) {
     this.serializer = serializer;
-    if (solrRequester != null)
+    if (solrRequester != null) {
       solrRequester.setMediaPackageSerializer(serializer);
+    }
   }
 
   @Override

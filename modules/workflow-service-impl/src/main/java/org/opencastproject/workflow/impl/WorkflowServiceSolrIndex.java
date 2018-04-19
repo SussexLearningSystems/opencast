@@ -462,8 +462,9 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
     if (mp.getContributors() != null && mp.getContributors().length > 0) {
       StringBuffer buf = new StringBuffer();
       for (String contributor : mp.getContributors()) {
-        if (buf.length() > 0)
+        if (buf.length() > 0) {
           buf.append("; ");
+        }
         buf.append(contributor);
       }
       doc.addField(CONTRIBUTOR_KEY, buf.toString());
@@ -471,8 +472,9 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
     if (mp.getCreators() != null && mp.getCreators().length > 0) {
       StringBuffer buf = new StringBuffer();
       for (String creator : mp.getCreators()) {
-        if (buf.length() > 0)
+        if (buf.length() > 0) {
           buf.append("; ");
+        }
         buf.append(creator);
       }
       doc.addField(CREATOR_KEY, buf.toString());
@@ -480,8 +482,9 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
     if (mp.getSubjects() != null && mp.getSubjects().length > 0) {
       StringBuffer buf = new StringBuffer();
       for (String subject : mp.getSubjects()) {
-        if (buf.length() > 0)
+        if (buf.length() > 0) {
           buf.append("; ");
+        }
         buf.append(subject);
       }
       doc.addField(SUBJECT_KEY, buf.toString());
@@ -571,15 +574,17 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
 
     // Consider the current operation
     if (StringUtils.isNotBlank(operation)) {
-      if (query.length() > 0)
+      if (query.length() > 0) {
         query.append(" AND ");
+      }
       query.append(OPERATION_KEY).append(":").append(escapeQueryChars(operation));
     }
 
     // We want all available workflows for this organization
     String orgId = securityService.getOrganization().getId();
-    if (query.length() > 0)
+    if (query.length() > 0) {
       query.append(" AND ");
+    }
     query.append(ORG_KEY).append(":").append(escapeQueryChars(orgId));
 
     appendSolrAuthFragment(query, Permissions.Action.READ.toString());
@@ -774,10 +779,11 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
     }
     sb.append(key);
     sb.append(":");
-    if (toLowerCase)
+    if (toLowerCase) {
       sb.append(escapeQueryChars(value.toLowerCase()));
-    else
+    } else {
       sb.append(escapeQueryChars(value));
+    }
     return sb;
   }
 
@@ -824,10 +830,12 @@ public class WorkflowServiceSolrIndex implements WorkflowServiceIndex {
     if (sb.length() > 0) {
       sb.append(" AND ");
     }
-    if (startDate == null)
+    if (startDate == null) {
       startDate = new Date(0);
-    if (endDate == null)
+    }
+    if (endDate == null) {
       endDate = new Date(Long.MAX_VALUE);
+    }
     sb.append(key);
     sb.append(":");
     sb.append(SolrUtils.serializeDateRange(option(startDate), option(endDate)));

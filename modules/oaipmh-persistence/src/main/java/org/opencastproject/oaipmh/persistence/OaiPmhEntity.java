@@ -241,8 +241,9 @@ public class OaiPmhEntity {
     // as we do not expect to many media package elements per media package, we can filter them in java
     List<OaiPmhElementEntity> filteredElements = new ArrayList<>();
     for (OaiPmhElementEntity element : mediaPackageElements) {
-      if (StringUtils.equals(elementType, element.getElementType()))
+      if (StringUtils.equals(elementType, element.getElementType())) {
         filteredElements.add(element);
+      }
     }
     return filteredElements;
   }

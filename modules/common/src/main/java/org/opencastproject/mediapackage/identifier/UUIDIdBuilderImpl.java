@@ -47,8 +47,9 @@ public class UUIDIdBuilderImpl implements IdBuilder {
    * @see org.opencastproject.mediapackage.identifier.IdBuilder#fromString(String)
    */
   public Id fromString(String id) throws IllegalArgumentException {
-    if (id == null)
+    if (id == null) {
       throw new IllegalArgumentException("Argument 'id' is null");
+    }
     try {
       UUID.fromString(id);
     } catch (IllegalArgumentException e) {

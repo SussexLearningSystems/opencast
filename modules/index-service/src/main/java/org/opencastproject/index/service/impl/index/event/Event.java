@@ -1175,8 +1175,9 @@ public class Event implements IndexObject {
   }
 
   public boolean hasRecordingStarted() {
-    if (getSchedulingStatus() == null)
+    if (getSchedulingStatus() == null) {
       return true;
+    }
 
     Date startDate = new DateTime(getTechnicalStartTime()).toDate();
     Date now = new DateTime().toDate();
@@ -1359,8 +1360,9 @@ public class Event implements IndexObject {
     BufferedReader streamReader = new BufferedReader(new InputStreamReader(json, "UTF-8"));
     StringBuilder jsonStringBuilder = new StringBuilder();
     String inputStr;
-    while ((inputStr = streamReader.readLine()) != null)
+    while ((inputStr = streamReader.readLine()) != null) {
       jsonStringBuilder.append(inputStr);
+    }
 
     JSONObject obj = new JSONObject(jsonStringBuilder.toString());
     Configuration config = new Configuration();

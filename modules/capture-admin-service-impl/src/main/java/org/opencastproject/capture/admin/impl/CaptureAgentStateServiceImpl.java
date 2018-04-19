@@ -180,8 +180,9 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
       em = emf.createEntityManager();
       return getAgentEntity(name, org, em);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -245,12 +246,15 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
    */
   @Override
   public boolean setAgentState(String agentName, String state) {
-    if (StringUtils.isBlank(agentName))
+    if (StringUtils.isBlank(agentName)) {
       throw new IllegalArgumentException("Unable to set agent state, agent name is blank or null.");
-    if (StringUtils.isBlank(state))
+    }
+    if (StringUtils.isBlank(state)) {
       throw new IllegalArgumentException("Unable to set agent state, state is blank or null.");
-    if (!KNOWN_STATES.contains(state))
+    }
+    if (!KNOWN_STATES.contains(state)) {
       throw new IllegalArgumentException("Can not set agent to an invalid state: ".concat(state));
+    }
 
     logger.debug("Agent '{}' state set to '{}'", agentName, state);
     AgentImpl agent;
@@ -343,8 +347,9 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
   @Override
   public boolean setAgentUrl(String agentName, String agentUrl) throws NotFoundException {
     Agent agent = getAgent(agentName);
-    if (agent.getUrl().equals(agentUrl))
+    if (agent.getUrl().equals(agentUrl)) {
       return false;
+    }
     agent.setUrl(agentUrl);
     updateAgentInDatabase((AgentImpl) agent);
     return true;
@@ -409,8 +414,9 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
       }
       return map;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -453,8 +459,9 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
    */
   @Override
   public boolean setAgentConfiguration(String agentName, Properties configuration) {
-    if (StringUtils.isBlank(agentName))
+    if (StringUtils.isBlank(agentName)) {
       throw new IllegalArgumentException("Unable to set agent state, agent name is blank or null.");
+    }
 
     String orgId = securityService.getOrganization().getId();
     AgentImpl agent;
@@ -537,8 +544,9 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
       logger.warn("Unable to commit to DB in updateAgent.");
       throw e;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -557,16 +565,18 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
       tx.begin();
       String org = securityService.getOrganization().getId();
       Agent existing = getAgentEntity(agentName, org, em);
-      if (existing == null)
+      if (existing == null) {
         throw new NotFoundException();
+      }
       em.remove(existing);
       tx.commit();
       agentCache.invalidate(agentName.concat(DELIMITER).concat(org));
     } catch (RollbackException e) {
       logger.warn("Unable to commit to DB in deleteAgent.");
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -628,24 +638,28 @@ public class CaptureAgentStateServiceImpl implements CaptureAgentStateService, M
   public void updated(String pid, Dictionary<String, ?> properties) throws ConfigurationException {
     // Get the agent properties
     String nameConfig = (String) properties.get("id");
-    if (isBlank(nameConfig))
+    if (isBlank(nameConfig)) {
       throw new ConfigurationException("id", "must be specified");
+    }
 
     nameConfig = nameConfig.trim();
 
     String urlConfig = (String) properties.get("url");
-    if (isBlank(urlConfig))
+    if (isBlank(urlConfig)) {
       throw new ConfigurationException("url", "must be specified");
+    }
     urlConfig = urlConfig.trim();
 
     String orgConfig = (String) properties.get("organization");
-    if (isBlank(orgConfig))
+    if (isBlank(orgConfig)) {
       throw new ConfigurationException("organization", "must be specified");
+    }
     orgConfig = orgConfig.trim();
 
     String schedulerRolesConfig = (String) properties.get("schedulerRoles");
-    if (isBlank(schedulerRolesConfig))
+    if (isBlank(schedulerRolesConfig)) {
       throw new ConfigurationException("schedulerRoles", "must be specified");
+    }
     String[] schedulerRoles = schedulerRolesConfig.trim().split(",");
 
     // If we don't already have a mapping for this PID, create one

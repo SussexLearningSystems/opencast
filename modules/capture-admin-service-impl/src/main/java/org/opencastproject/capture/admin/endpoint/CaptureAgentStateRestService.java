@@ -137,8 +137,9 @@ public class CaptureAgentStateRestService {
     }, returnDescription = "")
   public Response getAgentState(@PathParam("name") String agentName, @PathParam("format") String format)
           throws NotFoundException {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     Agent ret = service.getAgent(agentName);
     logger.debug("Returning agent state for {}", agentName);
@@ -209,8 +210,9 @@ public class CaptureAgentStateRestService {
       @RestResponse(description = "The agent {agentname} does not exist", responseCode = SC_NOT_FOUND)
     }, returnDescription = "")
   public Response removeAgent(@PathParam("name") String agentName) throws NotFoundException {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     service.removeAgent(agentName);
 
@@ -230,8 +232,9 @@ public class CaptureAgentStateRestService {
       @RestResponse(description = "An XML representation of the agent capabilities", responseCode = SC_OK)
     }, returnDescription = "")
   public Response getKnownAgents(@PathParam("type") String type) {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     logger.debug("Returning list of known agents...");
     LinkedList<AgentStateUpdate> update = new LinkedList<AgentStateUpdate>();
@@ -264,8 +267,9 @@ public class CaptureAgentStateRestService {
     }, returnDescription = "")
   public Response getCapabilities(@PathParam("name") String agentName, @PathParam("type") String type)
           throws NotFoundException {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     PropertiesResponse r = new PropertiesResponse(service.getAgentCapabilities(agentName));
     if ("json".equals(type)) {
@@ -290,8 +294,9 @@ public class CaptureAgentStateRestService {
     }, returnDescription = "")
   public Response getConfiguration(@PathParam("name") String agentName, @PathParam("type") String type)
           throws NotFoundException {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     PropertiesResponse r = new PropertiesResponse(service.getAgentConfiguration(agentName));
     logger.debug("Returning configuration for the agent {}", agentName);
@@ -321,8 +326,9 @@ public class CaptureAgentStateRestService {
         responseCode = SC_BAD_REQUEST)
     }, returnDescription = "")
   public Response setConfiguration(@PathParam("name") String agentName, @FormParam("configuration") String configuration) {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     if (StringUtils.isBlank(configuration)) {
       logger.debug("The configuration data cannot be blank");
@@ -416,8 +422,9 @@ public class CaptureAgentStateRestService {
       @RestResponse(description = "Recording with {id} could not be found", responseCode = HttpServletResponse.SC_NOT_FOUND)
     }, returnDescription = "")
   public Response setRecordingState(@PathParam("id") String id, @FormParam("state") String state) throws NotFoundException {
-    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(state))
+    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(state)) {
       return Response.serverError().status(Response.Status.BAD_REQUEST).build();
+    }
 
     try {
       if (schedulerService.updateRecordingState(id, state)) {
@@ -444,8 +451,9 @@ public class CaptureAgentStateRestService {
       @RestResponse(description = "Recording with {id} could not be found", responseCode = SC_NOT_FOUND),
     }, returnDescription = "")
   public Response removeRecording(@PathParam("id") String id) throws NotFoundException {
-    if (StringUtils.isEmpty(id))
+    if (StringUtils.isEmpty(id)) {
       return Response.serverError().status(Response.Status.BAD_REQUEST).build();
+    }
 
     try {
       schedulerService.removeRecording(id);

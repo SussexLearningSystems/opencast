@@ -79,13 +79,15 @@ public class UserEndpoint {
           @RestParameter(defaultValue = "0", description = "The page number.", isRequired = false, name = "offset", type = RestParameter.Type.INTEGER) }, reponses = { @RestResponse(responseCode = SC_OK, description = "The user accounts.") })
   public Response getUsersAsXml(@QueryParam("query") String queryString, @QueryParam("limit") int limit,
           @QueryParam("offset") int offset) throws IOException {
-    if (limit < 1)
+    if (limit < 1) {
       limit = 100;
+    }
 
     String query = "%";
     if (StringUtils.isNotBlank(queryString)) {
-      if (queryString.trim().length() < 3)
+      if (queryString.trim().length() < 3) {
         return Response.status(Status.BAD_REQUEST).build();
+      }
       query = queryString;
     }
 
@@ -116,8 +118,9 @@ public class UserEndpoint {
           @RestResponse(responseCode = SC_NOT_FOUND, description = "User not found") })
   public JaxbUser getUserAsXml(@PathParam("username") String username) throws NotFoundException {
     User user = userDirectoryService.loadUser(username);
-    if (user == null)
+    if (user == null) {
       throw new NotFoundException();
+    }
     return JaxbUser.fromUser(user);
   }
 

@@ -159,24 +159,25 @@ public abstract class AbstractSearchIndex extends AbstractElasticsearchIndex {
    */
   public synchronized void recreateIndex(String service)
           throws IllegalArgumentException, InterruptedException, ExecutionException, IndexServiceException {
-    if (StringUtils.equalsIgnoreCase("Groups", StringUtils.trim(service)))
+    if (StringUtils.equalsIgnoreCase("Groups", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Groups);
-    else if (StringUtils.equalsIgnoreCase("Acl", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Acl", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Acl);
-    else if (StringUtils.equalsIgnoreCase("Themes", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Themes", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Themes);
-    else if (StringUtils.equalsIgnoreCase("Series", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Series", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Series);
-    else if (StringUtils.equalsIgnoreCase("Scheduler", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Scheduler", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Scheduler);
-    else if (StringUtils.equalsIgnoreCase("Workflow", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Workflow", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Workflow);
-    else if (StringUtils.equalsIgnoreCase("AssetManager", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("AssetManager", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.AssetManager);
-    else if (StringUtils.equalsIgnoreCase("Comments", StringUtils.trim(service)))
+    } else if (StringUtils.equalsIgnoreCase("Comments", StringUtils.trim(service))) {
       recreateService(IndexRecreateObject.Service.Comments);
-    else
+    } else {
       throw new IllegalArgumentException("Unknown service " + service);
+    }
   }
 
   /**
@@ -402,8 +403,9 @@ public abstract class AbstractSearchIndex extends AbstractElasticsearchIndex {
    */
   public void deleteAssets(String organization, User user, String uid) throws SearchIndexException, NotFoundException {
     Event event = EventIndexUtils.getEvent(uid, organization, user, this);
-    if (event == null)
+    if (event == null) {
       throw new NotFoundException("No event with id " + uid + " found.");
+    }
 
     event.setArchiveVersion(null);
 
@@ -431,8 +433,9 @@ public abstract class AbstractSearchIndex extends AbstractElasticsearchIndex {
   public void deleteScheduling(String organization, User user, String uid)
           throws SearchIndexException, NotFoundException {
     Event event = EventIndexUtils.getEvent(uid, organization, user, this);
-    if (event == null)
+    if (event == null) {
       throw new NotFoundException("No event with id " + uid + " found.");
+    }
 
     event.setOptedOut(null);
     event.setBlacklisted(null);
@@ -467,8 +470,9 @@ public abstract class AbstractSearchIndex extends AbstractElasticsearchIndex {
   public void deleteWorkflow(String organization, User user, String uid, Long workflowId)
           throws SearchIndexException, NotFoundException {
     Event event = EventIndexUtils.getEvent(uid, organization, user, this);
-    if (event == null)
+    if (event == null) {
       throw new NotFoundException("No event with id " + uid + " found.");
+    }
 
     if (event.getWorkflowId() == workflowId) {
       logger.debug("Workflow {} is the current workflow of event {}. Removing it from event.", uid, workflowId);
@@ -612,8 +616,9 @@ public abstract class AbstractSearchIndex extends AbstractElasticsearchIndex {
     TermsBuilder aggBuilder = AggregationBuilders.terms(facetName).field(field);
     SearchRequestBuilder search = getSearchClient().prepareSearch(getIndexName()).addAggregation(aggBuilder);
 
-    if (types.isSome())
+    if (types.isSome()) {
       search = search.setTypes(types.get());
+    }
 
     SearchResponse response = search.execute().actionGet();
 

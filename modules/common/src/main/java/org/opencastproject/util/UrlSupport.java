@@ -96,8 +96,9 @@ public final class UrlSupport {
    */
   public static String[] sort(String[] urls) {
     TreeSet<String> set = new TreeSet<String>();
-    for (int i = 0; i < urls.length; i++)
+    for (int i = 0; i < urls.length; i++) {
       set.add(urls[i]);
+    }
     String[] result = new String[urls.length];
     Iterator<String> i = set.iterator();
     int index = 0;
@@ -126,20 +127,24 @@ public final class UrlSupport {
    * @return the concatenated url of the two arguments
    */
   public static String concat(String prefix, String suffix, boolean close) {
-    if (prefix == null)
+    if (prefix == null) {
       throw new IllegalArgumentException("Argument prefix is null");
-    if (suffix == null)
+    }
+    if (suffix == null) {
       throw new IllegalArgumentException("Argument suffix is null");
+    }
 
     prefix = checkSeparator(prefix);
     suffix = checkSeparator(suffix);
     prefix = removeDoubleSeparator(prefix);
     suffix = removeDoubleSeparator(suffix);
 
-    if (!prefix.endsWith("/") && !suffix.startsWith("/"))
+    if (!prefix.endsWith("/") && !suffix.startsWith("/")) {
       prefix += "/";
-    if (prefix.endsWith("/") && suffix.startsWith("/"))
+    }
+    if (prefix.endsWith("/") && suffix.startsWith("/")) {
       suffix = suffix.substring(1);
+    }
 
     prefix += suffix;
 
@@ -158,10 +163,12 @@ public final class UrlSupport {
    * @return the concatenated url
    */
   public static String concat(String... parts) {
-    if (parts == null)
+    if (parts == null) {
       throw new IllegalArgumentException("Argument parts is null");
-    if (parts.length == 0)
+    }
+    if (parts.length == 0) {
       throw new IllegalArgumentException("Array parts is empty");
+    }
     String path = parts[0];
     for (int i = 1; i < parts.length; i++) {
       if (parts[i] != null) {
@@ -179,10 +186,12 @@ public final class UrlSupport {
    * @return the concatenated url
    */
   public static String concat(List<String> parts) {
-    if (parts == null)
+    if (parts == null) {
       throw new IllegalArgumentException("Argument parts is null");
-    if (parts.size() == 0)
+    }
+    if (parts.size() == 0) {
       throw new IllegalArgumentException("Array parts is empty");
+    }
     return mlist(parts).reducel(new Function2<String, String, String>() {
       @Override
       public String apply(String s, String s1) {
@@ -205,19 +214,22 @@ public final class UrlSupport {
    * @return the trimmed url
    */
   public static String trim(String url) {
-    if (url == null)
+    if (url == null) {
       throw new IllegalArgumentException("Argument url is null");
+    }
 
     url = url.trim();
     url = checkSeparator(url);
 
-    if (url.endsWith("/") || (url.length() == 1))
+    if (url.endsWith("/") || (url.length() == 1)) {
       return url;
+    }
 
     int index = url.lastIndexOf("/");
     index = url.indexOf(".", index);
-    if (index == -1)
+    if (index == -1) {
       url += "/";
+    }
     return url;
   }
 
@@ -226,8 +238,9 @@ public final class UrlSupport {
    */
   private static String checkSeparator(String path) {
     String sp = File.separator;
-    if ("\\".equals(sp))
+    if ("\\".equals(sp)) {
       sp = "\\\\";
+    }
     return path.replaceAll(sp, "/");
   }
 
@@ -276,8 +289,9 @@ public final class UrlSupport {
     if (isExtendedPrefix(a, b)) {
       if (a.length() < b.length()) {
         String bRest = b.substring(a.length() + 1);
-        if (bRest.endsWith("/"))
+        if (bRest.endsWith("/")) {
           bRest = bRest.substring(0, bRest.length() - 2);
+        }
         return bRest.indexOf("/", 1) < 0;
       } else {
         return true;
@@ -301,10 +315,11 @@ public final class UrlSupport {
    */
   public static boolean isExtendedPrefix(String a, String b) {
     if (b.startsWith(a)) {
-      if (b.length() > a.length())
+      if (b.length() > a.length()) {
         return a.endsWith("/") || b.substring(a.length()).startsWith("/");
-      else
+      } else {
         return true;
+      }
     }
     return false;
   }
@@ -331,8 +346,9 @@ public final class UrlSupport {
           extension = extension.substring(0, extension.length() - 1);
         }
         return extension;
-      } else
+      } else {
         return "";
+      }
     }
     return null;
   }
@@ -350,12 +366,13 @@ public final class UrlSupport {
    * @return the url extension or <code>null</code> if no extension can be found
    */
   public static String getExtension(String url) {
-    if (url.endsWith("/**"))
+    if (url.endsWith("/**")) {
       return "/**";
-    else if (url.endsWith("/*"))
+    } else if (url.endsWith("/*")) {
       return "/*";
-    else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -367,10 +384,11 @@ public final class UrlSupport {
    */
   public static String stripExtension(String url) {
     String extension = getExtension(url);
-    if (extension == null)
+    if (extension == null) {
       return url;
-    else
+    } else {
       return url.substring(0, url.length() - extension.length());
+    }
   }
 
   /**

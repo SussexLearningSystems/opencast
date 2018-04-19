@@ -115,13 +115,15 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       }
       tx.commit();
     } catch (Exception e) {
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       logger.error("Could not updated last modifed date of agent {} status: {}", agentId, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -131,8 +133,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     try {
       em = emf.createEntityManager();
       LastModifiedDto entity = em.find(LastModifiedDto.class, agentId);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Agent with ID " + agentId + " does not exist");
+      }
 
       return entity.getLastModifiedDate();
     } catch (NotFoundException e) {
@@ -141,8 +144,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve last modified date for agent with id '{}': {}", agentId, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -163,8 +167,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve last modified dates: {}", getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -184,8 +189,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve id for transaction with source '{}': {}", source, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -195,8 +201,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     try {
       em = emf.createEntityManager();
       Opt<TransactionDto> entity = getTransactionDto(id, em);
-      if (entity.isNone())
+      if (entity.isNone()) {
         throw new NotFoundException("Transaction with ID " + id + " does not exist");
+      }
 
       return entity.get().getSource();
     } catch (NotFoundException e) {
@@ -205,8 +212,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve source for transaction with id '{}': {}", id, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -216,8 +224,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     try {
       em = emf.createEntityManager();
       Opt<TransactionDto> entity = getTransactionDto(id, em);
-      if (entity.isNone())
+      if (entity.isNone()) {
         throw new NotFoundException("Transaction with ID " + id + " does not exist");
+      }
 
       return entity.get().getLastModifiedDate();
     } catch (NotFoundException e) {
@@ -226,8 +235,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve last modified date for transaction with id '{}': {}", id, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -250,8 +260,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve transactions: {}", getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -271,8 +282,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       logger.error("Could not retrieve transaction with source '{}': {}", source, getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -299,12 +311,14 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       tx.commit();
     } catch (Exception e) {
       logger.error("Could not store transaction: {}", getStackTrace(e));
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -317,8 +331,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       tx = em.getTransaction();
       tx.begin();
       Opt<TransactionDto> entity = getTransactionDto(id, em);
-      if (entity.isNone())
+      if (entity.isNone()) {
         throw new NotFoundException("Transaction with ID " + id + " does not exist");
+      }
 
       em.remove(entity.get());
       tx.commit();
@@ -326,12 +341,14 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
       throw e;
     } catch (Exception e) {
       logger.error("Could not delete transaction with id '{}': {}", id, getStackTrace(e));
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -371,13 +388,15 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (NotFoundException e) {
       throw e;
     } catch (Exception e) {
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       logger.error("Could not delete extended event: {}", getStackTrace(e));
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -405,8 +424,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (Exception e) {
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -421,8 +441,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (Exception e) {
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -437,8 +458,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (Exception e) {
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -452,8 +474,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (Exception e) {
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -467,8 +490,9 @@ public class SchedulerServiceDatabaseImpl implements SchedulerServiceDatabase {
     } catch (Exception e) {
       throw new SchedulerServiceDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

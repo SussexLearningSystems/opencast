@@ -93,15 +93,18 @@ public class SeriesListProvider implements ResourceListProvider {
       if (query.hasFilter(FILTER_TEXT)) {
         StringListFilter filter = (StringListFilter) query.getFilter(FILTER_TEXT);
 
-        if (filter.getValue().isSome())
+        if (filter.getValue().isSome()) {
           q.setText(filter.getValue().get());
+        }
       }
 
-      if (query.getLimit().isSome())
+      if (query.getLimit().isSome()) {
         q.setCount(query.getLimit().get());
+      }
 
-      if (query.getOffset().isSome())
+      if (query.getOffset().isSome()) {
         q.setStartPage(query.getOffset().get());
+      }
     }
 
     List<DublinCoreCatalog> result = null;
@@ -120,12 +123,14 @@ public class SeriesListProvider implements ResourceListProvider {
     for (DublinCoreCatalog dc : result) {
       if (CONTRIBUTORS.equals(listName)) {
         String contributor = dc.getFirst(DublinCore.PROPERTY_CONTRIBUTOR);
-        if (StringUtils.isNotBlank(contributor))
+        if (StringUtils.isNotBlank(contributor)) {
           series.put(contributor, contributor);
+        }
       } else if (ORGANIZERS.equals(listName)) {
         String organizer = dc.getFirst(DublinCore.PROPERTY_CREATOR);
-        if (StringUtils.isNotBlank(organizer))
+        if (StringUtils.isNotBlank(organizer)) {
           series.put(organizer, organizer);
+        }
       } else if (TITLE_EXTENDED.equals(listName)) {
         String created = dc.getFirst(DublinCoreCatalog.PROPERTY_CREATED);
         String organizer = dc.getFirst(DublinCore.PROPERTY_CREATOR);
@@ -137,8 +142,9 @@ public class SeriesListProvider implements ResourceListProvider {
             calendar.setTime(EncodingSchemeUtils.decodeDate(created));
             extendedTitleData.add(Integer.toString(calendar.get(Calendar.YEAR)));
           }
-          if (StringUtils.isNotBlank(organizer))
+          if (StringUtils.isNotBlank(organizer)) {
             extendedTitleData.add(organizer);
+          }
           sb.append(" (").append(StringUtils.join(extendedTitleData, ", ")).append(")");
         }
         series.put(dc.getFirst(DublinCore.PROPERTY_IDENTIFIER), sb.toString());

@@ -241,8 +241,9 @@ public class ToolsEndpoint implements ManagedService {
                   @RestResponse(description = "Available tools evaluated", responseCode = HttpServletResponse.SC_OK) })
   public Response getAvailableTools(@PathParam("mediapackageid") final String mediaPackageId) {
     final List<JValue> jTools = new ArrayList<>();
-    if (isEditorAvailable(mediaPackageId))
+    if (isEditorAvailable(mediaPackageId)) {
       jTools.add(v("editor"));
+    }
 
     return RestUtils.okJson(obj(f("available", arr(jTools))));
   }
@@ -283,8 +284,9 @@ public class ToolsEndpoint implements ManagedService {
                   @RestResponse(description = "Media package not found", responseCode = SC_NOT_FOUND) })
   public Response getVideoEditor(@PathParam("mediapackageid") final String mediaPackageId)
           throws IndexServiceException, NotFoundException {
-    if (!isEditorAvailable(mediaPackageId))
+    if (!isEditorAvailable(mediaPackageId)) {
       return R.notFound();
+    }
 
     // Select tracks
     final Event event = getEvent(mediaPackageId).get();
@@ -315,8 +317,9 @@ public class ToolsEndpoint implements ManagedService {
       }
       jPreviews.add(obj(f("uri", v(elementUri.toString())), f("flavor", v(element.getFlavor().getType()))));
 
-      if (!Type.Track.equals(element.getElementType()))
+      if (!Type.Track.equals(element.getElementType())) {
         continue;
+      }
 
       JObject jTrack = obj(f("id", v(element.getIdentifier())), f("flavor", v(element.getFlavor().getType())));
       // Check if there's a waveform for the current track
@@ -468,9 +471,10 @@ public class ToolsEndpoint implements ManagedService {
             return trackId.equals(a.getIdentifier());
           }
         }).head();
-        if (trackOpt.isNone())
+        if (trackOpt.isNone()) {
           throw new IllegalStateException(
                   format("The track '%s' doesn't exist in media package '%s'", trackId, mediaPackage));
+        }
 
         track = trackOpt.get();
       }
@@ -613,8 +617,9 @@ public class ToolsEndpoint implements ManagedService {
     }).filter(new Fn<Attachment, Boolean>() {
       @Override
       public Boolean apply(Attachment att) {
-        if (track.getFlavor() == null || att.getFlavor() == null)
+        if (track.getFlavor() == null || att.getFlavor() == null) {
           return false;
+        }
 
         return track.getFlavor().getType().equals(att.getFlavor().getType())
                 && att.getFlavor().getSubtype().equals(adminUIConfiguration.getWaveformSubtype());
@@ -667,8 +672,9 @@ public class ToolsEndpoint implements ManagedService {
       }
     }
 
-    if (!segments.isEmpty())
+    if (!segments.isEmpty()) {
       return segments;
+    }
 
     // Read from silence detection flavors
     for (Catalog smilCatalog : mediaPackage.getCatalogs(adminUIConfiguration.getSmilSilenceFlavor())) {
@@ -687,8 +693,9 @@ public class ToolsEndpoint implements ManagedService {
     // Check for single segment to ignore
     if (segments.size() == 1) {
       Tuple<Long, Long> singleSegment = segments.get(0);
-      if (singleSegment.getA() == 0 && singleSegment.getB() >= mediaPackage.getDuration())
+      if (singleSegment.getA() == 0 && singleSegment.getB() >= mediaPackage.getDuration()) {
         segments.remove(0);
+      }
     }
 
     return segments;
@@ -799,8 +806,9 @@ public class ToolsEndpoint implements ManagedService {
         final JSONObject jSegment = (JSONObject) segment;
         final Long start = (Long) jSegment.get(START_KEY);
         final Long end = (Long) jSegment.get(END_KEY);
-        if (end < start)
+        if (end < start) {
           throw new IllegalArgumentException("The end date of a segment must be after the start date of the segment");
+        }
         segments.add(Tuple.tuple(start, end));
       }
 

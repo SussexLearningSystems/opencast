@@ -149,8 +149,9 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
   public WorkflowSet getWorkflowInstances(WorkflowQuery query) throws WorkflowDatabaseException {
     List<NameValuePair> queryStringParams = new ArrayList<NameValuePair>();
 
-    if (query.getText() != null)
+    if (query.getText() != null) {
       queryStringParams.add(new BasicNameValuePair("q", query.getText()));
+    }
 
     if (query.getStates() != null) {
       for (QueryTerm stateQueryTerm : query.getStates()) {
@@ -166,41 +167,53 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
       }
     }
 
-    if (query.getSeriesId() != null)
+    if (query.getSeriesId() != null) {
       queryStringParams.add(new BasicNameValuePair("seriesId", query.getSeriesId()));
+    }
 
-    if (query.getSeriesTitle() != null)
+    if (query.getSeriesTitle() != null) {
       queryStringParams.add(new BasicNameValuePair("seriesTitle", query.getSeriesTitle()));
+    }
 
-    if (query.getMediaPackageId() != null)
+    if (query.getMediaPackageId() != null) {
       queryStringParams.add(new BasicNameValuePair("mp", query.getMediaPackageId()));
+    }
 
-    if (query.getWorkflowDefinitionId() != null)
+    if (query.getWorkflowDefinitionId() != null) {
       queryStringParams.add(new BasicNameValuePair("workflowdefinition", query.getWorkflowDefinitionId()));
+    }
 
-    if (query.getFromDate() != null)
+    if (query.getFromDate() != null) {
       queryStringParams.add(new BasicNameValuePair("fromdate", SolrUtils.serializeDate(query.getFromDate())));
+    }
 
-    if (query.getToDate() != null)
+    if (query.getToDate() != null) {
       queryStringParams.add(new BasicNameValuePair("todate", SolrUtils.serializeDate(query.getToDate())));
+    }
 
-    if (query.getCreator() != null)
+    if (query.getCreator() != null) {
       queryStringParams.add(new BasicNameValuePair("creator", query.getCreator()));
+    }
 
-    if (query.getContributor() != null)
+    if (query.getContributor() != null) {
       queryStringParams.add(new BasicNameValuePair("contributor", query.getContributor()));
+    }
 
-    if (query.getLanguage() != null)
+    if (query.getLanguage() != null) {
       queryStringParams.add(new BasicNameValuePair("language", query.getLanguage()));
+    }
 
-    if (query.getLicense() != null)
+    if (query.getLicense() != null) {
       queryStringParams.add(new BasicNameValuePair("license", query.getLicense()));
+    }
 
-    if (query.getTitle() != null)
+    if (query.getTitle() != null) {
       queryStringParams.add(new BasicNameValuePair("title", query.getTitle()));
+    }
 
-    if (query.getSubject() != null)
+    if (query.getSubject() != null) {
       queryStringParams.add(new BasicNameValuePair("subject", query.getSubject()));
+    }
 
     if (query.getSort() != null) {
       String sort = query.getSort().toString();
@@ -210,22 +223,26 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
       queryStringParams.add(new BasicNameValuePair("sort", sort));
     }
 
-    if (query.getStartPage() > 0)
+    if (query.getStartPage() > 0) {
       queryStringParams.add(new BasicNameValuePair("startPage", Long.toString(query.getStartPage())));
+    }
 
-    if (query.getCount() > 0)
+    if (query.getCount() > 0) {
       queryStringParams.add(new BasicNameValuePair("count", Long.toString(query.getCount())));
+    }
 
     StringBuilder url = new StringBuilder();
     url.append("/instances.xml");
-    if (queryStringParams.size() > 0)
+    if (queryStringParams.size() > 0) {
       url.append("?" + URLEncodedUtils.format(queryStringParams, "UTF-8"));
+    }
 
     HttpGet get = new HttpGet(url.toString());
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return WorkflowParser.parseWorkflowSet(response.getEntity().getContent());
+      }
     } catch (Exception e) {
       throw new WorkflowDatabaseException(e);
     } finally {
@@ -255,8 +272,9 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
     HttpGet get = new HttpGet("/statistics.xml");
     HttpResponse response = getResponse(get);
     try {
-      if (response != null)
+      if (response != null) {
         return WorkflowParser.parseWorkflowStatistics(response.getEntity().getContent());
+      }
     } catch (Exception e) {
       throw new WorkflowDatabaseException("Unable to load workflow statistics", e);
     } finally {
@@ -312,13 +330,16 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
     HttpPost post = new HttpPost("/start");
     try {
       List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-      if (workflowDefinition != null)
+      if (workflowDefinition != null) {
         params.add(new BasicNameValuePair("definition", WorkflowParser.toXml(workflowDefinition)));
+      }
       params.add(new BasicNameValuePair("mediapackage", MediaPackageParser.getAsXml(mediaPackage)));
-      if (parentWorkflowId != null)
+      if (parentWorkflowId != null) {
         params.add(new BasicNameValuePair("parent", parentWorkflowId.toString()));
-      if (properties != null)
+      }
+      if (properties != null) {
         params.add(new BasicNameValuePair("properties", mapToString(properties)));
+      }
       post.setEntity(new UrlEncodedFormEntity(params));
     } catch (Exception e) {
       throw new IllegalStateException("Unable to assemble a remote workflow request", e);
@@ -377,10 +398,12 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
   @Override
   public long countWorkflowInstances(WorkflowState state, String operation) throws WorkflowDatabaseException {
     List<NameValuePair> queryStringParams = new ArrayList<NameValuePair>();
-    if (state != null)
+    if (state != null) {
       queryStringParams.add(new BasicNameValuePair("state", state.toString()));
-    if (operation != null)
+    }
+    if (operation != null) {
       queryStringParams.add(new BasicNameValuePair("operation", operation));
+    }
 
     StringBuilder url = new StringBuilder("/count");
     if (queryStringParams.size() > 0) {
@@ -503,8 +526,9 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
     HttpPost post = new HttpPost("/resume");
     List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
     params.add(new BasicNameValuePair("id", Long.toString(workflowInstanceId)));
-    if (properties != null)
+    if (properties != null) {
       params.add(new BasicNameValuePair("properties", mapToString(properties)));
+    }
     post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
     HttpResponse response = getResponse(post, SC_OK, SC_NOT_FOUND, SC_UNAUTHORIZED, SC_CONFLICT);
     try {
@@ -701,8 +725,9 @@ public class WorkflowServiceRemoteImpl extends RemoteBase implements WorkflowSer
 
     List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
     params.add(new BasicNameValuePair("lifetime", String.valueOf(lifetime)));
-    if (state != null)
+    if (state != null) {
       params.add(new BasicNameValuePair("state", state.toString()));
+    }
     try {
       post.setEntity(new UrlEncodedFormEntity(params));
     } catch (UnsupportedEncodingException e) {

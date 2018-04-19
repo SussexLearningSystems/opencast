@@ -131,8 +131,9 @@ public class TesseractTextExtractor implements TextExtractor, ManagedService {
    */
   @Override
   public TextFrame extract(File image) throws TextExtractorException {
-    if (binary == null)
+    if (binary == null) {
       throw new IllegalStateException("Binary is not set");
+    }
 
     InputStream is = null;
     File outputFile = null;

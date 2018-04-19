@@ -165,8 +165,9 @@ public final class AccessControlParser {
       Object jsonAceObj = jsonAcl.get(ACE);
 
       AccessControlList acl = new AccessControlList();
-      if (jsonAceObj == null)
+      if (jsonAceObj == null) {
         return acl;
+      }
 
       if (jsonAceObj instanceof JSONObject) {
         JSONObject jsonAce = (JSONObject) jsonAceObj;

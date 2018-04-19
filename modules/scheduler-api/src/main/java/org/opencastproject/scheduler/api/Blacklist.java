@@ -184,10 +184,12 @@ public class Blacklist {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     Blacklist blacklist = (Blacklist) o;
     return blacklisted.equals(blacklist.getBlacklisted()) && periods.equals(blacklist.getPeriods());
   }
@@ -215,8 +217,9 @@ public class Blacklist {
     }
 
     for (Period p : periods) {
-      if (periodId.isSome() && !periodId.equals(p.getId()))
+      if (periodId.isSome() && !periodId.equals(p.getId())) {
         continue;
+      }
       String id = "";
       if (p.getId().isSome()) {
         id = Long.toString(p.getId().get());

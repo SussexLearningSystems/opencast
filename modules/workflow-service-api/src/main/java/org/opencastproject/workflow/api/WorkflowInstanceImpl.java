@@ -133,8 +133,9 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
     this.description = def.getDescription();
     this.parentId = parentWorkflowId;
     this.creator = creator;
-    if (organization != null)
+    if (organization != null) {
       this.organization = JaxbOrganization.fromOrganization(organization);
+    }
     this.state = WorkflowState.INSTANTIATED;
     this.mediaPackage = mediaPackage;
     this.operations = new ArrayList<WorkflowOperationInstance>();
@@ -221,10 +222,11 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    *          the organization
    */
   public void setOrganization(Organization organization) {
-    if (organization == null)
+    if (organization == null) {
       this.organization = null;
-    else
+    } else {
       this.organization = JaxbOrganization.fromOrganization(organization);
+    }
   }
 
   /**
@@ -294,11 +296,13 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public WorkflowOperationInstance getCurrentOperation() throws IllegalStateException {
-    if (!initialized)
+    if (!initialized) {
       init();
+    }
 
-    if (operations == null || operations.isEmpty())
+    if (operations == null || operations.isEmpty()) {
       throw new IllegalStateException("Workflow " + id + " has no operations");
+    }
 
     WorkflowOperationInstance currentOperation = null;
 
@@ -318,8 +322,9 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
             break;
           case RETRY:
           case INSTANTIATED:
-            if (SUCCEEDED.equals(previousState) || SKIPPED.equals(previousState) || FAILED.equals(previousState))
+            if (SUCCEEDED.equals(previousState) || SKIPPED.equals(previousState) || FAILED.equals(previousState)) {
               currentOperation = operation;
+            }
             break;
           case PAUSED:
             currentOperation = operation;
@@ -369,10 +374,12 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public List<WorkflowOperationInstance> getOperations() {
-    if (operations == null)
+    if (operations == null) {
       operations = new ArrayList<WorkflowOperationInstance>();
-    if (!initialized)
+    }
+    if (!initialized) {
       init();
+    }
 
     return new ArrayList<WorkflowOperationInstance>(operations);
   }
@@ -389,8 +396,9 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
   }
 
   protected void init() {
-    if (operations == null || operations.isEmpty())
+    if (operations == null || operations.isEmpty()) {
       return;
+    }
 
     // Jaxb will lose the workflow operation's position, so we fix it here
     for (int i = 0; i < operations.size(); i++) {
@@ -427,11 +435,13 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public String getConfiguration(String key) {
-    if (key == null || configurations == null)
+    if (key == null || configurations == null) {
       return null;
+    }
     for (WorkflowConfiguration config : configurations) {
-      if (config.getKey().equals(key))
+      if (config.getKey().equals(key)) {
         return config.getValue();
+      }
     }
     return null;
   }
@@ -459,8 +469,9 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public void removeConfiguration(String key) {
-    if (key == null || configurations == null)
+    if (key == null || configurations == null) {
       return;
+    }
     for (Iterator<WorkflowConfiguration> configIter = configurations.iterator(); configIter.hasNext();) {
       WorkflowConfiguration config = configIter.next();
       if (config.getKey().equals(key)) {
@@ -477,10 +488,12 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public void setConfiguration(String key, String value) {
-    if (key == null)
+    if (key == null) {
       return;
-    if (configurations == null)
+    }
+    if (configurations == null) {
       configurations = new HashSet<WorkflowConfiguration>();
+    }
 
     // Adjust already existing values
     for (WorkflowConfiguration config : configurations) {
@@ -501,14 +514,17 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public WorkflowOperationInstance next() {
-    if (operations == null || operations.size() == 0)
+    if (operations == null || operations.size() == 0) {
       throw new IllegalStateException("Operations list must contain operations");
-    if (!initialized)
+    }
+    if (!initialized) {
       init();
+    }
 
     WorkflowOperationInstance currentOperation = getCurrentOperation();
-    if (currentOperation == null)
+    if (currentOperation == null) {
       throw new IllegalStateException("Can't call next on a finished workflow");
+    }
 
     for (Iterator<WorkflowOperationInstance> opIter = operations.iterator(); opIter.hasNext();) {
       WorkflowOperationInstance op = opIter.next();
@@ -529,17 +545,21 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
    */
   @Override
   public boolean hasNext() {
-    if (!initialized)
+    if (!initialized) {
       init();
+    }
     if (WorkflowState.FAILED.equals(state) || WorkflowState.FAILING.equals(state)
-            || WorkflowState.STOPPED.equals(state) || WorkflowState.SUCCEEDED.equals(state))
+            || WorkflowState.STOPPED.equals(state) || WorkflowState.SUCCEEDED.equals(state)) {
       return false;
-    if (operations == null || operations.size() == 0)
+    }
+    if (operations == null || operations.size() == 0) {
       throw new IllegalStateException("operations list must contain operations");
+    }
 
     WorkflowOperationInstance currentOperation = getCurrentOperation();
-    if (currentOperation == null)
+    if (currentOperation == null) {
       return true;
+    }
     return operations.lastIndexOf(currentOperation) < operations.size() - 1;
   }
 
@@ -599,10 +619,12 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
   static class OrganizationAdapter extends XmlAdapter<JaxbOrganization, Organization> {
     @Override
     public JaxbOrganization marshal(Organization org) throws Exception {
-      if (org == null)
+      if (org == null) {
         return null;
-      if (org instanceof JaxbOrganization)
+      }
+      if (org instanceof JaxbOrganization) {
         return (JaxbOrganization) org;
+      }
       return JaxbOrganization.fromOrganization(org);
     }
 
@@ -618,10 +640,12 @@ public class WorkflowInstanceImpl implements WorkflowInstance {
   static class UserAdapter extends XmlAdapter<JaxbUser, User> {
     @Override
     public JaxbUser marshal(User user) throws Exception {
-      if (user == null)
+      if (user == null) {
         return null;
-      if (user instanceof JaxbUser)
+      }
+      if (user instanceof JaxbUser) {
         return (JaxbUser) user;
+      }
       return JaxbUser.fromUser(user);
     }
 

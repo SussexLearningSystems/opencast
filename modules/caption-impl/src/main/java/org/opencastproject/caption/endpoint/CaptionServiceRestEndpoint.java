@@ -153,8 +153,9 @@ public class CaptionServiceRestEndpoint extends AbstractJobProducerEndpoint {
     MediaPackageElement element;
     try {
       element = MediaPackageElementParser.getFromXml(catalogAsXml);
-      if (!Catalog.TYPE.equals(element.getElementType()))
+      if (!Catalog.TYPE.equals(element.getElementType())) {
         return Response.status(Response.Status.BAD_REQUEST).entity("Captions must be of type catalog.").build();
+      }
     } catch (Exception e) {
       logger.info("Unable to parse serialized captions");
       return Response.status(Response.Status.BAD_REQUEST).build();
@@ -237,10 +238,11 @@ public class CaptionServiceRestEndpoint extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

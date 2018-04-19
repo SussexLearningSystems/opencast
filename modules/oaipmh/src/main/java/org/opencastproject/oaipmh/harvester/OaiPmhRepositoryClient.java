@@ -143,8 +143,9 @@ public final class OaiPmhRepositoryClient {
   private String join(String... as) {
     StringBuffer buf = new StringBuffer();
     for (String a : as) {
-      if (a.length() > 0)
+      if (a.length() > 0) {
         buf.append(a).append("&");
+      }
     }
     return buf.substring(0, Math.max(buf.length() - "&".length(), 0));
   }

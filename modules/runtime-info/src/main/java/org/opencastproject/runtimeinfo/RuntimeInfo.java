@@ -193,8 +193,9 @@ public class RuntimeInfo {
     jsonUser.put("email", user.getEmail());
     jsonUser.put("provider", user.getProvider());
     json.put("user", jsonUser);
-    if (userIdRoleProvider != null)
+    if (userIdRoleProvider != null) {
       json.put("userRole", UserIdRoleProvider.getUserIdRole(user.getUsername()));
+    }
 
     // Add the current user's roles
     JSONArray roles = new JSONArray();
@@ -232,8 +233,9 @@ public class RuntimeInfo {
     } catch (InvalidSyntaxException e) {
       e.printStackTrace();
     }
-    if (serviceRefs == null)
+    if (serviceRefs == null) {
       return json;
+    }
     for (ServiceReference servletRef : sort(serviceRefs)) {
       String version = servletRef.getBundle().getVersion().toString();
       String description = (String) servletRef.getProperty(Constants.SERVICE_DESCRIPTION);
@@ -261,8 +263,9 @@ public class RuntimeInfo {
     } catch (InvalidSyntaxException e) {
       e.printStackTrace();
     }
-    if (serviceRefs == null)
+    if (serviceRefs == null) {
       return json;
+    }
     for (ServiceReference ref : sort(serviceRefs)) {
       String description = (String) ref.getProperty(Constants.SERVICE_DESCRIPTION);
       String version = ref.getBundle().getVersion().toString();
@@ -291,11 +294,13 @@ public class RuntimeInfo {
       @Override
       public int compare(ServiceReference o1, ServiceReference o2) {
         String o1Description = (String) o1.getProperty(Constants.SERVICE_DESCRIPTION);
-        if (StringUtils.isBlank(o1Description))
+        if (StringUtils.isBlank(o1Description)) {
           o1Description = o1.toString();
+        }
         String o2Description = (String) o2.getProperty(Constants.SERVICE_DESCRIPTION);
-        if (StringUtils.isBlank(o2Description))
+        if (StringUtils.isBlank(o2Description)) {
           o2Description = o2.toString();
+        }
         return o1Description.compareTo(o2Description);
       }
     });

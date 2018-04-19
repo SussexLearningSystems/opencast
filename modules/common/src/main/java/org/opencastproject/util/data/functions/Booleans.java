@@ -124,8 +124,9 @@ public final class Booleans {
       @Override
       public Boolean apply(A a) {
         for (Function<A, Boolean> f : fs) {
-          if (!f.apply(a))
+          if (!f.apply(a)) {
             return false;
+          }
         }
         return true;
       }
@@ -137,8 +138,9 @@ public final class Booleans {
       @Override
       public Boolean apply(A a) {
         for (Function<A, Boolean> f : fs) {
-          if (f.apply(a))
+          if (f.apply(a)) {
             return true;
+          }
         }
         return false;
       }
@@ -169,8 +171,9 @@ public final class Booleans {
       @Override
       public Boolean apply(A a) {
         for (Function<A, Boolean> f : fs) {
-          if (!f.apply(a))
+          if (!f.apply(a)) {
             return false;
+          }
         }
         return true;
       }

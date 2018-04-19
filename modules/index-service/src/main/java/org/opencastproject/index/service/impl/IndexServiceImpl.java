@@ -652,12 +652,14 @@ public class IndexServiceImpl implements IndexService {
     String mpId = mediaPackage.getIdentifier().toString();
 
     JSONObject processing = (JSONObject) metadataJson.get("processing");
-    if (processing == null)
+    if (processing == null) {
       throw new IllegalArgumentException("No processing field in metadata");
+    }
 
     String workflowDefId = (String) processing.get("workflow");
-    if (workflowDefId == null)
+    if (workflowDefId == null) {
       throw new IllegalArgumentException("No workflow definition field in processing metadata");
+    }
 
     JSONObject configJson = (JSONObject) processing.get("configuration");
 
@@ -752,20 +754,24 @@ public class IndexServiceImpl implements IndexService {
   @Override
   public String createEvent(JSONObject metadataJson, MediaPackage mp) throws ParseException, IOException,
           MediaPackageException, IngestException, NotFoundException, SchedulerException, UnauthorizedException {
-    if (metadataJson == null)
+    if (metadataJson == null) {
       throw new IllegalArgumentException("No metadata set");
+    }
 
     JSONObject source = (JSONObject) metadataJson.get("source");
-    if (source == null)
+    if (source == null) {
       throw new IllegalArgumentException("No source field in metadata");
+    }
 
     JSONObject processing = (JSONObject) metadataJson.get("processing");
-    if (processing == null)
+    if (processing == null) {
       throw new IllegalArgumentException("No processing field in metadata");
+    }
 
     JSONArray allEventMetadataJson = (JSONArray) metadataJson.get("metadata");
-    if (allEventMetadataJson == null)
+    if (allEventMetadataJson == null) {
       throw new IllegalArgumentException("No metadata field in metadata");
+    }
 
     AccessControlList acl = getAccessControlList(metadataJson);
 
@@ -809,8 +815,9 @@ public class IndexServiceImpl implements IndexService {
 
     // Get Workflow
     String workflowTemplate = (String) eventHttpServletRequest.getProcessing().get().get("workflow");
-    if (workflowTemplate == null)
+    if (workflowTemplate == null) {
       throw new IllegalArgumentException("No workflow template in metadata");
+    }
 
     // Get Type of Source
     SourceType type = getSourceType(eventHttpServletRequest.getSource().get());
@@ -880,8 +887,9 @@ public class IndexServiceImpl implements IndexService {
       }
 
       String durationString = (String) sourceMetadata.get("duration");
-      if (StringUtils.isBlank(durationString))
+      if (StringUtils.isBlank(durationString)) {
         throw new IllegalArgumentException("No duration in source metadata");
+      }
 
       // Create timezone based on CA's reported TZ.
       String agentTimeZone = configuration.getProperty("capture.device.timezone");
@@ -1242,8 +1250,9 @@ public class IndexServiceImpl implements IndexService {
   public MetadataList updateEventMetadata(String id, MetadataList metadataList, AbstractSearchIndex index)
           throws IndexServiceException, SearchIndexException, NotFoundException, UnauthorizedException {
     Opt<Event> optEvent = getEvent(id, index);
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       throw new NotFoundException("Cannot find an event with id " + id);
+    }
 
     Event event = optEvent.get();
     MediaPackage mediaPackage = getEventMediapackage(event);
@@ -1322,8 +1331,9 @@ public class IndexServiceImpl implements IndexService {
           throws IllegalArgumentException, IndexServiceException, SearchIndexException, NotFoundException,
           UnauthorizedException {
     Opt<Event> optEvent = getEvent(id, index);
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       throw new NotFoundException("Cannot find an event with id " + id);
+    }
 
     Event event = optEvent.get();
     MediaPackage mediaPackage = getEventMediapackage(event);
@@ -1375,8 +1385,9 @@ public class IndexServiceImpl implements IndexService {
         String name = filterTuple[0];
         String value = filterTuple[1];
 
-        if (GroupsListQuery.FILTER_NAME_NAME.equals(name))
+        if (GroupsListQuery.FILTER_NAME_NAME.equals(name)) {
           query.withName(value);
+        }
       }
     }
 
@@ -1405,10 +1416,12 @@ public class IndexServiceImpl implements IndexService {
       }
     }
 
-    if (optLimit.isSome())
+    if (optLimit.isSome()) {
       query.withLimit(optLimit.get());
-    if (optOffset.isSome())
+    }
+    if (optOffset.isSome()) {
       query.withOffset(optOffset.get());
+    }
 
     return index.getByQuery(query);
   }
@@ -1440,10 +1453,12 @@ public class IndexServiceImpl implements IndexService {
 
   @Override
   public Response createGroup(String name, String description, String roles, String members) {
-    if (StringUtils.isEmpty(roles))
+    if (StringUtils.isEmpty(roles)) {
       roles = "";
-    if (StringUtils.isEmpty(members))
+    }
+    if (StringUtils.isEmpty(members)) {
       members = "";
+    }
     return jpaGroupRoleProvider.createGroup(name, description, roles, members);
   }
 
@@ -1482,8 +1497,9 @@ public class IndexServiceImpl implements IndexService {
     try {
       WorkflowQuery workflowQuery = new WorkflowQuery().withMediaPackage(id);
       WorkflowSet workflowSet = workflowService.getWorkflowInstances(workflowQuery);
-      if (workflowSet.size() == 0)
+      if (workflowSet.size() == 0) {
         notFoundWorkflow = true;
+      }
       for (WorkflowInstance instance : workflowSet.getItems()) {
         workflowService.stop(instance.getId());
         workflowService.remove(instance.getId());
@@ -1507,8 +1523,9 @@ public class IndexServiceImpl implements IndexService {
       final AQueryBuilder q = assetManager.createQuery();
       final Predicate p = q.organizationId().eq(securityService.getOrganization().getId()).and(q.mediaPackageId(id));
       final AResult r = q.select(q.nothing()).where(p).run();
-      if (r.getSize() > 0)
+      if (r.getSize() > 0) {
         q.delete(DEFAULT_OWNER, q.snapshot()).where(p).run();
+      }
     } catch (AssetManagerException e) {
       if (e.getCause() instanceof UnauthorizedException) {
         unauthorizedArchive = true;
@@ -1520,11 +1537,13 @@ public class IndexServiceImpl implements IndexService {
       }
     }
 
-    if (notFoundScheduler && notFoundWorkflow && notFoundArchive)
+    if (notFoundScheduler && notFoundWorkflow && notFoundArchive) {
       throw new NotFoundException("Event id " + id + " not found.");
+    }
 
-    if (unauthorizedScheduler || unauthorizedWorkflow || unauthorizedArchive)
+    if (unauthorizedScheduler || unauthorizedWorkflow || unauthorizedArchive) {
       throw new UnauthorizedException("Not authorized to remove event id " + id);
+    }
 
     try {
       eventCommentService.deleteComments(id);
@@ -1601,17 +1620,21 @@ public class IndexServiceImpl implements IndexService {
    */
   @Override
   public Source getEventSource(Event event) {
-    if (event.getWorkflowId() != null && isWorkflowActive(event.getWorkflowState()))
+    if (event.getWorkflowId() != null && isWorkflowActive(event.getWorkflowState())) {
       return Source.WORKFLOW;
+    }
 
-    if (event.getSchedulingStatus() != null && !event.hasRecordingStarted())
+    if (event.getSchedulingStatus() != null && !event.hasRecordingStarted()) {
       return Source.SCHEDULE;
+    }
 
-    if (event.getArchiveVersion() != null)
+    if (event.getArchiveVersion() != null) {
       return Source.ARCHIVE;
+    }
 
-    if (event.getWorkflowId() != null)
+    if (event.getWorkflowId() != null) {
       return Source.WORKFLOW;
+    }
 
     return Source.SCHEDULE;
   }
@@ -1634,8 +1657,9 @@ public class IndexServiceImpl implements IndexService {
     // TODO This presuppose knowledge of the Database implementation and should be fixed sooner or later!
     WorkflowInstance workflowInstance = workflowInstances.getItems()[0];
     for (WorkflowInstance instance : workflowInstances.getItems()) {
-      if (instance.getId() > workflowInstance.getId())
+      if (instance.getId() > workflowInstance.getId()) {
         workflowInstance = instance;
+      }
     }
     return Opt.some(workflowInstance);
   }
@@ -1811,8 +1835,9 @@ public class IndexServiceImpl implements IndexService {
       DublinCoreCatalog createdSeries = seriesService.updateSeries(dc);
       seriesId = createdSeries.getFirst(PROPERTY_IDENTIFIER);
       seriesService.updateAccessControl(seriesId, acl);
-      for (Long id : optThemeId)
+      for (Long id : optThemeId) {
         seriesService.updateSeriesProperty(seriesId, THEME_PROPERTY_NAME, Long.toString(id));
+      }
     } catch (Exception e) {
       logger.error("Unable to create new series: {}", getStackTrace(e));
       throw new IndexServiceException("Unable to create new series");
@@ -1834,16 +1859,19 @@ public class IndexServiceImpl implements IndexService {
       throw new IllegalArgumentException("Unable to parse metadata" + metadata);
     }
 
-    if (metadataJson == null)
+    if (metadataJson == null) {
       throw new IllegalArgumentException("No metadata set to create series");
+    }
 
     JSONArray seriesMetadataJson = (JSONArray) metadataJson.get("metadata");
-    if (seriesMetadataJson == null)
+    if (seriesMetadataJson == null) {
       throw new IllegalArgumentException("No metadata field in metadata");
+    }
 
     JSONObject options = (JSONObject) metadataJson.get("options");
-    if (options == null)
+    if (options == null) {
       throw new IllegalArgumentException("No options field in metadata");
+    }
 
     Opt<Long> themeId = Opt.none();
     Long theme = (Long) metadataJson.get("theme");
@@ -1887,8 +1915,9 @@ public class IndexServiceImpl implements IndexService {
       DublinCoreCatalog createdSeries = seriesService.updateSeries(dc);
       seriesId = createdSeries.getFirst(PROPERTY_IDENTIFIER);
       seriesService.updateAccessControl(seriesId, acl);
-      for (Long id : themeId)
+      for (Long id : themeId) {
         seriesService.updateSeriesProperty(seriesId, THEME_PROPERTY_NAME, Long.toString(id));
+      }
     } catch (Exception e) {
       logger.error("Unable to create new series: {}", getStackTrace(e));
       throw new IndexServiceException("Unable to create new series");
@@ -1992,8 +2021,9 @@ public class IndexServiceImpl implements IndexService {
     // Get the comments catalog
     Catalog[] commentCatalogs = mediaPackage.getCatalogs(MediaPackageElements.COMMENTS);
     Catalog c = null;
-    if (commentCatalogs.length == 1)
+    if (commentCatalogs.length == 1) {
       c = commentCatalogs[0];
+    }
 
     if (comments.size() > 0) {
       // If no comments catalog found, create a new one
@@ -2033,8 +2063,9 @@ public class IndexServiceImpl implements IndexService {
   public void changeOptOutStatus(String eventId, boolean optout, AbstractSearchIndex index)
           throws NotFoundException, SchedulerException, SearchIndexException, UnauthorizedException {
     Opt<Event> optEvent = getEvent(eventId, index);
-    if (optEvent.isNone())
+    if (optEvent.isNone()) {
       throw new NotFoundException("Cannot find an event with id " + eventId);
+    }
 
     schedulerService.updateEvent(eventId, Opt.<Date> none(), Opt.<Date> none(), Opt.<String> none(),
             Opt.<Set<String>> none(), Opt.<MediaPackage> none(), Opt.<Map<String, String>> none(),
@@ -2058,8 +2089,9 @@ public class IndexServiceImpl implements IndexService {
           throws NotFoundException, IndexServiceException {
     try {
       Opt<Series> optSeries = getSeries(seriesID, index);
-      if (optSeries.isNone())
+      if (optSeries.isNone()) {
         throw new NotFoundException("Cannot find a series with id " + seriesID);
+      }
     } catch (SearchIndexException e) {
       logger.error("Unable to get a series with id {} because: {}", seriesID, getStackTrace(e));
       throw new IndexServiceException("Cannot use search service to find Series");

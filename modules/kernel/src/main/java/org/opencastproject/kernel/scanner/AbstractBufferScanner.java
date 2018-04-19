@@ -53,8 +53,9 @@ public abstract class AbstractBufferScanner extends AbstractScanner {
       logger.debug("enabled = " + enabled);
 
       cronExpression = (String) properties.get(PARAM_KEY_CRON_EXPR);
-      if (StringUtils.isBlank(cronExpression) || !CronExpression.isValidExpression(cronExpression))
+      if (StringUtils.isBlank(cronExpression) || !CronExpression.isValidExpression(cronExpression)) {
         throw new ConfigurationException(PARAM_KEY_CRON_EXPR, "Cron expression must be valid");
+      }
       setCronExpression(cronExpression);
       logger.debug("cronExpression = '" + cronExpression + "'");
 

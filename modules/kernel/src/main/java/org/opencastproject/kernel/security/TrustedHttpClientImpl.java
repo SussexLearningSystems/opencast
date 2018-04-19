@@ -173,8 +173,9 @@ public class TrustedHttpClientImpl implements TrustedHttpClient, HttpConnectionM
     logger.debug("activate");
     user = cc.getBundleContext().getProperty(DIGEST_AUTH_USER_KEY);
     pass = cc.getBundleContext().getProperty(DIGEST_AUTH_PASS_KEY);
-    if (user == null || pass == null)
+    if (user == null || pass == null) {
       throw new IllegalStateException("trusted communication is not properly configured");
+    }
 
     getRetryNumber(cc);
     getRetryBaseTime(cc);

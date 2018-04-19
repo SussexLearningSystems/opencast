@@ -88,8 +88,9 @@ public final class RequireUtil {
    *           in case of <code>value</code> being null
    */
   public static <A> A notNull(A value, String valueName) {
-    if (value == null)
+    if (value == null) {
       throw new IllegalArgumentException(valueName + " must not be null");
+    }
     return value;
   }
 
@@ -117,8 +118,9 @@ public final class RequireUtil {
    *           in case of <code>value</code> being empty
    */
   public static String notEmpty(String value, String valueName) {
-    if (StringUtils.isEmpty(value))
+    if (StringUtils.isEmpty(value)) {
       throw new IllegalArgumentException(valueName + " must not be null or empty");
+    }
     return value;
   }
 
@@ -133,33 +135,38 @@ public final class RequireUtil {
    * @return the value, if not blank
    */
   public static String requireNotBlank(String value, String valueName) {
-    if (StringUtils.isBlank(value))
+    if (StringUtils.isBlank(value)) {
       throw new IllegalArgumentException(valueName + " must not be null or blank");
+    }
     return value;
   }
 
   /** The value may be null but if it is not null it must not be of size 0. */
   public static String nullOrNotEmpty(String value, String valueName) {
-    if (value != null && value.length() == 0)
+    if (value != null && value.length() == 0) {
       throw new IllegalArgumentException(valueName + " must either be null or not empty");
+    }
     return value;
   }
 
   public static double between(double value, double min, double max) {
-    if (min <= value && value <= max)
+    if (min <= value && value <= max) {
       return value;
+    }
     throw new IllegalArgumentException(value + " must be between " + min + " and " + max);
   }
 
   public static int min(int value, int min) {
-    if (min <= value)
+    if (min <= value) {
       return value;
+    }
     throw new IllegalArgumentException(value + " must not be smaller than " + min);
   }
 
   public static long min(long value, long min) {
-    if (min <= value)
+    if (min <= value) {
       return value;
+    }
     throw new IllegalArgumentException(value + " must not be smaller than " + min);
   }
 }

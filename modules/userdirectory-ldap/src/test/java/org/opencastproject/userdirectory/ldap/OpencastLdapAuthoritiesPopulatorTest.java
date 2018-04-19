@@ -73,8 +73,9 @@ public class OpencastLdapAuthoritiesPopulatorTest {
 
   static {
     HashSet<String> tempSet = new HashSet<>();
-    for (int i = 1; i <= N_LDAP_ATTRIBUTES; i++)
+    for (int i = 1; i <= N_LDAP_ATTRIBUTES; i++) {
       tempSet.add(format("ldap_attribute_%d", i));
+    }
     DEFAULT_ATTRIBUTE_NAMES = Collections.unmodifiableSet(tempSet);
     DEFAULT_STR_ATTRIBUTE_NAMES = StringUtils.join(DEFAULT_ATTRIBUTE_NAMES, ", ");
 
@@ -88,8 +89,9 @@ public class OpencastLdapAuthoritiesPopulatorTest {
     DEFAULT_INTERNAL_ROLES = Collections.unmodifiableSet(roleSet);
 
     DEFAULT_EXTRA_ROLES = new String[N_EXTRA_ROLES];
-    for (int i = 0; i < N_EXTRA_ROLES; i++)
+    for (int i = 0; i < N_EXTRA_ROLES; i++) {
       DEFAULT_EXTRA_ROLES[i] = format("extra_role_%d", i);
+    }
   }
 
   /** A map containing the set of LDAP arguments and their values (they keys can be multivalued) */
@@ -461,18 +463,20 @@ public class OpencastLdapAuthoritiesPopulatorTest {
      * - The role does not start with any of the "excludePrefixes" provided
      */
 
-    if (toUpper)
+    if (toUpper) {
       thePrefix = StringUtils.trimToEmpty(thePrefix).toUpperCase();
-    else
+    } else {
       thePrefix = StringUtils.trimToEmpty(thePrefix);
+    }
 
     if (strRoles != null) {
       for (String strRole : strRoles) {
         String role;
-        if (toUpper)
+        if (toUpper) {
           role = StringUtils.trimToEmpty(strRole).replaceAll("[\\s_]+", "_").toUpperCase();
-        else
+        } else {
           role = StringUtils.trimToEmpty(strRole).replaceAll("[\\s_]+", "_");
+        }
 
         if (!role.isEmpty()) {
           String prefix = thePrefix;
@@ -491,10 +495,11 @@ public class OpencastLdapAuthoritiesPopulatorTest {
             if (excludePrefixes != null) {
               for (String excludePrefix : excludePrefixes) {
                 String excPrefix;
-                if (toUpper)
+                if (toUpper) {
                   excPrefix = StringUtils.trimToEmpty(excludePrefix).toUpperCase();
-                else
+                } else {
                   excPrefix = StringUtils.trimToEmpty(excludePrefix);
+                }
                 if (role.startsWith(excPrefix)) {
                   prefix = "";
                   break;

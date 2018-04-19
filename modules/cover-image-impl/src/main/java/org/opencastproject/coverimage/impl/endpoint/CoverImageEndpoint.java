@@ -70,10 +70,11 @@ public class CoverImageEndpoint extends AbstractJobProducerEndpoint {
 
   @Override
   public JobProducer getService() {
-    if (coverImageService instanceof JobProducer)
+    if (coverImageService instanceof JobProducer) {
       return (JobProducer) coverImageService;
-    else
+    } else {
       return null;
+    }
   }
 
   @Override

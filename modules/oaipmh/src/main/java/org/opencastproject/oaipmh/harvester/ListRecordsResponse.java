@@ -203,8 +203,9 @@ public class ListRecordsResponse extends OaiPmhResponse {
 
     @Override
     public Node next() {
-      if (!hasNext())
+      if (!hasNext()) {
         throw new NoSuchElementException();
+      }
       return elems.item(i++);
     }
 

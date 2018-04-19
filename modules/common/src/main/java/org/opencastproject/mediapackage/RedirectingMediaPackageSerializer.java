@@ -96,12 +96,15 @@ public class RedirectingMediaPackageSerializer implements MediaPackageSerializer
    *           if a redirect for <code>sourcePrefix</code> has already been configured
    */
   public void addRedirect(URI sourcePrefix, URI destinationPrefix) {
-    if (sourcePrefix == null)
+    if (sourcePrefix == null) {
       throw new IllegalArgumentException("Source prefix must not be null");
-    if (destinationPrefix == null)
+    }
+    if (destinationPrefix == null) {
       throw new IllegalArgumentException("Destination prefix must not be null");
-    if (redirects.containsKey(sourcePrefix))
+    }
+    if (redirects.containsKey(sourcePrefix)) {
       throw new IllegalStateException("Source prefix '" + sourcePrefix + "' already registered");
+    }
     redirects.put(sourcePrefix, destinationPrefix);
   }
 
@@ -112,8 +115,9 @@ public class RedirectingMediaPackageSerializer implements MediaPackageSerializer
    */
   @Override
   public URI encodeURI(URI uri) throws URISyntaxException {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument uri is null");
+    }
     return rewrite(uri, false);
   }
 
@@ -124,8 +128,9 @@ public class RedirectingMediaPackageSerializer implements MediaPackageSerializer
    */
   @Override
   public URI decodeURI(URI uri) throws URISyntaxException {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument uri is null");
+    }
     return rewrite(uri, true);
   }
 
@@ -149,8 +154,9 @@ public class RedirectingMediaPackageSerializer implements MediaPackageSerializer
       changed = false;
 
       // Make sure we are not getting into an endless loop
-      if (variations.contains(path))
+      if (variations.contains(path)) {
         throw new IllegalStateException("Rewriting of mediapackage element '" + uri + "' experienced an endless loop");
+      }
       variations.add(path);
 
       // Loop over all configured redirects
@@ -160,8 +166,9 @@ public class RedirectingMediaPackageSerializer implements MediaPackageSerializer
 
         // Does the URI match the source prefix?
         String sourcePrefixString = oldPrefix.toString();
-        if (!path.startsWith(sourcePrefixString))
+        if (!path.startsWith(sourcePrefixString)) {
           continue;
+        }
 
         // Cut off the source prefix
         path = path.substring(sourcePrefixString.length());

@@ -169,14 +169,17 @@ public class ServiceRegistryJpaImplTest {
     EasyMock.expect(trustedHttpClient.execute(EasyMock.capture(request))).andAnswer(new IAnswer<HttpResponse>() {
       @Override
       public HttpResponse answer() throws Throwable {
-        if (!request.hasCaptured())
+        if (!request.hasCaptured()) {
           return unavailableResponse;
+        }
 
-        if (request.getValue().getURI().toString().contains(TEST_PATH))
+        if (request.getValue().getURI().toString().contains(TEST_PATH)) {
           return unavailableResponse;
+        }
 
-        if (request.getValue().getURI().toString().contains(TEST_PATH_3))
+        if (request.getValue().getURI().toString().contains(TEST_PATH_3)) {
           return unavailableResponse;
+        }
 
         return successRespone;
       }
@@ -249,8 +252,9 @@ public class ServiceRegistryJpaImplTest {
 
   @Test
   public void testHostAddedToPriorityList() throws Exception {
-    if (serviceRegistryJpaImpl.scheduledExecutor != null)
+    if (serviceRegistryJpaImpl.scheduledExecutor != null) {
       serviceRegistryJpaImpl.scheduledExecutor.shutdown();
+    }
     serviceRegistryJpaImpl.scheduledExecutor = Executors.newScheduledThreadPool(1);
     serviceRegistryJpaImpl.activate(null);
     Hashtable<String, String> properties = new Hashtable<>();
@@ -269,8 +273,9 @@ public class ServiceRegistryJpaImplTest {
 
   @Test
   public void testHostAddedToPriorityListExceptWorkflowType() throws Exception {
-    if (serviceRegistryJpaImpl.scheduledExecutor != null)
+    if (serviceRegistryJpaImpl.scheduledExecutor != null) {
       serviceRegistryJpaImpl.scheduledExecutor.shutdown();
+    }
     serviceRegistryJpaImpl.scheduledExecutor = Executors.newScheduledThreadPool(1);
     serviceRegistryJpaImpl.activate(null);
     Hashtable<String, String> properties = new Hashtable<>();
@@ -290,8 +295,9 @@ public class ServiceRegistryJpaImplTest {
 
   @Test
   public void testHostsBeingRemovedFromPriorityList() throws Exception {
-    if (serviceRegistryJpaImpl.scheduledExecutor != null)
+    if (serviceRegistryJpaImpl.scheduledExecutor != null) {
       serviceRegistryJpaImpl.scheduledExecutor.shutdown();
+    }
     serviceRegistryJpaImpl.scheduledExecutor = Executors.newScheduledThreadPool(1);
     serviceRegistryJpaImpl.activate(null);
     Hashtable<String, String> properties = new Hashtable<>();
@@ -311,8 +317,9 @@ public class ServiceRegistryJpaImplTest {
 
   @Test
   public void testIgnoreHostsInPriorityList() throws Exception {
-    if (serviceRegistryJpaImpl.scheduledExecutor != null)
+    if (serviceRegistryJpaImpl.scheduledExecutor != null) {
       serviceRegistryJpaImpl.scheduledExecutor.shutdown();
+    }
     serviceRegistryJpaImpl.scheduledExecutor = Executors.newScheduledThreadPool(1);
     serviceRegistryJpaImpl.activate(null);
     Hashtable<String, String> properties = new Hashtable<>();
@@ -337,8 +344,9 @@ public class ServiceRegistryJpaImplTest {
 
   @Test
   public void testDispatchingJobsHigherMaxLoad() throws Exception {
-    if (serviceRegistryJpaImpl.scheduledExecutor != null)
+    if (serviceRegistryJpaImpl.scheduledExecutor != null) {
       serviceRegistryJpaImpl.scheduledExecutor.shutdown();
+    }
     serviceRegistryJpaImpl.scheduledExecutor = Executors.newScheduledThreadPool(1);
     serviceRegistryJpaImpl.activate(null);
     Hashtable<String, String> properties = new Hashtable<>();

@@ -110,8 +110,9 @@ public class StreamingDistributionServiceTest {
     BundleContext bc = createNiceMock(BundleContext.class);
     ComponentContext cc = createNiceMock(ComponentContext.class);
 
-    for (String url : inputStreamingUrls)
+    for (String url : inputStreamingUrls) {
       expect(bc.getProperty(WowzaAdaptiveStreamingDistributionService.STREAMING_URL_KEY)).andReturn(url);
+    }
     expect(bc.getProperty(WowzaAdaptiveStreamingDistributionService.ADAPTIVE_STREAMING_URL_KEY)).andReturn("a/valid/url").anyTimes();
 
     expect(cc.getBundleContext()).andReturn(bc).anyTimes();
@@ -123,10 +124,11 @@ public class StreamingDistributionServiceTest {
     for (int i = 0; i < inputStreamingUrls.length; i++) {
       WowzaAdaptiveStreamingDistributionService sds = new WowzaAdaptiveStreamingDistributionService();
       sds.activate(cc);
-      if (outputStreamingUrls[i] == null)
+      if (outputStreamingUrls[i] == null) {
         assertEquals(null, sds.streamingUri);
-      else
+      } else {
         assertEquals(new URI(outputStreamingUrls[i]), sds.streamingUri);
+      }
     }
   }
 
@@ -148,8 +150,9 @@ public class StreamingDistributionServiceTest {
     ComponentContext cc = createNiceMock(ComponentContext.class);
 
     expect(bc.getProperty(WowzaAdaptiveStreamingDistributionService.STREAMING_URL_KEY)).andReturn("a/valid/url").anyTimes();
-    for (String url : inputStreamingUrls)
+    for (String url : inputStreamingUrls) {
       expect(bc.getProperty(WowzaAdaptiveStreamingDistributionService.ADAPTIVE_STREAMING_URL_KEY)).andReturn(url);
+    }
 
     expect(cc.getBundleContext()).andReturn(bc).anyTimes();
 
@@ -160,10 +163,11 @@ public class StreamingDistributionServiceTest {
     for (int i = 0; i < inputStreamingUrls.length; i++) {
       WowzaAdaptiveStreamingDistributionService sds = new WowzaAdaptiveStreamingDistributionService();
       sds.activate(cc);
-      if (outputAdaptiveStreamingUrls[i] == null)
+      if (outputAdaptiveStreamingUrls[i] == null) {
         assertEquals(null, sds.adaptiveStreamingUri);
-      else
+      } else {
         assertEquals(new URI(outputAdaptiveStreamingUrls[i]), sds.adaptiveStreamingUri);
+      }
     }
   }
 

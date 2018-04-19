@@ -83,8 +83,9 @@ public class CommonEventCatalogUIAdapter extends ConfigurableEventDCCatalogUIAda
       if (isNotBlank(series.getValue().get().toString())) {
         mediaPackage.setSeries(series.getValue().get().toString());
         final Opt<String> seriesTitle = getSeriesTitle(series);
-        if (seriesTitle.isSome())
+        if (seriesTitle.isSome()) {
           mediaPackage.setSeriesTitle(seriesTitle.get());
+        }
       } else {
         mediaPackage.setSeries(null);
         mediaPackage.setSeriesTitle(null);
@@ -92,8 +93,9 @@ public class CommonEventCatalogUIAdapter extends ConfigurableEventDCCatalogUIAda
     }
 
     Opt<Date> startDate = MetadataUtils.getUpdatedDateMetadata(abstractMetadata, "startDate");
-    if (startDate != null && startDate.isSome())
+    if (startDate != null && startDate.isSome()) {
       mediaPackage.setDate(startDate.get());
+    }
 
     // Update all the metadata related to the episode dublin core catalog
     MetadataField<?> title = abstractMetadata.getOutputFields().get(DublinCore.PROPERTY_TITLE.getLocalName());
@@ -105,7 +107,9 @@ public class CommonEventCatalogUIAdapter extends ConfigurableEventDCCatalogUIAda
 
   private Opt<String> getSeriesTitle(MetadataField<?> series) {
     for (Map.Entry<String, String> e : series.getCollection().getOr(Collections.emptyMap()).entrySet()) {
-      if (e.getValue().equals(series.getValue().get().toString())) return Opt.some(e.getKey());
+      if (e.getValue().equals(series.getValue().get().toString())) {
+        return Opt.some(e.getKey());
+      }
     }
     return Opt.none();
   }

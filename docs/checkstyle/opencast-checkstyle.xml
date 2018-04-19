@@ -158,6 +158,11 @@
     <module name="MultipleVariableDeclarations">
       <property name="severity" value="error" />
     </module>
+     <module name="NeedBraces">
+      <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
+      <property name="allowSingleLineStatement" value="false" />
+      <property name="allowEmptyLoopBody" value="false" />
+    </module>
     <module name="Regexp">
       <property name="format" value="System\.out\.print" />
       <property name="message" value="Do not use System.out.print(ln). Use the Logger." />

@@ -252,8 +252,9 @@ public class SchedulerRestService {
       serviceUrl = (String) cc.getProperties().get(RestConstants.SERVICE_PATH_PROPERTY);
       defaultWorkflowDefinitionId = StringUtils
               .trimToNull(cc.getBundleContext().getProperty(DEFAULT_WORKFLOW_DEFINITION));
-      if (defaultWorkflowDefinitionId == null)
+      if (defaultWorkflowDefinitionId == null) {
         defaultWorkflowDefinitionId = "schedule-and-upload";
+      }
     }
   }
 
@@ -582,8 +583,9 @@ public class SchedulerRestService {
               Opt.nul(StringUtils.trimToNull(seriesId)), Opt.nul(endDate));
 
       ResponseBuilder response = Response.ok(result).header(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=UTF-8");
-      if (StringUtils.isNotBlank(lastModified))
+      if (StringUtils.isNotBlank(lastModified)) {
         response.header(HttpHeaders.ETAG, lastModified);
+      }
       return response.build();
     } catch (Exception e) {
       logger.error("Unable to get calendar for capture agent '{}': {}", captureAgentId, getStackTrace(e));
@@ -734,8 +736,9 @@ public class SchedulerRestService {
           @FormParam("agentparameters") String agentParameters, @FormParam("optOut") Boolean optOut,
           @FormParam("source") String schedulingSource, @FormParam("origin") String origin)
                   throws UnauthorizedException {
-    if (StringUtils.isBlank(origin))
+    if (StringUtils.isBlank(origin)) {
       origin = SchedulerService.ORIGIN;
+    }
 
     if (endTime <= startTime || startTime < 0) {
       logger.debug("Cannot add event without proper start and end time");
@@ -785,8 +788,9 @@ public class SchedulerRestService {
     }
     Set<String> userIds = new HashSet<>();
     String[] ids = StringUtils.split(users, ",");
-    if (ids != null)
+    if (ids != null) {
       userIds.addAll(Arrays.asList(ids));
+    }
 
     DateTime startDate = new DateTime(startTime).toDateTime(DateTimeZone.UTC);
     DateTime endDate = new DateTime(endTime).toDateTime(DateTimeZone.UTC);
@@ -842,8 +846,9 @@ public class SchedulerRestService {
           @FormParam("agentparameters") String agentParameters, @FormParam("optOut") Boolean optOut,
           @FormParam("source") String schedulingSource, @FormParam("origin") String origin)
           throws UnauthorizedException {
-    if (StringUtils.isBlank(origin))
+    if (StringUtils.isBlank(origin)) {
       origin = SchedulerService.ORIGIN;
+    }
 
     if (endTime <= startTime || startTime < 0) {
       logger.debug("Cannot add event without proper start and end time");
@@ -897,8 +902,9 @@ public class SchedulerRestService {
     }
     Set<String> userIds = new HashSet<>();
     String[] ids = StringUtils.split(users, ",");
-    if (ids != null)
+    if (ids != null) {
       userIds.addAll(Arrays.asList(ids));
+    }
 
     DateTime startDate = new DateTime(startTime).toDateTime(DateTimeZone.UTC);
     DateTime endDate = new DateTime(endTime).toDateTime(DateTimeZone.UTC);
@@ -943,8 +949,9 @@ public class SchedulerRestService {
           @FormParam("mediaPackage") String mediaPackageXml, @FormParam("wfproperties") String workflowProperties,
           @FormParam("agentparameters") String agentParameters, @FormParam("updateOptOut") boolean updateOptOut,
           @FormParam("optOut") Boolean optOutBoolean, @FormParam("origin") String origin) throws UnauthorizedException {
-    if (StringUtils.isBlank(origin))
+    if (StringUtils.isBlank(origin)) {
       origin = SchedulerService.ORIGIN;
+    }
 
     if (startTime != null) {
       if (startTime < 0) {
@@ -1051,14 +1058,18 @@ public class SchedulerRestService {
     Date endsFrom = null;
     Date endsTo = null;
 
-    if (startsFromTime != null)
+    if (startsFromTime != null) {
       startsfrom = new DateTime(startsFromTime).toDateTime(DateTimeZone.UTC).toDate();
-    if (startsToTime != null)
+    }
+    if (startsToTime != null) {
       startsTo = new DateTime(startsToTime).toDateTime(DateTimeZone.UTC).toDate();
-    if (endsFromTime != null)
+    }
+    if (endsFromTime != null) {
       endsFrom = new DateTime(endsFromTime).toDateTime(DateTimeZone.UTC).toDate();
-    if (endsToTime != null)
+    }
+    if (endsToTime != null) {
       endsTo = new DateTime(endsToTime).toDateTime(DateTimeZone.UTC).toDate();
+    }
 
     try {
       List<MediaPackage> events = service.search(Opt.nul(StringUtils.trimToNull(device)), Opt.nul(startsfrom),
@@ -1149,8 +1160,9 @@ public class SchedulerRestService {
                           @RestResponse(description = "Recording with {id} could not be found", responseCode = HttpServletResponse.SC_NOT_FOUND) }, returnDescription = "")
   public Response updateRecordingState(@PathParam("id") String id, @FormParam("state") String state)
           throws NotFoundException {
-    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(state))
+    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(state)) {
       return Response.serverError().status(Response.Status.BAD_REQUEST).build();
+    }
 
     try {
       if (service.updateRecordingState(id, state)) {
@@ -1190,8 +1202,9 @@ public class SchedulerRestService {
                   @RestResponse(description = "{id} is empty", responseCode = HttpServletResponse.SC_BAD_REQUEST),
                   @RestResponse(description = "Recording with {id} could not be found", responseCode = HttpServletResponse.SC_NOT_FOUND) }, returnDescription = "")
   public Response removeRecording(@PathParam("id") String id) throws NotFoundException {
-    if (StringUtils.isEmpty(id))
+    if (StringUtils.isEmpty(id)) {
       return Response.serverError().status(Response.Status.BAD_REQUEST).build();
+    }
 
     try {
       service.removeRecording(id);
@@ -1431,8 +1444,9 @@ public class SchedulerRestService {
     }
     Set<String> userIds = new HashSet<>();
     String[] ids = StringUtils.split(users, ",");
-    if (ids != null)
+    if (ids != null) {
       userIds.addAll(Arrays.asList(ids));
+    }
 
     DateTime startDate = new DateTime(startTime).toDateTime(DateTimeZone.UTC);
     DateTime endDate = new DateTime(endTime).toDateTime(DateTimeZone.UTC);
@@ -1472,9 +1486,10 @@ public class SchedulerRestService {
                   @RestResponse(responseCode = HttpServletResponse.SC_NOT_FOUND, description = "There is no ongoing recording"),
                   @RestResponse(responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE, description = "The agent is not ready to communicate") })
   public Response currentCapture(@PathParam("agent") String agentId) throws NotFoundException {
-    if (service == null || agentService == null)
+    if (service == null || agentService == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE)
               .entity("Scheduler service is unavailable, please wait...").build();
+    }
 
     try {
       List<MediaPackage> search = service.search(Opt.some(agentId), Opt.<Date> none(), Opt.some(new Date()),
@@ -1503,9 +1518,10 @@ public class SchedulerRestService {
                   @RestResponse(responseCode = HttpServletResponse.SC_NOT_FOUND, description = "There is no upcoming recording"),
                   @RestResponse(responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE, description = "The agent is not ready to communicate") })
   public Response upcomingCapture(@PathParam("agent") String agentId) throws NotFoundException {
-    if (service == null || agentService == null)
+    if (service == null || agentService == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE)
               .entity("Scheduler service is unavailable, please wait...").build();
+    }
 
     try {
       List<MediaPackage> search = service.search(Opt.some(agentId), Opt.some(new Date()), Opt.<Date> none(),
@@ -1537,9 +1553,10 @@ public class SchedulerRestService {
                           @RestResponse(responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE, description = "The agent is not ready to communicate") })
   public Response startCapture(@PathParam("agent") String agentId, @FormParam("workflowDefinitionId") String wfId)
           throws NotFoundException, UnauthorizedException {
-    if (service == null || agentService == null || prolongingService == null)
+    if (service == null || agentService == null || prolongingService == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE)
               .entity("Scheduler service is unavailable, please wait...").build();
+    }
 
     // Lookup the agent. If it doesn't exist, add a temporary registration
     boolean adHocRegistration = false;
@@ -1570,8 +1587,9 @@ public class SchedulerRestService {
       }
 
       String workflowId = defaultWorkflowDefinitionId;
-      if (StringUtils.isNotBlank(wfId))
+      if (StringUtils.isNotBlank(wfId)) {
         workflowId = wfId;
+      }
 
       Map<String, String> caProperties = new HashMap<>();
       caProperties.put("org.opencastproject.workflow.definition", workflowId);
@@ -1612,8 +1630,9 @@ public class SchedulerRestService {
                 .build();
       } catch (Exception e) {
         prolongingService.stop(agentId);
-        if (e instanceof UnauthorizedException)
+        if (e instanceof UnauthorizedException) {
           throw (UnauthorizedException) e;
+        }
         logger.error("Unable to create immediate event on agent {}: {}", agentId, e);
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       } finally {
@@ -1652,9 +1671,10 @@ public class SchedulerRestService {
                   @RestResponse(responseCode = HttpServletResponse.SC_UNAUTHORIZED, description = "You do not have permission to stop this immediate capture. Maybe you need to authenticate."),
                   @RestResponse(responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE, description = "The agent is not ready to communicate") })
   public Response stopCapture(@PathParam("agent") String agentId) throws NotFoundException, UnauthorizedException {
-    if (service == null || agentService == null || prolongingService == null)
+    if (service == null || agentService == null || prolongingService == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE)
               .entity("Scheduler service is unavailable, please wait...").build();
+    }
 
     boolean isAdHoc = false;
     try {
@@ -1725,9 +1745,10 @@ public class SchedulerRestService {
                   @RestResponse(responseCode = HttpServletResponse.SC_UNAUTHORIZED, description = "You do not have permission to prolong this immediate capture. Maybe you need to authenticate."),
                   @RestResponse(responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE, description = "The agent is not ready to communicate") })
   public Response prolongCapture(@PathParam("agent") String agentId) throws NotFoundException, UnauthorizedException {
-    if (service == null || agentService == null || prolongingService == null)
+    if (service == null || agentService == null || prolongingService == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE)
               .entity("Scheduler service is unavailable, please wait...").build();
+    }
     try {
       MediaPackage event = prolongingService.getCurrentRecording(agentId);
       Opt<DublinCoreCatalog> dc = DublinCoreUtil.loadEpisodeDublinCore(workspace, event);
@@ -1747,8 +1768,9 @@ public class SchedulerRestService {
           MediaPackageElementFlavor flavor, MediaPackage mediaPackage) throws IOException {
     Catalog[] catalogs = mediaPackage.getCatalogs(flavor);
     Catalog c = null;
-    if (catalogs.length == 1)
+    if (catalogs.length == 1) {
       c = catalogs[0];
+    }
 
     // If catalog found, create a new one
     if (c == null) {
@@ -1773,8 +1795,9 @@ public class SchedulerRestService {
 
   private String serializeProperties(Map<String, String> properties) {
     StringBuilder wfPropertiesString = new StringBuilder();
-    for (Map.Entry<String, String> entry : properties.entrySet())
+    for (Map.Entry<String, String> entry : properties.entrySet()) {
       wfPropertiesString.append(entry.getKey() + "=" + entry.getValue() + "\n");
+    }
     return wfPropertiesString.toString();
   }
 

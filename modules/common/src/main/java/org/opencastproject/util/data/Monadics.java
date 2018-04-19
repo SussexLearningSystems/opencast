@@ -335,15 +335,18 @@ public final class Monadics {
       @Override
       public <B> ListMonadic<B> fmap(Function<? super A, ? extends B> f) {
         final List<B> target = newListBuilder(as.size());
-        for (A a : as) target.add(f.apply(a));
+        for (A a : as) {
+          target.add(f.apply(a));
+        }
         return mlist(target);
       }
 
       @Override
       public <B> ListMonadic<B> bind(Function<? super A, ? extends Iterable<B>> f) {
         final List<B> target = newListBuilder();
-        for (A a : as)
+        for (A a : as) {
           appendTo(target, f.apply(a));
+        }
         return mlist(target);
       }
 
@@ -361,8 +364,9 @@ public final class Monadics {
       @Override
       public Option<A> find(Function<? super A, Boolean> p) {
         for (A a : as) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return some(a);
+          }
         }
         return none();
       }
@@ -370,8 +374,9 @@ public final class Monadics {
       @Override
       public boolean exists(Function<? super A, Boolean> p) {
         for (A a : as) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return true;
+          }
         }
         return false;
       }
@@ -425,8 +430,9 @@ public final class Monadics {
 
       @Override
       public ListMonadic<A> tail() {
-        if (as.size() <= 1)
+        if (as.size() <= 1) {
           return mlist();
+        }
         return mlist(as.subList(1, as.size()));
       }
 
@@ -457,16 +463,18 @@ public final class Monadics {
 
       @Override
       public ListMonadic<A> each(Function<? super A, Void> e) {
-        for (A a : as)
+        for (A a : as) {
           e.apply(a);
+        }
         return this;
       }
 
       @Override
       public ListMonadic<A> eachIndex(Function2<? super A, ? super Integer, Void> e) {
         int i = 0;
-        for (A a : as)
+        for (A a : as) {
           e.apply(a, i++);
+        }
         return this;
       }
 
@@ -540,16 +548,18 @@ public final class Monadics {
       @Override
       public <B> ListMonadic<B> fmap(Function<? super A, ? extends B> f) {
         final List<B> target = newListBuilder(as.length);
-        for (A a : as)
+        for (A a : as) {
           target.add(f.apply(a));
+        }
         return mlist(target);
       }
 
       @Override
       public <B> ListMonadic<B> bind(Function<? super A, ? extends Iterable<B>> f) {
         final List<B> target = newListBuilder();
-        for (A a : as)
+        for (A a : as) {
           appendTo(target, f.apply(a));
+        }
         return mlist(target);
       }
 
@@ -567,8 +577,9 @@ public final class Monadics {
       @Override
       public Option<A> find(Function<? super A, Boolean> p) {
         for (A a : as) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return some(a);
+          }
         }
         return none();
       }
@@ -576,8 +587,9 @@ public final class Monadics {
       @Override
       public boolean exists(Function<? super A, Boolean> p) {
         for (A a : as) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return true;
+          }
         }
         return false;
       }
@@ -631,8 +643,9 @@ public final class Monadics {
 
       @Override
       public ListMonadic<A> tail() {
-        if (as.length <= 1)
+        if (as.length <= 1) {
           return mlist();
+        }
         return (ListMonadic<A>) mlist(ArrayUtils.subarray(as, 1, as.length));
       }
 
@@ -757,8 +770,9 @@ public final class Monadics {
       @Override
       public <B> ListMonadic<B> bind(Function<? super A, ? extends Iterable<B>> f) {
         final List<B> target = newListBuilder();
-        while (as.hasNext())
+        while (as.hasNext()) {
           appendTo(target, f.apply(as.next()));
+        }
         return mlist(target);
       }
 
@@ -777,8 +791,9 @@ public final class Monadics {
       @Override
       public Option<A> find(Function<? super A, Boolean> p) {
         for (A a : forc(as)) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return some(a);
+          }
         }
         return none();
       }
@@ -786,8 +801,9 @@ public final class Monadics {
       @Override
       public boolean exists(Function<? super A, Boolean> p) {
         for (A a : forc(as)) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return true;
+          }
         }
         return false;
       }
@@ -893,15 +909,18 @@ public final class Monadics {
 
       @Override
       public ListMonadic<A> each(Function<? super A, Void> e) {
-        while (as.hasNext()) e.apply(as.next());
+        while (as.hasNext()) {
+          e.apply(as.next());
+        }
         return this;
       }
 
       @Override
       public ListMonadic<A> eachIndex(Function2<? super A, ? super Integer, Void> e) {
         int i = 0;
-        while (as.hasNext())
+        while (as.hasNext()) {
           e.apply(as.next(), i++);
+        }
         return this;
       }
 
@@ -1028,8 +1047,9 @@ public final class Monadics {
       @Override
       public boolean exists(Function<A, Boolean> p) {
         for (A a : forc(as)) {
-          if (p.apply(a))
+          if (p.apply(a)) {
             return true;
+          }
         }
         return false;
       }

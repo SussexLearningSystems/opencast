@@ -104,18 +104,20 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
     } catch (AclTransitionDbException e) {
       throw e;
     } catch (Exception e) {
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       boolean isConstraintViolation = Util.isConstraintViolationException(e);
-      if (isConstraintViolation)
+      if (isConstraintViolation) {
         throw new AclTransitionDbDuplicatedException();
-      else {
+      } else {
         logger.error("Could not store the scheduled episode ACL: {}", e.getMessage());
         throw new AclTransitionDbException(e);
       }
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -136,18 +138,20 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
     } catch (AclTransitionDbException e) {
       throw e;
     } catch (Exception e) {
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       boolean isContraintViolation = Util.isConstraintViolationException(e);
-      if (isContraintViolation)
+      if (isContraintViolation) {
         throw new AclTransitionDbDuplicatedException();
-      else {
+      } else {
         logger.error("Could not store the scheduled series ACL: {}", e.getMessage());
         throw new AclTransitionDbException(e);
       }
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -162,8 +166,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       EpisodeAclTransitionEntity entity = getEpisodeEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Episode transition " + transitionId + " not found!");
+      }
       entity.update(entity.getEpisodeId(), org.getId(), applicationDate, getManagedAcl(em, managedAclId, org), workflow);
       em.merge(entity);
       tx.commit();
@@ -173,18 +178,20 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
     } catch (AclTransitionDbException e) {
       throw e;
     } catch (Exception e) {
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       boolean isContraintViolation = Util.isConstraintViolationException(e);
-      if (isContraintViolation)
+      if (isContraintViolation) {
         throw new AclTransitionDbDuplicatedException();
-      else {
+      } else {
         logger.error("Could not update the scheduled episode ACL: {}", e.getMessage());
         throw new AclTransitionDbException(e);
       }
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -199,8 +206,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       SeriesAclTransitionEntity entity = getSeriesEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Series transition " + transitionId + " not found!");
+      }
       entity.update(entity.getSeriesId(), org.getId(), applicationDate, getManagedAcl(em, some(managedAclId), org)
               .get(), workflow, override);
       em.merge(entity);
@@ -211,18 +219,20 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
     } catch (AclTransitionDbException e) {
       throw e;
     } catch (Exception e) {
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       boolean isContraintViolation = Util.isConstraintViolationException(e);
-      if (isContraintViolation)
+      if (isContraintViolation) {
         throw new AclTransitionDbDuplicatedException();
-      else {
+      } else {
         logger.error("Could not update the scheduled series ACL: {}", e.getMessage());
         throw new AclTransitionDbException(e);
       }
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -235,13 +245,15 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       EpisodeAclTransitionEntity entity = getEpisodeEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException();
+      }
       em.remove(entity);
       tx.commit();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -254,13 +266,15 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       SeriesAclTransitionEntity entity = getSeriesEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException();
+      }
       em.remove(entity);
       tx.commit();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -275,8 +289,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       logger.warn("Error parsing episode ACL:", e);
       throw new AclTransitionDbException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -291,8 +306,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       logger.warn("Error parsing episode ACL:", e);
       throw new AclTransitionDbException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -323,8 +339,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       SeriesAclTransitionEntity entity = getSeriesEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Series transition " + transitionId + " not found!");
+      }
       entity.setDone(true);
       em.merge(entity);
       tx.commit();
@@ -333,12 +350,14 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       throw e;
     } catch (Exception e) {
       logger.error("Could not update the scheduled series ACL: {}", e.getMessage());
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       throw new AclTransitionDbException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -352,8 +371,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       tx = em.getTransaction();
       tx.begin();
       EpisodeAclTransitionEntity entity = getEpisodeEntity(transitionId, org.getId(), em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException("Episode transition " + transitionId + " not found!");
+      }
       entity.setDone(true);
       em.merge(entity);
       tx.commit();
@@ -362,12 +382,14 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       throw e;
     } catch (Exception e) {
       logger.error("Could not update the scheduled episode ACL: {}", e.getMessage());
-      if (tx != null && tx.isActive())
+      if (tx != null && tx.isActive()) {
         tx.rollback();
+      }
       throw new AclTransitionDbException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -391,8 +413,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
         logger.warn("Error parsing episode ACL:", e);
         throw new AclTransitionDbException(e);
       } finally {
-        if (em != null)
+        if (em != null) {
           em.close();
+        }
       }
     }
 
@@ -406,20 +429,25 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       // create predicates joined in an "and" expression
       final List<Predicate> predicates = new ArrayList<Predicate>();
       predicates.add(cb.equal(c.get("organizationId"), orgId));
-      for (String p : query.getId())
+      for (String p : query.getId()) {
         predicates.add(cb.equal(c.get("episodeId"), p));
-      for (Boolean p : query.getDone()) {
-        if (p)
-          predicates.add(cb.isTrue(c.get("done").as(Boolean.class)));
-        else
-          predicates.add(cb.isFalse(c.get("done").as(Boolean.class)));
       }
-      for (Long p : query.getAclId())
+      for (Boolean p : query.getDone()) {
+        if (p) {
+          predicates.add(cb.isTrue(c.get("done").as(Boolean.class)));
+        } else {
+          predicates.add(cb.isFalse(c.get("done").as(Boolean.class)));
+        }
+      }
+      for (Long p : query.getAclId()) {
         predicates.add(cb.equal(c.get("managedAcl").get("id").as(Long.class), p));
-      for (Date p : query.getAfter())
+      }
+      for (Date p : query.getAfter()) {
         predicates.add(cb.greaterThanOrEqualTo(c.get("applicationDate").as(Date.class), p));
-      for (Date p : query.getBefore())
+      }
+      for (Date p : query.getBefore()) {
         predicates.add(cb.lessThanOrEqualTo(c.get("applicationDate").as(Date.class), p));
+      }
       q.where(cb.and(toArray(predicates)));
 
       q.orderBy(cb.asc(c.get("applicationDate")));
@@ -428,8 +456,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       return new TransitionResultImpl(Misc.<EpisodeACLTransition> widen(typedQuery.getResultList()),
               Collections.<SeriesACLTransition> nil());
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -453,8 +482,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
         logger.warn("Error parsing episode ACL:", e);
         throw new AclTransitionDbException(e);
       } finally {
-        if (em != null)
+        if (em != null) {
           em.close();
+        }
       }
     }
 
@@ -468,20 +498,25 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       // create predicates joined in an "and" expression
       final List<Predicate> predicates = new ArrayList<Predicate>();
       predicates.add(cb.equal(c.get("organizationId"), orgId));
-      for (String p : query.getId())
+      for (String p : query.getId()) {
         predicates.add(cb.equal(c.get("seriesId"), p));
-      for (Boolean p : query.getDone()) {
-        if (p)
-          predicates.add(cb.isTrue(c.get("done").as(Boolean.class)));
-        else
-          predicates.add(cb.isFalse(c.get("done").as(Boolean.class)));
       }
-      for (Long p : query.getAclId())
+      for (Boolean p : query.getDone()) {
+        if (p) {
+          predicates.add(cb.isTrue(c.get("done").as(Boolean.class)));
+        } else {
+          predicates.add(cb.isFalse(c.get("done").as(Boolean.class)));
+        }
+      }
+      for (Long p : query.getAclId()) {
         predicates.add(cb.equal(c.get("managedAcl").get("id").as(Long.class), p));
-      for (Date p : query.getAfter())
+      }
+      for (Date p : query.getAfter()) {
         predicates.add(cb.greaterThanOrEqualTo(c.get("applicationDate").as(Date.class), p));
-      for (Date p : query.getBefore())
+      }
+      for (Date p : query.getBefore()) {
         predicates.add(cb.lessThanOrEqualTo(c.get("applicationDate").as(Date.class), p));
+      }
       q.where(cb.and(toArray(predicates)));
 
       q.orderBy(cb.asc(c.get("applicationDate")));
@@ -490,8 +525,9 @@ public final class OsgiJpaAclTransitionDb implements AclTransitionDb {
       return new TransitionResultImpl(Collections.<EpisodeACLTransition> nil(),
               Misc.<SeriesACLTransition> widen(typedQuery.getResultList()));
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

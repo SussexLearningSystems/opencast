@@ -79,8 +79,9 @@ public class HandleBuilderImpl implements HandleBuilder {
       String authority = System.getProperty(OPT_HANDLE_AUTHORITY);
       if (authority != null && !"".equals(authority)) {
         namingAuthority = authority.trim();
-        if (!namingAuthority.startsWith("10."))
+        if (!namingAuthority.startsWith("10.")) {
           namingAuthority = "10." + namingAuthority;
+        }
       }
 
       // Namespace
@@ -98,8 +99,9 @@ public class HandleBuilderImpl implements HandleBuilder {
    * @see org.opencastproject.mediapackage.identifier.HandleBuilder#createNew()
    */
   public Handle createNew() {
-    if (defaultURL == null)
+    if (defaultURL == null) {
       throw new IllegalStateException("Default url is malformed");
+    }
     return createNew(defaultURL);
   }
 
@@ -107,14 +109,16 @@ public class HandleBuilderImpl implements HandleBuilder {
    * @see org.opencastproject.mediapackage.identifier.HandleBuilder#createNew(java.net.URL)
    */
   public Handle createNew(URL url) throws IllegalStateException {
-    if (url == null)
+    if (url == null) {
       throw new IllegalArgumentException("Argument url must not be null");
+    }
     String localName = UUID.randomUUID().toString();
     if (namespace != null) {
-      if (namespace.endsWith("/"))
+      if (namespace.endsWith("/")) {
         localName = UrlSupport.concat(namespace, localName);
-      else
+      } else {
         localName = namespace + localName;
+      }
     }
 
     return new HandleImpl(namingAuthority, localName, url, this);
@@ -124,12 +128,14 @@ public class HandleBuilderImpl implements HandleBuilder {
    * @see org.opencastproject.mediapackage.identifier.HandleBuilder#fromString(java.lang.String)
    */
   public Handle fromString(String value) throws IllegalStateException {
-    if (value == null)
+    if (value == null) {
       throw new IllegalArgumentException("Unable to create handle from null string");
+    }
 
     Matcher m = HANDLE_PATTERN.matcher(value);
-    if (!m.matches())
+    if (!m.matches()) {
       throw new IllegalStateException("Handle " + value + " is malformed");
+    }
     return new HandleImpl(m.group(1), m.group(2), this);
   }
 
@@ -139,8 +145,9 @@ public class HandleBuilderImpl implements HandleBuilder {
    * @see org.opencastproject.mediapackage.identifier.HandleBuilder#resolve(org.opencastproject.mediapackage.identifier.Handle)
    */
   public URL resolve(Handle handle) throws HandleException {
-    if (handle == null)
+    if (handle == null) {
       throw new IllegalArgumentException("Cannot resolve null handle");
+    }
     // TODO: Try to get url of store, then resolve
     throw new IllegalStateException("This implementation cannot resolve handles");
   }
@@ -152,10 +159,12 @@ public class HandleBuilderImpl implements HandleBuilder {
    *      java.net.URL)
    */
   public boolean update(Handle handle, URL url) throws HandleException {
-    if (handle == null)
+    if (handle == null) {
       throw new IllegalArgumentException("Cannot update null handle");
-    if (url == null)
+    }
+    if (url == null) {
       throw new IllegalArgumentException("Cannot update handle to null");
+    }
     return true;
   }
 
@@ -165,8 +174,9 @@ public class HandleBuilderImpl implements HandleBuilder {
    * @see org.opencastproject.mediapackage.identifier.HandleBuilder#delete(org.opencastproject.mediapackage.identifier.Handle)
    */
   public boolean delete(Handle handle) throws HandleException {
-    if (handle == null)
+    if (handle == null) {
       throw new IllegalArgumentException("Cannot delete null handle");
+    }
     return true;
   }
 

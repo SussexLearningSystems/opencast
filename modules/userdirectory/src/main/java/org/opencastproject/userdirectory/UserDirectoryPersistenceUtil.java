@@ -82,8 +82,9 @@ public final class UserDirectoryPersistenceUtil {
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -115,8 +116,9 @@ public final class UserDirectoryPersistenceUtil {
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -149,8 +151,9 @@ public final class UserDirectoryPersistenceUtil {
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -176,8 +179,9 @@ public final class UserDirectoryPersistenceUtil {
       query.setParameter("organization", organization);
       return query.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -203,8 +207,9 @@ public final class UserDirectoryPersistenceUtil {
       q.setParameter("org", organization);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -234,8 +239,9 @@ public final class UserDirectoryPersistenceUtil {
       q.setParameter("org", orgId);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -260,8 +266,9 @@ public final class UserDirectoryPersistenceUtil {
       query.setParameter("organization", orgId);
       return query.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -284,8 +291,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -311,8 +319,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -338,8 +347,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -360,8 +370,9 @@ public final class UserDirectoryPersistenceUtil {
       q.setParameter("org", organizationId);
       return ((Number) q.getSingleResult()).longValue();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -391,8 +402,9 @@ public final class UserDirectoryPersistenceUtil {
       q.setParameter("org", orgId);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -418,8 +430,9 @@ public final class UserDirectoryPersistenceUtil {
       q.setParameter("org", orgId);
       return q.getResultList();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -445,8 +458,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -472,8 +486,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -499,8 +514,9 @@ public final class UserDirectoryPersistenceUtil {
     } catch (NoResultException e) {
       return null;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

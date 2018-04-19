@@ -136,8 +136,9 @@ public class IncidentServiceEndpoint {
     // Get the configured server URL
     if (cc != null) {
       String ccServerUrl = cc.getBundleContext().getProperty(OpencastConstants.SERVER_URL_PROPERTY);
-      if (StringUtils.isNotBlank(ccServerUrl))
+      if (StringUtils.isNotBlank(ccServerUrl)) {
         serverUrl = ccServerUrl;
+      }
       serviceUrl = (String) cc.getProperties().get(RestConstants.SERVICE_PATH_PROPERTY);
     }
   }
@@ -314,8 +315,9 @@ public class IncidentServiceEndpoint {
       job = JobParser.parseJob(jobXml);
       timestamp = new Date(DateTimeSupport.fromUTC(date));
       severity = Severity.valueOf(severityString);
-      if (params != null)
+      if (params != null) {
         map = params.getMap();
+      }
 
       if (StringUtils.isNotBlank(details)) {
         final JSONArray array = (JSONArray) JSONValue.parse(details);

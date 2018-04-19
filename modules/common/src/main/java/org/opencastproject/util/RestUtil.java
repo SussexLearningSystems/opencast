@@ -77,18 +77,21 @@ public final class RestUtil {
   public static Response.ResponseBuilder fileResponse(File f, String contentType, Option<String> fileName) {
     final Response.ResponseBuilder b = Response.ok(f).header("Content-Type", contentType)
             .header("Content-Length", f.length());
-    for (String fn : fileName)
+    for (String fn : fileName) {
       b.header("Content-Disposition", "attachment; filename=" + fn);
+    }
     return b;
   }
 
   /** Create a file response. */
   public static Response.ResponseBuilder fileResponse(File f, Option<String> contentType, Option<String> fileName) {
     final Response.ResponseBuilder b = Response.ok(f).header("Content-Length", f.length());
-    for (String t : contentType)
+    for (String t : contentType) {
       b.header("Content-Type", t);
-    for (String fn : fileName)
+    }
+    for (String fn : fileName) {
       b.header("Content-Disposition", "attachment; filename=" + fn);
+    }
     return b;
   }
 
@@ -153,10 +156,12 @@ public final class RestUtil {
   public static Response.ResponseBuilder streamResponse(InputStream in, String contentType, Option<Long> streamLength,
           Option<String> fileName) {
     final Response.ResponseBuilder b = Response.ok(in).header("Content-Type", contentType);
-    for (Long l : streamLength)
+    for (Long l : streamLength) {
       b.header("Content-Length", l);
-    for (String fn : fileName)
+    }
+    for (String fn : fileName) {
       b.header("Content-Disposition", "attachment; filename=" + fn);
+    }
     return b;
   }
 
@@ -183,8 +188,9 @@ public final class RestUtil {
    * x=comma,separated,,%20value -&gt; ["comma", "separated", "value"]
    */
   public static Monadics.ListMonadic<String> splitCommaSeparatedParam(Option<String> param) {
-    for (String p : param)
+    for (String p : param) {
       return mlist(CSV_SPLIT.apply(p)).bind(trimToNil);
+    }
     return mlist();
   }
 
@@ -253,12 +259,15 @@ public final class RestUtil {
     public static Response ok(InputStream in, Option<String> contentType, Option<Long> streamLength,
             Option<String> fileName) {
       final Response.ResponseBuilder b = Response.ok(in);
-      for (String t : contentType)
+      for (String t : contentType) {
         b.header("Content-Type", t);
-      for (Long l : streamLength)
+      }
+      for (Long l : streamLength) {
         b.header("Content-Length", l);
-      for (String fn : fileName)
+      }
+      for (String fn : fileName) {
         b.header("Content-Disposition", "attachment; filename=" + fn);
+      }
       return b.build();
     }
 

@@ -74,8 +74,9 @@ public abstract class BaseMessageReceiverImpl<T extends Serializable> {
 
   public void deactivate(ComponentContext cc) {
     logger.info("Deactivating {}", this.getClass().getName());
-    if (messageWatcher != null)
+    if (messageWatcher != null) {
       messageWatcher.stopListening();
+    }
 
     singleThreadExecutor.shutdown();
   }
@@ -132,9 +133,10 @@ public abstract class BaseMessageReceiverImpl<T extends Serializable> {
           securityService.setUser(baseMessage.getUser());
           if (baseMessage.getObject() instanceof IndexRecreateObject) {
             IndexRecreateObject obj = (IndexRecreateObject) baseMessage.getObject();
-            if (Status.End.equals(obj.getStatus()))
+            if (Status.End.equals(obj.getStatus())) {
               messageSender.sendObjectMessage(IndexProducer.RESPONSE_QUEUE, MessageSender.DestinationType.Queue,
                       IndexRecreateObject.end(obj.getIndexName(), obj.getService()));
+            }
           } else {
             lockService.synchronize(baseMessage.getId().get(), execute.curry(baseMessage.getObject()).toFn());
           }

@@ -166,12 +166,15 @@ public class TextAnnotationImpl implements TextAnnotation {
     DecimalFormat format = new DecimalFormat("0.0");
     format.setDecimalFormatSymbols(standardSymbols);
     Element node = document.createElement("TextAnnotation");
-    if (confidence >= 0.0)
+    if (confidence >= 0.0) {
       node.setAttribute("confidence", format.format(confidence));
-    if (relevance >= 0.0)
+    }
+    if (relevance >= 0.0) {
       node.setAttribute("relevance", format.format(relevance));
-    if (language != null)
+    }
+    if (language != null) {
       node.setAttribute("xml:lang", language);
+    }
 
     // Keyword anntiations
     if (keywordAnnotations.size() > 0) {

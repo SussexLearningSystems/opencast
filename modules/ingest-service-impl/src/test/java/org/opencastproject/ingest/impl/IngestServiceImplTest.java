@@ -575,8 +575,9 @@ public class IngestServiceImplTest {
 
     // Get test series dublin core for the mock return value
     File catalogFile = new File(urlCatalog2);
-    if (!catalogFile.exists() || !catalogFile.canRead())
+    if (!catalogFile.exists() || !catalogFile.canRead()) {
       throw new Exception("Unable to access test catalog " + urlCatalog2.getPath());
+    }
     FileInputStream in = new FileInputStream(catalogFile);
     DublinCoreCatalog series = DublinCores.read(in);
     IOUtils.closeQuietly(in);

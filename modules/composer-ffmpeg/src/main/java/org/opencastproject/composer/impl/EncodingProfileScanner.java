@@ -184,16 +184,18 @@ public class EncodingProfileScanner implements ArtifactInstaller {
     List<String> defaultProperties = new ArrayList<>(10);
 
     String name = getDefaultProperty(profile, PROP_NAME, properties, defaultProperties);
-    if (name == null || "".equals(name))
+    if (name == null || "".equals(name)) {
       throw new ConfigurationException("Distribution profile '" + profile + "' is missing a name (" + PROP_NAME
               + "). (Check web.xml profiles.)");
+    }
 
     EncodingProfileImpl df = new EncodingProfileImpl(profile, name, artifact);
 
     // Output Type
     String type = getDefaultProperty(profile, PROP_OUTPUT, properties, defaultProperties);
-    if (StringUtils.isBlank(type))
+    if (StringUtils.isBlank(type)) {
       throw new ConfigurationException("Output type (" + PROP_OUTPUT + ") of profile '" + profile + "' is missing");
+    }
     try {
       df.setOutputType(MediaType.parseString(StringUtils.trimToEmpty(type)));
     } catch (IllegalArgumentException e) {
@@ -212,8 +214,9 @@ public class EncodingProfileScanner implements ArtifactInstaller {
     } else {
       // Suffix old stile, without tags
       String suffixObj = getDefaultProperty(profile, PROP_SUFFIX, properties, defaultProperties);
-      if (StringUtils.isBlank(suffixObj))
+      if (StringUtils.isBlank(suffixObj)) {
         throw new ConfigurationException("Suffix (" + PROP_SUFFIX + ") of profile '" + profile + "' is missing");
+      }
       df.setSuffix(StringUtils.trim(suffixObj));
     }
 
@@ -232,8 +235,9 @@ public class EncodingProfileScanner implements ArtifactInstaller {
 
     // Applicable to the following track categories
     String applicableObj = getDefaultProperty(profile, PROP_APPLICABLE, properties, defaultProperties);
-    if (StringUtils.isBlank(applicableObj))
+    if (StringUtils.isBlank(applicableObj)) {
       throw new ConfigurationException("Input type (" + PROP_APPLICABLE + ") of profile '" + profile + "' is missing");
+    }
     df.setApplicableType(MediaType.parseString(StringUtils.trimToEmpty(applicableObj)));
 
     String jobLoad = getDefaultProperty(profile, PROP_JOBLOAD, properties, defaultProperties);

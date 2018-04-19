@@ -111,13 +111,15 @@ public class VideoSegmenterRestEndpoint extends AbstractJobProducerEndpoint {
           @RestResponse(description = "The underlying service could not segment the video.", responseCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR) }, returnDescription = "The job ID to use when polling for the resulting mpeg7 catalog.")
   public Response segment(@FormParam("track") String trackAsXml) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(trackAsXml))
+    if (StringUtils.isBlank(trackAsXml)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("track must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(trackAsXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("mediapackage element must be of type track").build();
+    }
 
     try {
       // Asynchronously segment the specified track
@@ -143,10 +145,11 @@ public class VideoSegmenterRestEndpoint extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

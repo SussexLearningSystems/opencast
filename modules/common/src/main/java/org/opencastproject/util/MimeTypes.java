@@ -129,8 +129,9 @@ public final class MimeTypes {
       String definitions = null;
       is = MimeTypes.class.getResourceAsStream(DEFINITION_FILE);
       StringBuilder buf = new StringBuilder();
-      if (is == null)
+      if (is == null) {
         throw new FileNotFoundException(DEFINITION_FILE);
+      }
 
       isr = new InputStreamReader(is);
       char[] chars = new char[1024];
@@ -163,16 +164,18 @@ public final class MimeTypes {
   /** Get a mime type from the registry. */
   public static Option<MimeType> get(String type, String subtype) {
     for (MimeType t : mimeTypes) {
-      if (t.getType().equals(type) && t.getSubtype().equals(subtype))
+      if (t.getType().equals(type) && t.getSubtype().equals(subtype)) {
         return some(t);
+      }
     }
     return none();
   }
 
   /** Get a mime type from the registry or create a new one if not available. */
   public static MimeType getOrCreate(String type, String subtype) {
-    for (MimeType t : get(type, subtype))
+    for (MimeType t : get(type, subtype)) {
       return t;
+    }
     return mimeType(type, subtype);
   }
 
@@ -196,13 +199,15 @@ public final class MimeTypes {
    */
   public static MimeType parseMimeType(String mimeType) {
     final Matcher m = MIME_TYPE_PATTERN.matcher(mimeType);
-    if (!m.matches())
+    if (!m.matches()) {
       throw new IllegalArgumentException("Malformed mime type '" + mimeType + "'");
+    }
     final String type = m.group(1);
     final String subtype = m.group(2);
     for (MimeType t : mimeTypes) {
-      if (t.getType().equals(type) && t.getSubtype().equals(subtype))
+      if (t.getType().equals(type) && t.getSubtype().equals(subtype)) {
         return t;
+      }
     }
     return mimeType(type, subtype);
   }
@@ -221,12 +226,14 @@ public final class MimeTypes {
    *           if the suffix does not map to a mime type
    */
   public static MimeType fromSuffix(String suffix) throws UnknownFileTypeException {
-    if (suffix == null)
+    if (suffix == null) {
       throw new IllegalArgumentException("Argument 'suffix' was null!");
+    }
 
     for (MimeType m : mimeTypes) {
-      if (m.supportsSuffix(suffix))
+      if (m.supportsSuffix(suffix)) {
         return m;
+      }
     }
     throw new UnknownFileTypeException("File suffix '" + suffix + "' cannot be matched to any mime type");
   }
@@ -246,8 +253,9 @@ public final class MimeTypes {
    *           if the mime type cannot be derived from the file
    */
   public static MimeType fromURL(URL url) throws UnknownFileTypeException {
-    if (url == null)
+    if (url == null) {
       throw new IllegalArgumentException("Argument 'url' is null");
+    }
     return fromString(url.getPath());
   }
 
@@ -266,8 +274,9 @@ public final class MimeTypes {
    *           if the mime type cannot be derived from the file
    */
   public static MimeType fromURI(URI uri) throws UnknownFileTypeException {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument 'uri' is null");
+    }
     return fromString(uri.getPath());
   }
 
@@ -286,8 +295,9 @@ public final class MimeTypes {
    *           if the mime type cannot be derived from the file
    */
   public static MimeType fromString(String name) throws UnknownFileTypeException {
-    if (name == null)
+    if (name == null) {
       throw new IllegalArgumentException("Argument 'name' is null");
+    }
 
     MimeType mimeType = null;
 
@@ -304,8 +314,9 @@ public final class MimeTypes {
     // Try to get mime type for file suffix
     try {
       mimeType = fromSuffix(suffix);
-      if (mimeType != null)
+      if (mimeType != null) {
         return mimeType;
+      }
     } catch (UnknownFileTypeException e) {
       throw e;
     }

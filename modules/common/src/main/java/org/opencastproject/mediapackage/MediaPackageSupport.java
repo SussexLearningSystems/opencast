@@ -94,9 +94,9 @@ public final class MediaPackageSupport {
   public static MediaPackage merge(MediaPackage dest, MediaPackage src, MergeMode mode) throws MediaPackageException {
     try {
       for (MediaPackageElement e : src.elements()) {
-        if (dest.getElementById(e.getIdentifier()) == null)
+        if (dest.getElementById(e.getIdentifier()) == null) {
           dest.add(e);
-        else {
+        } else {
           if (MergeMode.Replace == mode) {
             logger.debug("Replacing element " + e.getIdentifier() + " while merging " + dest + " with " + src);
             dest.remove(dest.getElementById(e.getIdentifier()));
@@ -129,8 +129,9 @@ public final class MediaPackageSupport {
    */
   public static boolean contains(String identifier, MediaPackage mp) {
     for (MediaPackageElement element : mp.getElements()) {
-      if (element.getIdentifier().equals(identifier))
+      if (element.getIdentifier().equals(identifier)) {
         return true;
+      }
     }
     return false;
   }
@@ -249,10 +250,12 @@ public final class MediaPackageSupport {
 
   /** Replaces all elements of <code>mp</code> with <code>es</code>. Mutates <code>mp</code>. */
   public static void replaceElements(MediaPackage mp, List<MediaPackageElement> es) {
-    for (MediaPackageElement e : mp.getElements())
+    for (MediaPackageElement e : mp.getElements()) {
       mp.remove(e);
-    for (MediaPackageElement e : es)
+    }
+    for (MediaPackageElement e : es) {
       mp.add(e);
+    }
   }
 
   public static final Function<MediaPackageElement, String> getMediaPackageElementId = new Function<MediaPackageElement, String>() {

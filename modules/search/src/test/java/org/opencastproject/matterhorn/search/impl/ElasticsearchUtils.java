@@ -56,8 +56,9 @@ public final class ElasticsearchUtils {
     // Load the index configuration and move it into place
     File configurationRoot = new File(PathSupport.concat(new String[] { homeDirectory.getAbsolutePath(), index }));
     FileUtils.deleteQuietly(configurationRoot);
-    if (!configurationRoot.mkdirs())
+    if (!configurationRoot.mkdirs()) {
       throw new IOException("Error creating " + configurationRoot);
+    }
 
     String[] files = new String[] { "content-mapping.json", "names.txt", "settings.yml", "version-mapping.json" };
 

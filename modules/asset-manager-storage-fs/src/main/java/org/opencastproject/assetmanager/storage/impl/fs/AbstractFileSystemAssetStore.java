@@ -161,8 +161,9 @@ public abstract class AbstractFileSystemAssetStore implements AssetStore {
    */
   private File getDeletionSelectorDir(DeletionSelector sel) {
     final String basePath = path(getRootDirectory(), sel.getOrganizationId(), sel.getMediaPackageId());
-    for (VersionImpl v : sel.getVersion())
+    for (VersionImpl v : sel.getVersion()) {
       return file(basePath, v.toString());
+    }
     return file(basePath);
   }
 

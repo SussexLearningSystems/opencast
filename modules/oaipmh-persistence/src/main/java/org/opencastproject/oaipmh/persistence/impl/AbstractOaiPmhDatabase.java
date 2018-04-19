@@ -111,14 +111,16 @@ public abstract class AbstractOaiPmhDatabase implements OaiPmhDatabase {
         } else {
           logger.error("Could not store mediapackage '{}' to OAI-PMH repository '{}': {}", new String[] {
                   mediaPackage.getIdentifier().toString(), repository, ExceptionUtils.getStackTrace(e) });
-          if (tx != null && tx.isActive())
+          if (tx != null && tx.isActive()) {
             tx.rollback();
+          }
 
           throw new OaiPmhDatabaseException(e);
         }
       } finally {
-        if (em != null)
+        if (em != null) {
           em.close();
+        }
       }
     }
   }
@@ -183,8 +185,9 @@ public abstract class AbstractOaiPmhDatabase implements OaiPmhDatabase {
         tx.begin();
 
         OaiPmhEntity oaiPmhEntity = getOaiPmhEntity(mediaPackageId, repository, em);
-        if (oaiPmhEntity == null)
+        if (oaiPmhEntity == null) {
           throw new NotFoundException("No media package with id " + mediaPackageId + " exists");
+        }
 
         oaiPmhEntity.setDeleted(true);
         em.merge(oaiPmhEntity);
@@ -206,14 +209,16 @@ public abstract class AbstractOaiPmhDatabase implements OaiPmhDatabase {
         } else {
           logger.error("Could not delete mediapackage '{}' from OAI-PMH repository '{}': {}",
                   new String[] { mediaPackageId, repository, ExceptionUtils.getStackTrace(e) });
-          if (tx != null && tx.isActive())
+          if (tx != null && tx.isActive()) {
             tx.rollback();
+          }
 
           throw new OaiPmhDatabaseException(e);
         }
       } finally {
-        if (em != null)
+        if (em != null) {
           em.close();
+        }
       }
     }
   }
@@ -232,36 +237,46 @@ public abstract class AbstractOaiPmhDatabase implements OaiPmhDatabase {
       final List<Predicate> predicates = new ArrayList<Predicate>();
       predicates.add(cb.equal(c.get("organization"), getSecurityService().getOrganization().getId()));
 
-      for (String p : query.getMediaPackageId())
+      for (String p : query.getMediaPackageId()) {
         predicates.add(cb.equal(c.get("mediaPackageId"), p));
-      for (String p : query.getRepositoryId())
-        predicates.add(cb.equal(c.get("repositoryId"), p));
-      for (String p : query.getSeriesId())
-        predicates.add(cb.equal(c.get("series"), p));
-      for (Boolean p : query.isDeleted())
-        predicates.add(cb.equal(c.get("deleted"), p));
-      if (!query.isSubsequentRequest()) {
-        for (Date p : query.getModifiedAfter())
-          predicates.add(cb.greaterThanOrEqualTo(c.get("modificationDate").as(Date.class), p));
-      } else {
-        for (Date p : query.getModifiedAfter())
-          predicates.add(cb.greaterThan(c.get("modificationDate").as(Date.class), p));
       }
-      for (Date p : query.getModifiedBefore())
+      for (String p : query.getRepositoryId()) {
+        predicates.add(cb.equal(c.get("repositoryId"), p));
+      }
+      for (String p : query.getSeriesId()) {
+        predicates.add(cb.equal(c.get("series"), p));
+      }
+      for (Boolean p : query.isDeleted()) {
+        predicates.add(cb.equal(c.get("deleted"), p));
+      }
+      if (!query.isSubsequentRequest()) {
+        for (Date p : query.getModifiedAfter()) {
+          predicates.add(cb.greaterThanOrEqualTo(c.get("modificationDate").as(Date.class), p));
+        }
+      } else {
+        for (Date p : query.getModifiedAfter()) {
+          predicates.add(cb.greaterThan(c.get("modificationDate").as(Date.class), p));
+        }
+      }
+      for (Date p : query.getModifiedBefore()) {
         predicates.add(cb.lessThanOrEqualTo(c.get("modificationDate").as(Date.class), p));
+      }
 
       q.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
       q.orderBy(cb.asc(c.get("modificationDate")));
 
       TypedQuery<OaiPmhEntity> typedQuery = em.createQuery(q);
-      for (int maxResult : query.getLimit())
+      for (int maxResult : query.getLimit()) {
         typedQuery.setMaxResults(maxResult);
-      for (int startPosition : query.getOffset())
+      }
+      for (int startPosition : query.getOffset()) {
         typedQuery.setFirstResult(startPosition);
+      }
       return createSearchResult(typedQuery);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

@@ -254,8 +254,9 @@ public class UserSettingsService {
       logger.error("Could not get user setting: {}", ExceptionUtils.getStackTrace(e));
       throw new UserSettingsServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -338,12 +339,14 @@ public class UserSettingsService {
       tx.commit();
     } catch (Exception e) {
       logger.error("Could not delete user setting '%d': %s", id, ExceptionUtils.getStackTrace(e));
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new UserSettingsServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 }

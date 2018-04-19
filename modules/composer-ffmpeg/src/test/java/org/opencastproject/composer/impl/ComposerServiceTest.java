@@ -113,8 +113,9 @@ public class ComposerServiceTest {
   public static void testForFFmpeg() {
     try {
       Process p = new ProcessBuilder(FFMPEG_BINARY, "-version").start();
-      if (p.waitFor() != 0)
+      if (p.waitFor() != 0) {
         throw new IllegalStateException();
+      }
     } catch (Throwable t) {
       logger.warn("Skipping composer tests due to missing ffmpeg");
       ffmpegInstalled = false;
@@ -335,8 +336,9 @@ public class ComposerServiceTest {
    */
   @Test
   public void testComposite() throws Exception {
-    if (!ffmpegInstalled)
+    if (!ffmpegInstalled) {
       return;
+    }
 
     Dimension outputDimension = new Dimension(500, 500);
 
@@ -403,8 +405,9 @@ public class ComposerServiceTest {
    */
   @Test
   public void testImageToVideo() throws Exception {
-    if (!ffmpegInstalled)
+    if (!ffmpegInstalled) {
       return;
+    }
 
     assertTrue(sourceImage.isFile());
 

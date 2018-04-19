@@ -157,8 +157,9 @@ public class TagWorkflowOperationHandler extends AbstractWorkflowOperationHandle
         element.setIdentifier(null);
         element.setURI(e.getURI()); // use the same URI as the original
       }
-      if (configuredTargetFlavor != null)
+      if (configuredTargetFlavor != null) {
         element.setFlavor(MediaPackageElementFlavor.parseFlavor(configuredTargetFlavor));
+      }
 
       if (overrideTags.size() > 0) {
         element.clearTags();
@@ -174,8 +175,9 @@ public class TagWorkflowOperationHandler extends AbstractWorkflowOperationHandle
         }
       }
 
-      if (copy)
+      if (copy) {
         mediaPackage.addDerived(element, e);
+      }
     }
     return createResult(mediaPackage, Action.CONTINUE);
   }

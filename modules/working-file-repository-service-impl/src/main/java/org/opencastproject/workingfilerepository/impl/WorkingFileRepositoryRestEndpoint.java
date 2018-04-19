@@ -148,8 +148,9 @@ public class WorkingFileRepositoryRestEndpoint extends WorkingFileRepositoryImpl
           @PathParam("mediaPackageElementID") String mediaPackageElementID, @PathParam("filename") String filename,
           @FormParam("content") String content) throws Exception {
     String encoding = request.getCharacterEncoding();
-    if (encoding == null)
+    if (encoding == null) {
       encoding = "utf-8";
+    }
 
     URI url = this.put(mediaPackageID, mediaPackageElementID, filename, IOUtils.toInputStream(content, encoding));
     return Response.ok(url.toString()).build();
@@ -185,10 +186,11 @@ public class WorkingFileRepositoryRestEndpoint extends WorkingFileRepositoryImpl
   public Response restDelete(@PathParam("mediaPackageID") String mediaPackageID,
           @PathParam("mediaPackageElementID") String mediaPackageElementID) {
     try {
-      if (delete(mediaPackageID, mediaPackageElementID))
+      if (delete(mediaPackageID, mediaPackageElementID)) {
         return Response.ok().build();
-      else
+      } else {
         return Response.status(HttpStatus.SC_NOT_FOUND).build();
+      }
     } catch (Exception e) {
       logger.error("Unable to delete element '{}' from mediapackage '{}': {}", mediaPackageElementID,
               mediaPackageID, e);
@@ -206,10 +208,11 @@ public class WorkingFileRepositoryRestEndpoint extends WorkingFileRepositoryImpl
   public Response restDeleteFromCollection(@PathParam("collectionId") String collectionId,
           @PathParam("fileName") String fileName) {
     try {
-      if (this.deleteFromCollection(collectionId, fileName))
+      if (this.deleteFromCollection(collectionId, fileName)) {
         return Response.noContent().build();
-      else
+      } else {
         return Response.status(SC_NOT_FOUND).build();
+      }
     } catch (Exception e) {
       logger.error("Unable to delete element '{}' from collection '{}': {}", fileName, collectionId, e);
       return Response.serverError().entity(e.getMessage()).build();
@@ -226,10 +229,11 @@ public class WorkingFileRepositoryRestEndpoint extends WorkingFileRepositoryImpl
   public Response restCleanupOldFilesFromCollection(@PathParam("collectionId") String collectionId,
           @PathParam("numberOfDays") long days) {
     try {
-      if (this.cleanupOldFilesFromCollection(collectionId, days))
+      if (this.cleanupOldFilesFromCollection(collectionId, days)) {
         return Response.noContent().build();
-      else
+      } else {
         return Response.status(SC_NOT_FOUND).build();
+      }
     } catch (Exception e) {
       logger.error("Unable to delete files older than '{}' days from collection '{}': {}",
               days, collectionId, e);

@@ -88,8 +88,9 @@ public class AudioElementSelector extends AbstractMediaPackageElementSelector<Tr
    *          the flavor
    */
   public void setAudioFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor != null)
+    if (flavor != null) {
       addFlavor(flavor);
+    }
     audioFlavor = flavor;
   }
 

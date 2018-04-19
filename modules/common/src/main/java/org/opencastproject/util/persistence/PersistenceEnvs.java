@@ -83,8 +83,9 @@ public final class PersistenceEnvs {
             // propagate exception
             return chuck(e);
           } finally {
-            if (em.isOpen())
+            if (em.isOpen()) {
               em.close();
+            }
             emStore.remove();
           }
         }

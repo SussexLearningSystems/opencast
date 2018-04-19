@@ -111,13 +111,15 @@ public final class MetadataList implements Iterable<Entry<String, Tuple<String, 
   }
 
   private void makeMetadataCollectionReadOnly(MetadataCollection metadataCollection) {
-    for (MetadataField<?> field : metadataCollection.getFields())
+    for (MetadataField<?> field : metadataCollection.getFields()) {
       field.setReadOnly(true);
+    }
   }
 
   public void fromJSON(String json) throws MetadataParsingException {
-    if (StringUtils.isBlank(json))
+    if (StringUtils.isBlank(json)) {
       throw new IllegalArgumentException("The JSON string must not be empty or null!");
+    }
     JSONParser parser = new JSONParser();
     JSONArray metadataJSON;
     try {
@@ -132,16 +134,19 @@ public final class MetadataList implements Iterable<Entry<String, Tuple<String, 
       JSONObject item = listIterator.next();
       MediaPackageElementFlavor flavor = MediaPackageElementFlavor.parseFlavor((String) item.get(KEY_METADATA_FLAVOR));
       String title = (String) item.get(KEY_METADATA_TITLE);
-      if (flavor == null || title == null)
+      if (flavor == null || title == null) {
         continue;
+      }
 
       JSONArray value = (JSONArray) item.get(KEY_METADATA_FIELDS);
-      if (value == null)
+      if (value == null) {
         continue;
+      }
 
       Tuple<String, MetadataCollection> metadata = metadataList.get(flavor.toString());
-      if (metadata == null)
+      if (metadata == null) {
         continue;
+      }
 
       metadata.getB().fromJSON(value.toJSONString());
       metadataList.put(flavor.toString(), metadata);
@@ -149,8 +154,9 @@ public final class MetadataList implements Iterable<Entry<String, Tuple<String, 
   }
 
   private void fromJSON(MetadataCollection metadata, String json) throws MetadataParsingException {
-    if (StringUtils.isBlank(json))
+    if (StringUtils.isBlank(json)) {
       throw new IllegalArgumentException("The JSON string must not be empty or null!");
+    }
 
     JSONParser parser = new JSONParser();
     JSONArray metadataJSON;
@@ -166,12 +172,14 @@ public final class MetadataList implements Iterable<Entry<String, Tuple<String, 
       JSONObject item = listIterator.next();
       String flavor = (String) item.get(KEY_METADATA_FLAVOR);
       String title = (String) item.get(KEY_METADATA_TITLE);
-      if (flavor == null || title == null)
+      if (flavor == null || title == null) {
         continue;
+      }
 
       JSONArray value = (JSONArray) item.get(KEY_METADATA_FIELDS);
-      if (value == null)
+      if (value == null) {
         continue;
+      }
 
       metadata.fromJSON(value.toJSONString());
       metadataList.put(flavor, Tuple.tuple(title, metadata));

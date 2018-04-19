@@ -124,8 +124,9 @@ public class IngestDownloadWorkflowOperationHandler extends AbstractWorkflowOper
 
     List<URI> externalUris = new ArrayList<URI>();
     for (MediaPackageElement element : mediaPackage.getElements()) {
-      if (element.getURI() == null)
+      if (element.getURI() == null) {
         continue;
+      }
 
       if (element.getElementType() == MediaPackageElement.Type.Publication) {
         logger.debug("Skipping downloading media package element {} from media package {} "
@@ -174,8 +175,9 @@ public class IngestDownloadWorkflowOperationHandler extends AbstractWorkflowOper
       externalUris.add(originalElementUri);
     }
 
-    if (!deleteExternal || externalUris.size() == 0)
+    if (!deleteExternal || externalUris.size() == 0) {
       return createResult(mediaPackage, Action.CONTINUE);
+    }
 
     // Find all external working file repository base Urls
     logger.debug("Assembling list of external working file repositories");

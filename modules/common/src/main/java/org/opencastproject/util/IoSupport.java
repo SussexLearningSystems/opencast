@@ -176,11 +176,12 @@ public final class IoSupport {
         e.printStackTrace();
       }
     } finally {
-      if (bis != null)
+      if (bis != null) {
         try {
           bis.close();
         } catch (IOException e) {
         }
+      }
     }
     return outputMsg.toString();
   }

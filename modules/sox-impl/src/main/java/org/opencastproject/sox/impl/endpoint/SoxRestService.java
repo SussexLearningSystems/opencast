@@ -130,14 +130,16 @@ public class SoxRestService extends AbstractJobProducerEndpoint {
           @RestResponse(description = "If required parameters aren't set or if sourceAudioTrack isn't from the type Track", responseCode = HttpServletResponse.SC_BAD_REQUEST) }, returnDescription = "")
   public Response analyze(@FormParam("sourceAudioTrack") String sourceAudioTrackAsXml) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceAudioTrackAsXml))
+    if (StringUtils.isBlank(sourceAudioTrackAsXml)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAudioTrack must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(sourceAudioTrackAsXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAudioTrack element must be of type track")
               .build();
+    }
 
     try {
       // Asynchronously analyze the specified audio track
@@ -170,16 +172,19 @@ public class SoxRestService extends AbstractJobProducerEndpoint {
   public Response normalize(@FormParam("sourceAudioTrack") String sourceAudioTrackAsXml,
           @FormParam("targetRmsLevDb") Float targetRmsLevDb) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceAudioTrackAsXml))
+    if (StringUtils.isBlank(sourceAudioTrackAsXml)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAudioTrack must not be null").build();
-    if (targetRmsLevDb == null)
+    }
+    if (targetRmsLevDb == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("targetRmsLevDb must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(sourceAudioTrackAsXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAudioTrack element must be of type track")
               .build();
+    }
 
     try {
       // Asynchronously normalyze the specified audio track
@@ -198,10 +203,11 @@ public class SoxRestService extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (soxService instanceof JobProducer)
+    if (soxService instanceof JobProducer) {
       return (JobProducer) soxService;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

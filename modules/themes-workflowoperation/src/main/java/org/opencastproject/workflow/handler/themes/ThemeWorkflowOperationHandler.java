@@ -307,17 +307,19 @@ public class ThemeWorkflowOperationHandler extends AbstractWorkflowOperationHand
           logger.warn("Watermark file {} not found in static file service, skip applying it", theme.getWatermarkFile());
         }
 
-        if (layoutStringOpt.isNone() || watermarkLayoutVariable.isNone())
+        if (layoutStringOpt.isNone() || watermarkLayoutVariable.isNone()) {
           throw new WorkflowOperationException(format("Configuration key '%s' or '%s' is either missing or empty",
                   WATERMARK_LAYOUT, WATERMARK_LAYOUT_VARIABLE));
+        }
 
         AbsolutePositionLayoutSpec watermarkLayout = parseLayout(theme.getWatermarkPosition());
         layoutList.set(layoutList.size() - 1, Serializer.json(watermarkLayout).toJson());
         layoutStringOpt = Opt.some(Stream.$(layoutList).mkString(";"));
       }
 
-      if (watermarkLayoutVariable.isSome() && layoutStringOpt.isSome())
+      if (watermarkLayoutVariable.isSome() && layoutStringOpt.isSome()) {
         workflowInstance.setConfiguration(watermarkLayoutVariable.get(), layoutStringOpt.get());
+      }
 
       return createResult(mediaPackage, Action.CONTINUE);
     } catch (SeriesException | ThemesServiceDatabaseException | IllegalStateException | IllegalArgumentException

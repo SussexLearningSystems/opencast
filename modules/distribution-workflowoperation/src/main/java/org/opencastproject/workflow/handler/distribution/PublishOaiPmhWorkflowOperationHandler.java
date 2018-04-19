@@ -135,8 +135,9 @@ public class PublishOaiPmhWorkflowOperationHandler extends AbstractWorkflowOpera
   /** OSGi component activation. */
   @Override
   public void activate(ComponentContext cc) {
-    if (StringUtils.isNotBlank(cc.getBundleContext().getProperty(STREAMING_URL_PROPERTY)))
+    if (StringUtils.isNotBlank(cc.getBundleContext().getProperty(STREAMING_URL_PROPERTY))) {
       distributeStreaming = true;
+    }
   }
 
   /**
@@ -170,8 +171,9 @@ public class PublishOaiPmhWorkflowOperationHandler extends AbstractWorkflowOpera
     Opt<MimeType> externalMimetype = getOptConfig(workflowInstance.getCurrentOperation(), EXTERNAL_MIME_TYPE)
             .bind(MimeTypes.toMimeType);
 
-    if (repository == null)
+    if (repository == null) {
       throw new IllegalArgumentException("No repository has been specified");
+    }
 
     String[] sourceDownloadTags = StringUtils.split(downloadTags, ",");
     String[] sourceDownloadFlavors = StringUtils.split(downloadFlavors, ",");
@@ -242,9 +244,10 @@ public class PublishOaiPmhWorkflowOperationHandler extends AbstractWorkflowOpera
       }
 
       // Wait until the publication job has returned
-      if (!waitForStatus(publishJob).isSuccess())
+      if (!waitForStatus(publishJob).isSuccess()) {
         throw new WorkflowOperationException("Mediapackage " + mediaPackage.getIdentifier()
                 + " could not be published to OAI-PMH repository " + repository);
+      }
 
       // The job has passed
       Job job = serviceRegistry.getJob(publishJob.getId());
@@ -277,8 +280,9 @@ public class PublishOaiPmhWorkflowOperationHandler extends AbstractWorkflowOpera
 
       if (externalChannel.isSome() && externalMimetype.isSome() && externalTempalte.isSome()) {
         String template = externalTempalte.get().replace("{event}", mediaPackage.getIdentifier().compact());
-        if (StringUtils.isNotBlank(mediaPackage.getSeries()))
+        if (StringUtils.isNotBlank(mediaPackage.getSeries())) {
           template = template.replace("{series}", mediaPackage.getSeries());
+        }
 
         Publication externalElement = PublicationImpl.publication(UUID.randomUUID().toString(), externalChannel.get(),
                 URI.create(template), externalMimetype.get());

@@ -122,8 +122,9 @@ public class StreamingDistributionRestService extends AbstractJobProducerEndpoin
       Set<String> setElementIds = gson.fromJson(elementIds, new TypeToken<Set<String>>() { }.getType());
       MediaPackage mediapackage = MediaPackageParser.getFromXml(mediaPackageXml);
       job = service.distribute(channelId, mediapackage, setElementIds);
-      if (job == null)
+      if (job == null) {
         return Response.noContent().build();
+      }
 
       return Response.ok(new JaxbJob(job)).build();
     } catch (IllegalArgumentException e) {
@@ -152,8 +153,9 @@ public class StreamingDistributionRestService extends AbstractJobProducerEndpoin
       Set<String> setElementIds = gson.fromJson(elementIds, new TypeToken<Set<String>>() { }.getType());
       MediaPackage mediapackage = MediaPackageParser.getFromXml(mediaPackageXml);
       job = service.retract(channelId, mediapackage, setElementIds);
-      if (job == null)
+      if (job == null) {
         return Response.noContent().build();
+      }
 
       return Response.ok(new JaxbJob(job)).build();
     } catch (IllegalArgumentException e) {
@@ -172,10 +174,11 @@ public class StreamingDistributionRestService extends AbstractJobProducerEndpoin
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

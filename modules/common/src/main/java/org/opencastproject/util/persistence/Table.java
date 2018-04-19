@@ -145,8 +145,9 @@ public abstract class Table<R extends Table<R>> {
         index++;
       }
     }
-    if (index > row.length)
+    if (index > row.length) {
       throw new IllegalArgumentException("Row defines more fields than available in data set");
+    }
   }
 
   /** Access a column. */

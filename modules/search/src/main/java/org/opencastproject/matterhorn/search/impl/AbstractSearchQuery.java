@@ -92,8 +92,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   public AbstractSearchQuery(String documentType) {
     this();
-    if (StringUtils.isNotBlank(documentType))
+    if (StringUtils.isNotBlank(documentType)) {
       this.types.add(documentType);
+    }
   }
 
   /**
@@ -122,8 +123,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   @Override
   public AbstractSearchQuery withField(String field) {
-    if (fields == null)
+    if (fields == null) {
       fields = new ArrayList<String>();
+    }
     fields.add(field);
     return this;
   }
@@ -144,8 +146,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   @Override
   public String[] getFields() {
-    if (fields == null)
+    if (fields == null) {
       return new String[] {};
+    }
     return fields.toArray(new String[fields.size()]);
   }
 
@@ -204,14 +207,17 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   @Override
   public SearchQuery withText(boolean wildcardSearch, Quantifier quantifier, String... text) {
-    if (quantifier == null)
+    if (quantifier == null) {
       throw new IllegalArgumentException("Quantifier must not be null");
-    if (text == null)
+    }
+    if (text == null) {
       throw new IllegalArgumentException("Text must not be null");
+    }
 
     // Make sure the collection is initialized
-    if (this.text == null)
+    if (this.text == null) {
       this.text = new ArrayList<SearchTerms<String>>();
+    }
 
     // Add the text to the search terms
     clearExpectations();
@@ -225,8 +231,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   @Override
   public Collection<SearchTerms<String>> getTerms() {
-    if (text == null)
+    if (text == null) {
       return Collections.emptyList();
+    }
     return text;
   }
 
@@ -235,13 +242,15 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   @Override
   public String getQueryString() {
-    if (text == null)
+    if (text == null) {
       return null;
+    }
     StringBuffer query = new StringBuffer();
     for (SearchTerms<String> s : text) {
       for (String t : s.getTerms()) {
-        if (query.length() == 0)
+        if (query.length() == 0) {
           query.append(" ");
+        }
         query.append(t);
       }
     }
@@ -287,8 +296,9 @@ public class AbstractSearchQuery implements SearchQuery {
 
   @Override
   public Order getSortOrder(String field) {
-    if (!sortOrders.containsKey(field))
+    if (!sortOrders.containsKey(field)) {
       return Order.None;
+    }
 
     return sortOrders.get(field);
   }
@@ -323,8 +333,9 @@ public class AbstractSearchQuery implements SearchQuery {
    *           if some object is expected
    */
   protected void clearExpectations() throws IllegalStateException {
-    if (expectation != null)
+    if (expectation != null) {
       throw new IllegalStateException("Query configuration expects " + expectation.getClass().getName());
+    }
     stack.clear();
   }
 
@@ -337,12 +348,14 @@ public class AbstractSearchQuery implements SearchQuery {
    *           if no or a different object is expected
    */
   protected void ensureExpectation(Class<?> c) throws IllegalStateException {
-    if (expectation == null)
+    if (expectation == null) {
       throw new IllegalStateException("Malformed query configuration. No " + c.getClass().getName()
               + " is expected at this time");
-    if (!expectation.getCanonicalName().equals(c.getCanonicalName()))
+    }
+    if (!expectation.getCanonicalName().equals(c.getCanonicalName())) {
       throw new IllegalStateException("Malformed query configuration. Something of type " + c.getClass().getName()
               + " is expected at this time");
+    }
     expectation = null;
   }
 
@@ -355,8 +368,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   protected void ensureConfigurationObject(Class<?> c) throws IllegalStateException {
     for (Object o : stack) {
-      if (c.isAssignableFrom(o.getClass()))
+      if (c.isAssignableFrom(o.getClass())) {
         return;
+      }
     }
     throw new IllegalStateException("Malformed query configuration. No " + c.getClass().getName()
             + " is expected at this time");
@@ -371,8 +385,9 @@ public class AbstractSearchQuery implements SearchQuery {
    */
   protected void ensureConfigurationArray(Class<?> c) throws IllegalStateException {
     for (Object o : stack) {
-      if (o.getClass().isArray() && c.isAssignableFrom(o.getClass().getComponentType()))
+      if (o.getClass().isArray() && c.isAssignableFrom(o.getClass().getComponentType())) {
         return;
+      }
     }
     throw new IllegalStateException("Malformed query configuration. No " + c.getClass().getName()
             + " is expected at this time");

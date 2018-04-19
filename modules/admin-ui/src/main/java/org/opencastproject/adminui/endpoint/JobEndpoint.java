@@ -160,30 +160,36 @@ public class JobEndpoint {
     query.setOffset(offset);
 
     String fHostname = null;
-    if (query.getHostname().isSome())
+    if (query.getHostname().isSome()) {
       fHostname = StringUtils.trimToNull(query.getHostname().get());
+    }
     String fStatus = null;
-    if (query.getStatus().isSome())
+    if (query.getStatus().isSome()) {
       fStatus = StringUtils.trimToNull(query.getStatus().get());
+    }
     String fFreeText = null;
-    if (query.getFreeText().isSome())
+    if (query.getFreeText().isSome()) {
       fFreeText = StringUtils.trimToNull(query.getFreeText().get());
+    }
 
     List<Job> jobs = new ArrayList<>();
     try {
       for (Job job : serviceRegistry.getActiveJobs()) {
         // filter workflow jobs
         if (StringUtils.equals(WorkflowService.JOB_TYPE, job.getJobType())
-                && StringUtils.equals("START_WORKFLOW", job.getOperation()))
+                && StringUtils.equals("START_WORKFLOW", job.getOperation())) {
           continue;
+        }
 
         // filter by hostname
-        if (fHostname != null && !StringUtils.equalsIgnoreCase(job.getProcessingHost(), fHostname))
+        if (fHostname != null && !StringUtils.equalsIgnoreCase(job.getProcessingHost(), fHostname)) {
           continue;
+        }
 
         // filter by status
-        if (fStatus != null && !StringUtils.equalsIgnoreCase(job.getStatus().toString(), fStatus))
+        if (fStatus != null && !StringUtils.equalsIgnoreCase(job.getStatus().toString(), fStatus)) {
           continue;
+        }
 
         // fitler by user free text
         if (fFreeText != null
@@ -193,8 +199,9 @@ public class JobEndpoint {
               && !StringUtils.equalsIgnoreCase(job.getCreator(), fFreeText)
               && !StringUtils.equalsIgnoreCase(job.getStatus().toString(), fFreeText)
               && !StringUtils.equalsIgnoreCase(Long.toString(job.getId()), fFreeText)
-              && (job.getRootJobId() != null && !StringUtils.equalsIgnoreCase(Long.toString(job.getRootJobId()), fFreeText)))
+              && (job.getRootJobId() != null && !StringUtils.equalsIgnoreCase(Long.toString(job.getRootJobId()), fFreeText))) {
           continue;
+        }
         jobs.add(job);
       }
     } catch (ServiceRegistryException ex) {
@@ -351,12 +358,14 @@ public class JobEndpoint {
       Job.Status status = job.getStatus();
       Date dateCreated = job.getDateCreated();
       String created = null;
-      if (dateCreated != null)
+      if (dateCreated != null) {
         created = DateTimeSupport.toUTC(dateCreated.getTime());
+      }
       Date dateStarted = job.getDateStarted();
       String started = null;
-      if (dateStarted != null)
+      if (dateStarted != null) {
         started = DateTimeSupport.toUTC(dateStarted.getTime());
+      }
       String creator = job.getCreator();
       String processingHost = job.getProcessingHost();
 
@@ -440,8 +449,9 @@ public class JobEndpoint {
       Job job = serviceRegistry.getJob(id);
       created = job.getDateCreated();
       Date completed = job.getDateCompleted();
-      if (completed == null)
+      if (completed == null) {
         completed = new Date();
+      }
 
       duration = (completed.getTime() - created.getTime());
     } catch (ServiceRegistryException e) {
@@ -611,8 +621,9 @@ public class JobEndpoint {
     try {
       WorkflowSet workflowInstances = workflowService
               .getWorkflowInstances(new WorkflowQuery().withId(Long.toString(id)));
-      if (workflowInstances.getItems().length == 0)
+      if (workflowInstances.getItems().length == 0) {
         throw new NotFoundException();
+      }
 
       return workflowInstances.getItems()[0];
     } catch (WorkflowDatabaseException e) {
@@ -657,8 +668,9 @@ public class JobEndpoint {
     @Override
     public Boolean apply(Job job) {
       if (WorkflowService.JOB_TYPE.equals(job.getJobType())
-              && ("START_WORKFLOW".equals(job.getOperation()) || "START_OPERATION".equals(job.getOperation())))
+              && ("START_WORKFLOW".equals(job.getOperation()) || "START_OPERATION".equals(job.getOperation()))) {
         return false;
+      }
       return true;
     }
   };

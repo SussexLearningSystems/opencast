@@ -102,11 +102,12 @@ public class ExecuteRestEndpoint extends AbstractJobProducerEndpoint {
 
       MediaPackageElement.Type expectedType = null;
       if (StringUtils.isNotBlank(elementTypeStr)) {
-        for (MediaPackageElement.Type candidateType : MediaPackageElement.Type.values())
+        for (MediaPackageElement.Type candidateType : MediaPackageElement.Type.values()) {
           if (candidateType.toString().equalsIgnoreCase(elementTypeStr)) {
             expectedType = candidateType;
             break;
           }
+        }
         if (expectedType == null) {
           logger.error("Wrong element type specified: {}", elementTypeStr);
           return Response.status(Response.Status.BAD_REQUEST).build();
@@ -164,10 +165,11 @@ public class ExecuteRestEndpoint extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

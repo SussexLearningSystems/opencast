@@ -75,8 +75,9 @@ public final class SolrUtils {
    * @return the serialized date
    */
   public static String serializeDate(Date date) {
-    if (date == null)
+    if (date == null) {
       return null;
+    }
     return newSolrDateFormat().format(date);
   }
 
@@ -97,8 +98,9 @@ public final class SolrUtils {
    *           if parsing the date fails
    */
   public static Date parseDate(String date) throws ParseException {
-    if (StringUtils.isBlank(date))
+    if (StringUtils.isBlank(date)) {
       return null;
+    }
     return newSolrDateFormat().parse(date);
   }
 

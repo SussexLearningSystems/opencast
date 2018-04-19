@@ -63,8 +63,9 @@ public class ConductingEpisodeUpdatedEventHandler {
 
   public void deactivate(ComponentContext cc) {
     logger.info("Deactivating {}", ConductingEpisodeUpdatedEventHandler.class.getName());
-    if (messageWatcher != null)
+    if (messageWatcher != null) {
       messageWatcher.stopListening();
+    }
 
     singleThreadExecutor.shutdown();
   }

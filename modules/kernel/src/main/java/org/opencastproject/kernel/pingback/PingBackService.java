@@ -138,8 +138,9 @@ public class PingBackService {
     HttpResponse response = null;
     try {
       response = httpClient.execute(get);
-      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
+      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
         return null;
+      }
       return EntityUtils.toString(response.getEntity());
     } finally {
       httpClient.close(response);

@@ -158,8 +158,9 @@ public class SearchRestService extends AbstractJobProducerEndpoint {
     SearchQuery query = new SearchQuery();
 
     // If id is specified, do a search based on id
-    if (StringUtils.isNotBlank(id))
+    if (StringUtils.isNotBlank(id)) {
       query.withId(id);
+    }
 
     // Include series data in the results?
     query.includeSeries(true);
@@ -168,8 +169,9 @@ public class SearchRestService extends AbstractJobProducerEndpoint {
     query.includeEpisodes(includeEpisodes);
 
     // Include free-text search?
-    if (StringUtils.isNotBlank(text))
+    if (StringUtils.isNotBlank(text)) {
       query.withText(text);
+    }
 
     query.withSort(SearchQuery.Sort.DATE_CREATED, false);
     if (StringUtils.isNotBlank(sort)) {
@@ -311,8 +313,9 @@ public class SearchRestService extends AbstractJobProducerEndpoint {
           @QueryParam("offset") int offset, @QueryParam("admin") boolean admin, @PathParam("format") String format)
           throws SearchException, UnauthorizedException {
     SearchQuery query = new SearchQuery();
-    if (!StringUtils.isBlank(q))
+    if (!StringUtils.isBlank(q)) {
       query.withQuery(q);
+    }
 
     query.withSort(SearchQuery.Sort.DATE_CREATED, false);
     if (StringUtils.isNotBlank(sort)) {

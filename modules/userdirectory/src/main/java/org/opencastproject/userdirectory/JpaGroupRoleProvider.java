@@ -259,8 +259,9 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
    */
   @Override
   public Iterator<Role> findRoles(String query, Role.Target target, int offset, int limit) {
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
     String orgId = securityService.getOrganization().getId();
 
     //  Here we want to return only the ROLE_GROUP_ names, not the roles associated with a group
@@ -268,17 +269,20 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
 
     List<Role> roles = new ArrayList<Role>();
     for (JpaGroup group : groups) {
-      if (like(group.getRole(), query))
+      if (like(group.getRole(), query)) {
         roles.add(new JaxbRole(group.getRole(), JaxbOrganization.fromOrganization(group.getOrganization()), "", Role.Type.GROUP));
+      }
     }
 
     Set<Role> result = new HashSet<Role>();
     int i = 0;
     for (Role entry : roles) {
-      if (limit != 0 && result.size() >= limit)
+      if (limit != 0 && result.size() >= limit) {
         break;
-      if (i >= offset)
+      }
+      if (i >= offset) {
         result.add(entry);
+      }
       i++;
     }
     return result.iterator();
@@ -362,12 +366,14 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
    *          the group to add
    */
   public void addGroup(final JpaGroup group) throws UnauthorizedException {
-    if (group != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, group.getRoles()))
+    if (group != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, group.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to add or update a group with the admin role");
+    }
 
     Group existingGroup = loadGroup(group.getGroupId(), group.getOrganization().getId());
-    if (existingGroup != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, existingGroup.getRoles()))
+    if (existingGroup != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, existingGroup.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to update a group with the admin role");
+    }
 
     Set<JpaRole> roles = UserDirectoryPersistenceUtil.saveRoles(group.getRoles(), emf);
     JpaOrganization organization = UserDirectoryPersistenceUtil.saveOrganization(group.getOrganization(), emf);
@@ -400,15 +406,17 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
       if (tx.isActive()) {
         tx.rollback();
       }
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
   private void removeGroup(String groupId, String orgId) throws NotFoundException, UnauthorizedException, Exception {
     Group group = loadGroup(groupId, orgId);
-    if (group != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, group.getRoles()))
+    if (group != null && !UserDirectoryUtils.isCurrentUserAuthorizedHandleRoles(securityService, group.getRoles())) {
       throw new UnauthorizedException("The user is not allowed to delete a group with the admin role");
+    }
 
     UserDirectoryPersistenceUtil.removeGroup(groupId, orgId, emf);
     messageSender.sendObjectMessage(GroupItem.GROUP_QUEUE, MessageSender.DestinationType.Queue,
@@ -441,8 +449,9 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
   }
 
   private boolean like(final String str, final String expr) {
-    if (str == null)
+    if (str == null) {
       return false;
+    }
     String regex = expr.replace("_", ".").replace("%", ".*?");
     Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     return p.matcher(str).matches();
@@ -467,8 +476,9 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
           @RestParameter(defaultValue = "0", description = "The page number.", isRequired = false, name = "offset", type = RestParameter.Type.STRING) }, reponses = { @RestResponse(responseCode = SC_OK, description = "The groups.") })
   public JaxbGroupList getGroupsAsXml(@QueryParam("limit") int limit, @QueryParam("offset") int offset)
           throws IOException {
-    if (limit < 1)
+    if (limit < 1) {
       limit = 100;
+    }
     String orgId = securityService.getOrganization().getId();
     JaxbGroupList groupList = new JaxbGroupList();
     List<JpaGroup> groups = UserDirectoryPersistenceUtil.findGroups(orgId, limit, offset, emf);
@@ -531,8 +541,9 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
     final String groupId = name.toLowerCase().replaceAll("\\W", "_");
 
     JpaGroup existingGroup = UserDirectoryPersistenceUtil.findGroup(groupId, organization.getId(), emf);
-    if (existingGroup != null)
+    if (existingGroup != null) {
       return Response.status(SC_CONFLICT).build();
+    }
 
     try {
       addGroup(new JpaGroup(groupId, organization, name, description, roleSet, members));
@@ -562,14 +573,17 @@ public class JpaGroupRoleProvider extends AbstractIndexProducer implements RoleP
     JpaOrganization organization = (JpaOrganization) securityService.getOrganization();
 
     JpaGroup group = UserDirectoryPersistenceUtil.findGroup(groupId, organization.getId(), emf);
-    if (group == null)
+    if (group == null) {
       throw new NotFoundException();
+    }
 
-    if (StringUtils.isNotBlank(name))
+    if (StringUtils.isNotBlank(name)) {
       group.setName(StringUtils.trim(name));
+    }
 
-    if (StringUtils.isNotBlank(description))
+    if (StringUtils.isNotBlank(description)) {
       group.setDescription(StringUtils.trim(description));
+    }
 
     if (StringUtils.isNotBlank(roles)) {
       HashSet<JpaRole> roleSet = new HashSet<JpaRole>();

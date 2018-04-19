@@ -107,17 +107,19 @@ public class VideoSegmenterWorkflowOperationHandler extends AbstractWorkflowOper
     String trackFlavor = StringUtils.trimToNull(operation.getConfiguration(PROP_ANALYSIS_TRACK_FLAVOR));
     List<String> targetTags = asList(operation.getConfiguration(PROP_TARGET_TAGS));
     List<Track> candidates = new ArrayList<Track>();
-    if (trackFlavor != null)
+    if (trackFlavor != null) {
       candidates.addAll(Arrays.asList(mediaPackage.getTracks(MediaPackageElementFlavor.parseFlavor(trackFlavor))));
-    else
+    } else {
       candidates.addAll(Arrays.asList(mediaPackage.getTracks(MediaPackageElements.PRESENTATION_SOURCE)));
+    }
 
     // Remove unsupported tracks (only those containing video can be segmented)
     Iterator<Track> ti = candidates.iterator();
     while (ti.hasNext()) {
       Track t = ti.next();
-      if (!t.hasVideo())
+      if (!t.hasVideo()) {
         ti.remove();
+      }
     }
 
     // Found one?

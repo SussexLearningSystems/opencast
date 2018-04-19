@@ -85,8 +85,9 @@ public class BundleInfoJpa {
     dto.bundleSymbolicName = a.getBundleSymbolicName();
     dto.bundleId = a.getBundleId();
     dto.bundleVersion = a.getBundleVersion();
-    for (String x : a.getBuildNumber())
+    for (String x : a.getBuildNumber()) {
       dto.buildNumber = x;
+    }
     return dto;
   }
 

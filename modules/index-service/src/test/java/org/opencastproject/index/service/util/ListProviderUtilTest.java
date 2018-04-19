@@ -83,8 +83,9 @@ public class ListProviderUtilTest {
       public int compare(Object s1, Object s2) {
         if (s1 instanceof Comparable && s2 instanceof Comparable) {
           return ((Comparable) s1).compareTo((Comparable) s2);
-        } else
+        } else {
           return -1;
+        }
       }
     });
     sortedValues.addAll(testMap.values());

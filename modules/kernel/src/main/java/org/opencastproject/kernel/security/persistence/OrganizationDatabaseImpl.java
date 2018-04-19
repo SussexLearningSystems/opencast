@@ -91,8 +91,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
       tx = em.getTransaction();
       tx.begin();
       JpaOrganization organization = getOrganizationEntity(orgId, em);
-      if (organization == null)
+      if (organization == null) {
         throw new NotFoundException("Organization " + orgId + " does not exist");
+      }
 
       em.remove(organization);
       tx.commit();
@@ -105,8 +106,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
       }
       throw new OrganizationDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -145,8 +147,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
       }
       throw new OrganizationDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -159,12 +162,14 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
     try {
       em = emf.createEntityManager();
       JpaOrganization entity = getOrganizationEntity(id, em);
-      if (entity == null)
+      if (entity == null) {
         throw new NotFoundException();
+      }
       return entity;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -183,8 +188,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
       logger.error("Could not find number of organizations.", e);
       throw new OrganizationDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -203,8 +209,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
     } catch (Exception e) {
       throw new OrganizationDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -222,8 +229,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
     } catch (Exception e) {
       throw new OrganizationDatabaseException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -238,8 +246,9 @@ public class OrganizationDatabaseImpl implements OrganizationDatabase {
       JpaOrganization organization = getOrganizationEntity(orgId, em);
       return organization != null ? true : false;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 

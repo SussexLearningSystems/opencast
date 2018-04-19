@@ -289,8 +289,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
     logger.trace("add media package from url: {} flavor: {} tags: {} mediaPackage: {}", url, flavor, tags, mpx);
     try {
       MediaPackage mp = factory.newMediaPackageBuilder().loadFromXml(mpx);
-      if (MediaPackageSupport.sanityCheck(mp).isSome())
+      if (MediaPackageSupport.sanityCheck(mp).isSome()) {
         return Response.serverError().status(Status.BAD_REQUEST).build();
+      }
       String[] tagsArray = null;
       if (tags != null) {
         tagsArray = tags.split(",");
@@ -342,8 +343,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
             url, flavor, startTime, mpx);
     try {
       MediaPackage mp = factory.newMediaPackageBuilder().loadFromXml(mpx);
-      if (MediaPackageSupport.sanityCheck(mp).isSome())
+      if (MediaPackageSupport.sanityCheck(mp).isSome()) {
         return Response.serverError().status(Status.BAD_REQUEST).build();
+      }
 
       mp = ingestService.addPartialTrack(new URI(url), MediaPackageElementFlavor.parseFlavor(flavor), startTime, mp);
       return Response.ok(mp).build();
@@ -384,8 +386,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
     logger.trace("add catalog with url: {} flavor: {} mediaPackage: {}", url, flavor, mpx);
     try {
       MediaPackage mp = factory.newMediaPackageBuilder().loadFromXml(mpx);
-      if (MediaPackageSupport.sanityCheck(mp).isSome())
+      if (MediaPackageSupport.sanityCheck(mp).isSome()) {
         return Response.serverError().status(Status.BAD_REQUEST).build();
+      }
       MediaPackage resultingMediaPackage = ingestService.addCatalog(new URI(url),
               MediaPackageElementFlavor.parseFlavor(flavor), mp);
       return Response.ok(resultingMediaPackage).build();
@@ -425,8 +428,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
     logger.trace("add attachment with url: {} flavor: {} mediaPackage: {}", url, flavor, mpx);
     try {
       MediaPackage mp = factory.newMediaPackageBuilder().loadFromXml(mpx);
-      if (MediaPackageSupport.sanityCheck(mp).isSome())
+      if (MediaPackageSupport.sanityCheck(mp).isSome()) {
         return Response.serverError().status(Status.BAD_REQUEST).build();
+      }
       mp = ingestService.addAttachment(new URI(url), MediaPackageElementFlavor.parseFlavor(flavor), mp);
       return Response.ok(mp).build();
     } catch (Exception e) {
@@ -966,8 +970,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
             in = item.openStream();
             isDone = true;
           }
-          if (isDone)
+          if (isDone) {
             break;
+          }
         }
       } else {
         logger.debug("Processing file item");
@@ -1062,8 +1067,9 @@ public class IngestRestService extends AbstractJobProducerEndpoint {
      * enable things like holding for trim or distributing to YouTube.
      */
     final Map<String, String> wfConfig = getWorkflowConfig(formData);
-    if (StringUtils.isNotBlank(wdID))
+    if (StringUtils.isNotBlank(wdID)) {
       wfConfig.put(WORKFLOW_DEFINITION_ID_PARAM, wdID);
+    }
 
     final MediaPackage mp;
     try {

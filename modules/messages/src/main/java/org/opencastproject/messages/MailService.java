@@ -164,17 +164,21 @@ public class MailService {
       String orgId = securityService.getOrganization().getId();
       predicates.add(cb.equal(messageTemplateRoot.get("organization"), orgId));
 
-      if (!query.isIncludeHidden())
+      if (!query.isIncludeHidden()) {
         predicates.add(cb.isFalse(messageTemplateRoot.get("hidden").as(Boolean.class)));
+      }
 
-      if (StringUtils.isNotEmpty(query.getName()))
+      if (StringUtils.isNotEmpty(query.getName())) {
         predicates.add(cb.equal(messageTemplateRoot.get("name"), query.getName()));
+      }
 
-      if (StringUtils.isNotEmpty(query.getCreator()))
+      if (StringUtils.isNotEmpty(query.getCreator())) {
         predicates.add(cb.equal(messageTemplateRoot.get("creator"), query.getCreator()));
+      }
 
-      if (query.getType() != null)
+      if (query.getType() != null) {
         predicates.add(cb.equal(messageTemplateRoot.get("type").as(TemplateType.Type.class), query.getType()));
+      }
 
       if (StringUtils.isNotEmpty(query.getFullText())) {
         List<Predicate> fullTextPredicates = new ArrayList<>();
@@ -195,8 +199,9 @@ public class MailService {
 
       return messageTemplates;
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -206,8 +211,9 @@ public class MailService {
       em = emf.createEntityManager();
       String orgId = securityService.getOrganization().getId();
       Option<MessageTemplateDto> template = findMessageTemplateById(id, orgId, em);
-      if (template.isNone())
+      if (template.isNone()) {
         throw new NotFoundException();
+      }
 
       return template.get().toMessageTemplate(userDirectoryService);
     } catch (NotFoundException e) {
@@ -216,8 +222,9 @@ public class MailService {
       logger.error("Could not get message template {}: {}", id, e.getMessage());
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -237,8 +244,9 @@ public class MailService {
       logger.error("Could not get message templates: {}", ExceptionUtils.getStackTrace(e));
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -260,8 +268,9 @@ public class MailService {
       logger.error("Could not get message templates: {}", ExceptionUtils.getStackTrace(e));
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -283,8 +292,9 @@ public class MailService {
       logger.error("Could not get message templates: {}", ExceptionUtils.getStackTrace(e));
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -301,12 +311,14 @@ public class MailService {
       return msgTmpl.toMessageTemplate(userDirectoryService);
     } catch (Exception e) {
       logger.error("Could not update message template '{}': {}", template, e.getMessage());
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -319,20 +331,23 @@ public class MailService {
       tx.begin();
       String orgId = securityService.getOrganization().getId();
       Option<MessageTemplateDto> templateOption = findMessageTemplateById(id, orgId, em);
-      if (templateOption.isNone())
+      if (templateOption.isNone()) {
         throw new NotFoundException();
+      }
       em.remove(templateOption.get());
       tx.commit();
     } catch (NotFoundException e) {
       throw e;
     } catch (Exception e) {
       logger.error("Could not delete message template '{}': {}", id, e.getMessage());
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -352,8 +367,9 @@ public class MailService {
       logger.error("Could not get message signatures: {}", e.getMessage());
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -406,8 +422,9 @@ public class MailService {
       logger.error("Could not get message signatures: {}", ExceptionUtils.getStackTrace(e));
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -429,8 +446,9 @@ public class MailService {
       logger.error("Could not count message signatures: {}", ExceptionUtils.getStackTrace(e));
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -440,8 +458,9 @@ public class MailService {
       em = emf.createEntityManager();
       String orgId = securityService.getOrganization().getId();
       Option<MessageSignatureDto> signature = findMessageSignatureById(id, orgId, em);
-      if (signature.isNone())
+      if (signature.isNone()) {
         throw new NotFoundException();
+      }
 
       return signature.get().toMessageSignature(userDirectoryService);
     } catch (NotFoundException e) {
@@ -450,8 +469,9 @@ public class MailService {
       logger.error("Could not get message signature {}: {}", id, e.getMessage());
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -468,12 +488,14 @@ public class MailService {
       return msgSign.toMessageSignature(userDirectoryService);
     } catch (Exception e) {
       logger.error("Could not update message signature '{}': {}", signature, e.getMessage());
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -486,20 +508,23 @@ public class MailService {
       tx.begin();
       String orgId = securityService.getOrganization().getId();
       Option<MessageSignatureDto> signatureOption = findMessageSignatureById(id, orgId, em);
-      if (signatureOption.isNone())
+      if (signatureOption.isNone()) {
         throw new NotFoundException();
+      }
       em.remove(signatureOption.get());
       tx.commit();
     } catch (NotFoundException e) {
       throw e;
     } catch (Exception e) {
       logger.error("Could not delete message signature '{}': {}", id, e.getMessage());
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -518,8 +543,9 @@ public class MailService {
       logger.error("Could not get email configuration: {}", e.getMessage());
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -538,12 +564,14 @@ public class MailService {
       return updatedEmailConfiguration;
     } catch (Exception e) {
       logger.error("Could not update email configuration '{}': {}", emailConfiguration, e.getMessage());
-      if (tx.isActive())
+      if (tx.isActive()) {
         tx.rollback();
+      }
       throw new MailServiceException(e);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 
@@ -645,11 +673,13 @@ public class MailService {
   public static Option<MessageTemplateDto> findMessageTemplate(Option<Long> id, String name, String orgId,
           EntityManager em) {
     Option<MessageTemplateDto> messageTemplateDto = Option.<MessageTemplateDto> none();
-    if (id.isSome())
+    if (id.isSome()) {
       messageTemplateDto = findMessageTemplateById(id.get(), orgId, em);
+    }
 
-    if (messageTemplateDto.isSome())
+    if (messageTemplateDto.isSome()) {
       return messageTemplateDto;
+    }
 
     Query q = em.createNamedQuery("MessageTemplate.findByName").setParameter("name", name).setParameter("org", orgId);
     try {
@@ -671,11 +701,13 @@ public class MailService {
   public static Option<MessageSignatureDto> findMessageSignature(Option<Long> id, String name, String orgId,
           EntityManager em) {
     Option<MessageSignatureDto> messageSignatureDto = Option.<MessageSignatureDto> none();
-    if (id.isSome())
+    if (id.isSome()) {
       messageSignatureDto = findMessageSignatureById(id.get(), orgId, em);
+    }
 
-    if (messageSignatureDto.isSome())
+    if (messageSignatureDto.isSome()) {
       return messageSignatureDto;
+    }
 
     Query q = em.createNamedQuery("MessageSignature.findByName").setParameter("name", name).setParameter("org", orgId);
     try {
@@ -715,8 +747,9 @@ public class MailService {
   /** Message -> MimeMessage. */
   private MimeMessage toMimeMessage(Mail mail) throws Exception {
     final MimeMessage msg = smtpService.createMessage();
-    for (EmailAddress reply : mail.getReplyTo())
+    for (EmailAddress reply : mail.getReplyTo()) {
       msg.setReplyTo(new Address[] { new InternetAddress(reply.getAddress(), reply.getName(), "UTF-8") });
+    }
 
     // recipient
     for (EmailAddress recipient : mail.getRecipients()) {

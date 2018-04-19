@@ -77,8 +77,9 @@ public abstract class AbstractMetadataCollection implements MetadataCollection {
 
   @Override
   public MetadataCollection fromJSON(String json) throws MetadataParsingException {
-    if (StringUtils.isBlank(json))
+    if (StringUtils.isBlank(json)) {
       throw new IllegalArgumentException("The JSON string must not be empty or null!");
+    }
 
     JSONParser parser = new JSONParser();
     JSONArray metadataJSON;
@@ -95,15 +96,18 @@ public abstract class AbstractMetadataCollection implements MetadataCollection {
       String fieldId = (String) item.get(KEY_METADATA_ID);
       MetadataField<?> target = null;
 
-      if (fieldId == null)
+      if (fieldId == null) {
         continue;
+      }
       Object value = item.get(KEY_METADATA_VALUE);
-      if (value == null)
+      if (value == null) {
         continue;
+      }
 
       target = outputFields.get(fieldId);
-      if (target == null)
+      if (target == null) {
         continue;
+      }
 
       target.fromJSON(value);
     }
@@ -122,8 +126,9 @@ public abstract class AbstractMetadataCollection implements MetadataCollection {
 
   @Override
   public void addField(MetadataField<?> metadata) {
-    if (metadata == null)
+    if (metadata == null) {
       throw new IllegalArgumentException("The metadata must not be null.");
+    }
     addFieldInOrder(metadata);
     this.inputFields.put(metadata.getInputID(), metadata);
     this.outputFields.put(metadata.getOutputID(), metadata);
@@ -197,8 +202,9 @@ public abstract class AbstractMetadataCollection implements MetadataCollection {
 
   @Override
   public void removeField(MetadataField<?> metadata) {
-    if (metadata == null)
+    if (metadata == null) {
       throw new IllegalArgumentException("The metadata must not be null.");
+    }
     this.fieldsInOrder.remove(metadata);
     this.inputFields.remove(metadata.getInputID());
     this.outputFields.remove(metadata.getOutputID());
@@ -250,10 +256,12 @@ public abstract class AbstractMetadataCollection implements MetadataCollection {
    *           if the name or the listProviderService is null or the name blank.
    */
   protected Opt<Map<String, String>> getCollection(String name, ListProvidersService listProviderService) {
-    if (StringUtils.isBlank(name))
+    if (StringUtils.isBlank(name)) {
       throw new IllegalArgumentException("The listName must not be null or empty!");
-    if (listProviderService == null)
+    }
+    if (listProviderService == null) {
       throw new IllegalArgumentException("The list provider must not be null!");
+    }
 
     Opt<Map<String, String>> list;
     try {

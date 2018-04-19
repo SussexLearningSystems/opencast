@@ -297,16 +297,18 @@ public class SakaiUserProviderInstance implements UserProvider, RoleProvider, Ca
       for (String r : sakaiRoles) {
         roles.add(new JaxbRole(r, jaxbOrganization, "Sakai external role", Role.Type.EXTERNAL));
 
-        if (r.endsWith(LTI_INSTRUCTOR_ROLE))
+        if (r.endsWith(LTI_INSTRUCTOR_ROLE)) {
           isInstructor = true;
+        }
       }
 
       // Group role for all Sakai users
       roles.add(new JaxbRole(Group.ROLE_PREFIX + "SAKAI", jaxbOrganization, "Sakai Users", Role.Type.EXTERNAL_GROUP));
 
       // Group role for Sakai users who are an instructor in one more sites
-      if (isInstructor)
+      if (isInstructor) {
         roles.add(new JaxbRole(Group.ROLE_PREFIX + "SAKAI_INSTRUCTOR", jaxbOrganization, "Sakai Instructors", Role.Type.EXTERNAL_GROUP));
+      }
 
       logger.debug("Returning JaxbRoles: " + roles);
 
@@ -538,8 +540,9 @@ public class SakaiUserProviderInstance implements UserProvider, RoleProvider, Ca
    * @return
    */
   private static String getTagValue(String sTag, Element eElement) {
-    if (eElement.getElementsByTagName(sTag) == null)
+    if (eElement.getElementsByTagName(sTag) == null) {
       return null;
+    }
 
     NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
     Node nValue = nlList.item(0);
@@ -549,8 +552,9 @@ public class SakaiUserProviderInstance implements UserProvider, RoleProvider, Ca
   @Override
   public Iterator<User> findUsers(String query, int offset, int limit) {
 
-    if (query == null)
+    if (query == null) {
       throw new IllegalArgumentException("Query must be set");
+    }
 
     if (query.endsWith("%")) {
       query = query.substring(0, query.length() - 1);

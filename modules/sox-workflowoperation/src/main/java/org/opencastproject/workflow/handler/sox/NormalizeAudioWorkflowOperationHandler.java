@@ -167,8 +167,9 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
     String sourceFlavorsOption = StringUtils.trimToNull(operation.getConfiguration("source-flavors"));
     String targetFlavorOption = StringUtils.trimToNull(operation.getConfiguration("target-flavor"));
     String targetDecibelString = StringUtils.trimToNull(operation.getConfiguration("target-decibel"));
-    if (targetDecibelString == null)
+    if (targetDecibelString == null) {
       throw new IllegalArgumentException("target-decibel must be specified");
+    }
     boolean forceTranscode = BooleanUtils.toBoolean(operation.getConfiguration("force-transcode"));
     Float targetDecibel;
     try {
@@ -248,8 +249,9 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
         if (audioTrack.getAudio().size() < 1 || audioTrack.getAudio().get(0).getRmsLevDb() == null) {
           logger.info("Audio track {} has no RMS Lev dB metadata, analyze it first", audioTrack);
           Job analyzeJob = soxService.analyze(audioTrack);
-          if (!waitForStatus(analyzeJob).isSuccess())
+          if (!waitForStatus(analyzeJob).isSuccess()) {
             throw new WorkflowOperationException("Unable to analyze the audio track " + audioTrack);
+          }
           audioTrack = (TrackImpl) MediaPackageElementParser.getFromXml(analyzeJob.getPayload());
           cleanupURIs.add(audioTrack.getURI());
         }
@@ -263,8 +265,9 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
       }
 
       // Wait for the jobs to return
-      if (!waitForStatus(normalizeJobs.keySet().toArray(new Job[normalizeJobs.size()])).isSuccess())
+      if (!waitForStatus(normalizeJobs.keySet().toArray(new Job[normalizeJobs.size()])).isSuccess()) {
         throw new WorkflowOperationException("One of the normalize jobs did not complete successfully");
+      }
 
       // Process the result
       for (Map.Entry<Job, Track> entry : normalizeJobs.entrySet()) {
@@ -283,9 +286,10 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
 
             logger.info("Mux normalized audio track {} to video track {}", normalizedAudioTrack, origTrack);
             Job muxAudioVideo = composerService.mux(origTrack, normalizedAudioTrack, SOX_AREPLACE_PROFILE);
-            if (!waitForStatus(muxAudioVideo).isSuccess())
+            if (!waitForStatus(muxAudioVideo).isSuccess()) {
               throw new WorkflowOperationException("Muxing normalized audio track " + normalizedAudioTrack
                       + " to video container " + origTrack + " failed");
+            }
 
             resultTrack = (TrackImpl) MediaPackageElementParser.getFromXml(muxAudioVideo.getPayload());
 
@@ -335,10 +339,12 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
     if (targetFlavor != null) {
       String flavorType = targetFlavor.getType();
       String flavorSubtype = targetFlavor.getSubtype();
-      if ("*".equals(flavorType))
+      if ("*".equals(flavorType)) {
         flavorType = origTrack.getFlavor().getType();
-      if ("*".equals(flavorSubtype))
+      }
+      if ("*".equals(flavorSubtype)) {
         flavorSubtype = origTrack.getFlavor().getSubtype();
+      }
       normalized.setFlavor(new MediaPackageElementFlavor(flavorType, flavorSubtype));
       logger.debug("Normalized track has flavor '{}'", normalized.getFlavor());
     }
@@ -359,8 +365,9 @@ public class NormalizeAudioWorkflowOperationHandler extends AbstractWorkflowOper
           MediaPackageException {
     logger.info("Extract audio stream from track {}", videoTrack);
     Job job = composerService.encode(videoTrack, SOX_AONLY_PROFILE);
-    if (!waitForStatus(job).isSuccess())
+    if (!waitForStatus(job).isSuccess()) {
       throw new WorkflowOperationException("Extracting audio track from video track " + videoTrack + " failed");
+    }
 
     return (Track) MediaPackageElementParser.getFromXml(job.getPayload());
   }

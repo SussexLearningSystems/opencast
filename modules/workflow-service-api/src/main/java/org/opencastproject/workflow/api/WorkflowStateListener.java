@@ -156,12 +156,14 @@ public class WorkflowStateListener implements WorkflowListener {
   public void stateChanged(WorkflowInstance workflow) {
     synchronized (this) {
 
-      if (!workflowInstanceIds.isEmpty() && !workflowInstanceIds.contains(workflow.getId()))
+      if (!workflowInstanceIds.isEmpty() && !workflowInstanceIds.contains(workflow.getId())) {
         return;
+      }
 
       WorkflowState currentState = workflow.getState();
-      if (!notifyStates.isEmpty() && !notifyStates.containsKey(currentState))
+      if (!notifyStates.isEmpty() && !notifyStates.containsKey(currentState)) {
         return;
+      }
 
       if (notifyStates.containsKey(currentState)) {
         notifyStates.get(currentState).incrementAndGet();
@@ -192,8 +194,9 @@ public class WorkflowStateListener implements WorkflowListener {
    */
   public int countStateChanges(WorkflowState state) {
     synchronized (this) {
-      if (!notifyStates.containsKey(state))
+      if (!notifyStates.containsKey(state)) {
         throw new IllegalArgumentException("State '" + state + "' is not being monitored");
+      }
       return notifyStates.get(state).get();
     }
   }

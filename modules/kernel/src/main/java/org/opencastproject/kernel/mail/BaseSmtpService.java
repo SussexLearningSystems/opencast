@@ -159,8 +159,9 @@ public class BaseSmtpService {
     defaultMailSession = null;
 
     if (!("smtp".equals(mailTransport) || "smtps".equals(mailTransport))) {
-      if (mailTransport != null)
+      if (mailTransport != null) {
         logger.warn("'{}' procotol not supported. Reverting to default: '{}'", mailTransport, DEFAULT_MAIL_TRANSPORT);
+      }
       logger.debug("Mail transport protocol defaults to '{}'", DEFAULT_MAIL_TRANSPORT);
       mailProperties.put(OPT_MAIL_TRANSPORT, DEFAULT_MAIL_TRANSPORT);
     } else {
@@ -209,8 +210,9 @@ public class BaseSmtpService {
 
     logger.info("Mail service configured with {}", host);
     Properties props = getSession().getProperties();
-    for (String key : props.stringPropertyNames())
+    for (String key : props.stringPropertyNames()) {
       logger.info("{}: {}", key, props.getProperty(key));
+    }
   }
 
   /**
@@ -249,10 +251,11 @@ public class BaseSmtpService {
     }
     Transport t = getSession().getTransport(mailTransport);
     try {
-      if (user != null)
+      if (user != null) {
         t.connect(user, password);
-      else
+      } else {
         t.connect();
+      }
       t.sendMessage(message, message.getAllRecipients());
     } finally {
       t.close();

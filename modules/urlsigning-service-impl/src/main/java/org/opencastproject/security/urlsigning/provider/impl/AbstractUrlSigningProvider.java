@@ -123,16 +123,21 @@ public abstract class AbstractUrlSigningProvider implements UrlSigningProvider, 
    *          The organization this key entry belongs to.
    */
   public void addKeyEntry(String keyId, String url, String key, String organization) {
-    if (keyId == null)
+    if (keyId == null) {
       throw new IllegalArgumentException("The key id prefix must not be null");
-    if (url == null)
+    }
+    if (url == null) {
       throw new IllegalArgumentException("The url matcher prefix must not be null");
-    if (key == null)
+    }
+    if (key == null) {
       throw new IllegalArgumentException("The key prefix must not be null");
-    if (organization == null)
+    }
+    if (organization == null) {
       throw new IllegalArgumentException("The organization prefix must not be null");
-    if (keys.containsKey(url))
+    }
+    if (keys.containsKey(url)) {
       throw new IllegalStateException("Url matcher '" + url + "' already registered");
+    }
     keys.put(url, new KeyEntry(keyId, key, organization));
   }
 
@@ -232,8 +237,9 @@ public abstract class AbstractUrlSigningProvider implements UrlSigningProvider, 
 
     // Don't accept URLs without an organization context
     // (for example from the ServiceRegistry JobProducerHeartbeat)
-    if (securityService.getOrganization() == null)
+    if (securityService.getOrganization() == null) {
       return false;
+    }
 
     String orgId = securityService.getOrganization().getId();
     try {

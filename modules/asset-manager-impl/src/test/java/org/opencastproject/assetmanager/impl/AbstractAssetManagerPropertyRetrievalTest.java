@@ -86,8 +86,9 @@ public class AbstractAssetManagerPropertyRetrievalTest extends AbstractAssetMana
               if (sizeOf(doesPropertyExist.run().getRecords().bind(ARecords.getProperties)) == 0) {
                 // create a property with a randomly picked value
                 final Property p = Property.mk(PropertyId.mk(mp, pName), params.values[random.nextInt(params.values.length)]);
-                if (am.setProperty(p))
+                if (am.setProperty(p)) {
                   return p;
+                }
               }
             }
             fail("Cannot pick another random property that has not been inserted yet");

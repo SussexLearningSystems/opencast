@@ -94,8 +94,9 @@ public class AssetManagerMessageReceiverImpl extends BaseMessageReceiverImpl<Ass
       }
       event.setAccessPolicy(AccessControlParser.toJsonSilent(acl));
       event.setArchiveVersion(msg.getVersion());
-      if (isBlank(event.getCreator()))
+      if (isBlank(event.getCreator())) {
         event.setCreator(getSecurityService().getUser().getName());
+      }
       updateEvent(event, mp);
       if (episodeDublincore.isSome()) {
         updateEvent(event, episodeDublincore.get());

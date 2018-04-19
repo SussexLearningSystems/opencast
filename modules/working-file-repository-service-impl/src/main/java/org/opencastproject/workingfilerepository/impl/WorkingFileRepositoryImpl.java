@@ -112,12 +112,15 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
    */
   public void activate(ComponentContext cc) throws IOException {
     if (rootDirectory != null)
+     {
       return; // If the root directory was set, respect that setting
+    }
 
     // server url
     serverUrl = cc.getBundleContext().getProperty(OpencastConstants.SERVER_URL_PROPERTY);
-    if (StringUtils.isBlank(serverUrl))
+    if (StringUtils.isBlank(serverUrl)) {
       throw new IllegalStateException("Server URL must be set");
+    }
 
     // working file repository 'facade' configuration
     servicePath = (String) cc.getProperties().get(RestConstants.SERVICE_PATH_PROPERTY);
@@ -165,8 +168,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
       logger.debug("Attempting to delete {}", parentDirectory.getAbsolutePath());
       FileUtils.forceDelete(parentDirectory);
       File parentsParentDirectory = parentDirectory.getParentFile();
-      if (parentsParentDirectory.isDirectory() && parentsParentDirectory.list().length == 0)
+      if (parentsParentDirectory.isDirectory() && parentsParentDirectory.list().length == 0) {
         FileUtils.forceDelete(parentDirectory.getParentFile());
+      }
       return true;
     } catch (NotFoundException e) {
       log.info("Unable to delete non existing media package element {}@{}", mediaPackageElementID, mediaPackageID);
@@ -417,8 +421,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
   }
 
   protected void checkPathSafe(String id) {
-    if (id == null)
+    if (id == null) {
       throw new NullPointerException("IDs can not be null");
+    }
     if (id.indexOf("..") > -1 || id.indexOf(File.separator) > -1) {
       throw new IllegalArgumentException("Invalid media package, element ID, or file name");
     }
@@ -452,10 +457,11 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
       throw new NotFoundException("There are no complete files in the element directory " + directory.getAbsolutePath());
     } else if (md5Files.length == 1) {
       File f = getSourceFile(md5Files[0]);
-      if (f.exists())
+      if (f.exists()) {
         return f;
-      else
+      } else {
         throw new NotFoundException("Unable to locate " + f + " in the working file repository");
+      }
     } else {
       logger.error("Integrity error: Element directory {} contains more than one element", mediaPackageID + "/"
               + mediaPackageElementID);
@@ -492,10 +498,12 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
     }
     File sourceFile = new File(directory, PathSupport.toSafeName(fileName));
     File md5File = getMd5File(sourceFile);
-    if (!sourceFile.exists())
+    if (!sourceFile.exists()) {
       throw new NotFoundException(sourceFile.getAbsolutePath());
-    if (!md5File.exists())
+    }
+    if (!md5File.exists()) {
       throw new NotFoundException(md5File.getAbsolutePath());
+    }
     return sourceFile;
   }
 
@@ -520,8 +528,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
     File collectionDir = new File(
             PathSupport.concat(new String[]{rootDirectory, COLLECTION_PATH_PREFIX, collectionId}));
     if (!collectionDir.exists()) {
-      if (!create)
+      if (!create) {
         return null;
+      }
       try {
         FileUtils.forceMkdir(collectionDir);
         logger.debug("Created collection directory " + collectionId);
@@ -538,8 +547,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
 
   void createRootDirectory() throws IOException {
     File f = new File(rootDirectory);
-    if (!f.exists())
+    if (!f.exists()) {
       FileUtils.forceMkdir(f);
+    }
   }
 
   /**
@@ -552,14 +562,16 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
     File collectionDir = null;
     try {
       collectionDir = getCollectionDirectory(id, false);
-      if (collectionDir == null || !collectionDir.canRead())
+      if (collectionDir == null || !collectionDir.canRead()) {
         throw new NotFoundException("Can not find collection " + id);
+      }
     } catch (IOException e) {
       // can be ignored, since we don't want the directory to be created, so it will never happen
     }
     File[] files = collectionDir.listFiles(MD5_FINAME_FILTER);
-    if (files == null)
+    if (files == null) {
       throw new IllegalArgumentException("Collection " + id + " is not a directory");
+    }
     return files.length;
   }
 
@@ -653,8 +665,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
   public URI copyTo(String fromCollection, String fromFileName, String toMediaPackage, String toMediaPackageElement,
                     String toFileName) throws NotFoundException, IOException {
     File source = getFileFromCollection(fromCollection, fromFileName);
-    if (source == null)
+    if (source == null) {
       throw new IllegalArgumentException("Source file " + fromCollection + "/" + fromFileName + " does not exist");
+    }
     File destDir = getElementDirectory(toMediaPackage, toMediaPackageElement);
     if (!destDir.exists()) {
       // we needed to create the directory, but couldn't
@@ -737,14 +750,18 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
     }
     File md5File = getMd5File(f);
 
-    if (!f.isFile())
+    if (!f.isFile()) {
       throw new IllegalStateException(f + " is not a regular file");
-    if (!md5File.isFile())
+    }
+    if (!md5File.isFile()) {
       throw new IllegalStateException(md5File + " is not a regular file");
-    if (!md5File.delete())
+    }
+    if (!md5File.delete()) {
       throw new IOException("MD5 hash " + md5File + " cannot be deleted");
-    if (!f.delete())
+    }
+    if (!f.delete()) {
       throw new IOException(f + " cannot be deleted");
+    }
 
     if (removeCollection) {
       File parentDirectory = f.getParentFile();
@@ -782,8 +799,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
     File collectionDir = null;
     try {
       collectionDir = getCollectionDirectory(collectionId, false);
-      if (collectionDir == null)
+      if (collectionDir == null) {
         throw new NotFoundException(collectionId);
+      }
     } catch (IOException e) {
       // We are not asking for the collection to be created, so this exception is never thrown
     }
@@ -811,8 +829,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
   String getMediaPackageElementDigest(String mediaPackageID, String mediaPackageElementID) throws IOException,
           IllegalStateException, NotFoundException {
     File f = getFile(mediaPackageID, mediaPackageElementID);
-    if (f == null)
+    if (f == null) {
       throw new NotFoundException(mediaPackageID + "/" + mediaPackageElementID);
+    }
     return getFileDigest(f);
   }
 
@@ -834,10 +853,12 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
    * @return the md5 hash
    */
   private String getFileDigest(File file) throws IOException {
-    if (file == null)
+    if (file == null) {
       throw new IllegalArgumentException("File must not be null");
-    if (!file.exists() || !file.isFile())
+    }
+    if (!file.exists() || !file.isFile()) {
       throw new IllegalArgumentException("File " + file.getAbsolutePath() + " can not be read");
+    }
 
     // Check if there is a precalculated md5 hash
     File md5HashFile = getMd5File(file);
@@ -925,8 +946,9 @@ public class WorkingFileRepositoryImpl implements WorkingFileRepository, PathMap
 
     logger.info("Cleaning up files older than {} days from collection {}", days, collectionId);
 
-    if (!colDir.isDirectory())
+    if (!colDir.isDirectory()) {
       throw new IllegalStateException(colDir + " is not a directory");
+    }
 
     long referenceTime = System.currentTimeMillis() - days * 24 * 3600 * 1000;
     for (File f : colDir.listFiles()) {

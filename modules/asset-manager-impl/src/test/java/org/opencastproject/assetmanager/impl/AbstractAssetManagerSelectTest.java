@@ -395,7 +395,9 @@ public class AbstractAssetManagerSelectTest extends AbstractAssetManagerTestBase
       assertEquals("Only one record should match", 1, r.getSize());
       assertEquals("Four properties should be contained", 4, r.countProperties());
     }
-    if (true) return;
+    if (true) {
+      return;
+    }
     {
       logger.info("'approved' == true or 'agent' == 'agent-id'");
       final RichAResult r = enrich(q.select(allProperties).where(p.approved.eq(true).or(p.agent.eq("agent-id"))).run());

@@ -284,10 +284,12 @@ public class MessageTemplate {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     MessageTemplate template = (MessageTemplate) o;
     return name.equals(template.getName()) && subject.equals(template.getSubject()) && body.equals(template.getBody())
             && creationDate.equals(template.getCreationDate())

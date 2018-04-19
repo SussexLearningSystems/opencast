@@ -167,8 +167,9 @@ public class WorkflowDefinitionScanner implements ArtifactInstaller {
     try {
       stream = new FileInputStream(artifact);
       WorkflowDefinition def = WorkflowParser.parseWorkflowDefinition(stream);
-      if (def.getOperations().size() == 0)
+      if (def.getOperations().size() == 0) {
         logger.warn("Workflow '{}' has no operations", def.getId());
+      }
       return def;
     } catch (Exception e) {
       logger.warn("Unable to parse workflow from file '{}', {}", artifact.getName(), e.getMessage());

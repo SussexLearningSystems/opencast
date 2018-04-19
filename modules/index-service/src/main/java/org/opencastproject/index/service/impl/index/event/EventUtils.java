@@ -210,8 +210,9 @@ public final class EventUtils {
   public static final Fn<Publication, Boolean> internalChannelFilter = new Fn<Publication, Boolean>() {
     @Override
     public Boolean apply(Publication a) {
-      if (InternalPublicationChannel.CHANNEL_ID.equals(a.getChannel()))
+      if (InternalPublicationChannel.CHANNEL_ID.equals(a.getChannel())) {
         return false;
+      }
       return true;
     }
   };

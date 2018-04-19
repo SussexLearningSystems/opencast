@@ -88,8 +88,9 @@ public class VideoElementSelector extends AbstractMediaPackageElementSelector<Tr
    *          the flavor
    */
   public void setVideoFlavor(MediaPackageElementFlavor flavor) {
-    if (flavor != null)
+    if (flavor != null) {
       addFlavor(flavor);
+    }
     videoFlavor = flavor;
   }
 

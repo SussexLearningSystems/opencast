@@ -139,13 +139,15 @@ public class DownloadDistributionServiceImpl extends AbstractDistributionService
   public void activate(ComponentContext cc) {
     super.activate(cc);
     serviceUrl = cc.getBundleContext().getProperty("org.opencastproject.download.url");
-    if (serviceUrl == null)
+    if (serviceUrl == null) {
       throw new IllegalStateException("Download url must be set (org.opencastproject.download.url)");
+    }
     logger.info("Download url is {}", serviceUrl);
 
     String ccDistributionDirectory = cc.getBundleContext().getProperty("org.opencastproject.download.directory");
-    if (ccDistributionDirectory == null)
+    if (ccDistributionDirectory == null) {
       throw new IllegalStateException("Distribution directory must be set (org.opencastproject.download.directory)");
+    }
     this.distributionDirectory = new File(ccDistributionDirectory);
     logger.info("Download distribution directory is {}", distributionDirectory);
     this.distributionChannel = OsgiUtil.getComponentContextProperty(cc, CONFIG_KEY_STORE_TYPE);
@@ -461,8 +463,9 @@ public class DownloadDistributionServiceImpl extends AbstractDistributionService
         logger.debug("Unable to delete folder {}", elementFile.getParentFile().getAbsolutePath());
       }
 
-      if (mediapackageDir.isDirectory() && mediapackageDir.list().length == 0)
+      if (mediapackageDir.isDirectory() && mediapackageDir.list().length == 0) {
         FileSupport.delete(mediapackageDir);
+      }
 
       logger.debug("Finished retracting element {} of media package {} from publication channel {}", elementId,
           mediapackageId, channelId);
@@ -548,8 +551,9 @@ public class DownloadDistributionServiceImpl extends AbstractDistributionService
     String orgId = securityService.getOrganization().getId();
     final Path rootPath = Paths.get(distributionDirectory.getAbsolutePath(), orgId);
 
-    if (!Files.exists(rootPath))
+    if (!Files.exists(rootPath)) {
       return source;
+    }
 
     List<Path> mediaPackageDirectories = new ArrayList<>();
     try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(rootPath)) {
@@ -561,8 +565,9 @@ public class DownloadDistributionServiceImpl extends AbstractDistributionService
       }
     }
 
-    if (mediaPackageDirectories.isEmpty())
+    if (mediaPackageDirectories.isEmpty()) {
       return source;
+    }
 
     final long size = Files.size(source.toPath());
 
@@ -571,25 +576,30 @@ public class DownloadDistributionServiceImpl extends AbstractDistributionService
       Files.walkFileTree(p, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          if (attrs.isDirectory())
+          if (attrs.isDirectory()) {
             return FileVisitResult.CONTINUE;
+          }
 
-          if (size != attrs.size())
+          if (size != attrs.size()) {
             return FileVisitResult.CONTINUE;
+          }
 
           try (InputStream is1 = Files.newInputStream(source.toPath()); InputStream is2 = Files.newInputStream(file)) {
-            if (!IOUtils.contentEquals(is1, is2))
+            if (!IOUtils.contentEquals(is1, is2)) {
               return FileVisitResult.CONTINUE;
+            }
           }
           result[0] = file.toFile();
           return FileVisitResult.TERMINATE;
         }
       });
-      if (result[0] != null)
+      if (result[0] != null) {
         break;
+      }
     }
-    if (result[0] != null)
+    if (result[0] != null) {
       return result[0];
+    }
 
     return source;
   }

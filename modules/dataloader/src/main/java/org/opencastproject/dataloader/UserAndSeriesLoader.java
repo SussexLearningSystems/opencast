@@ -175,8 +175,9 @@ public class UserAndSeriesLoader {
 
             try {
               // Test if the serie already exist, it does not overwrite it.
-              if (seriesService.getSeries(seriesId) != null)
+              if (seriesService.getSeries(seriesId) != null) {
                 continue;
+              }
             } catch (NotFoundException e) {
               // If the series does not exist, we create it.
               seriesService.updateSeries(dc);

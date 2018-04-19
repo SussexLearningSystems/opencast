@@ -147,8 +147,9 @@ public class StaticFileRestService {
     webserverURL = OsgiUtil.getOptCfg(cc.getProperties(), STATICFILES_WEBSERVER_URL_KEY);
 
     Option<String> cfgMaxUploadSize = OsgiUtil.getOptContextProperty(cc, STATICFILES_UPLOAD_MAX_SIZE_KEY);
-    if (cfgMaxUploadSize.isSome())
+    if (cfgMaxUploadSize.isSome()) {
       maxUploadSize = Long.parseLong(cfgMaxUploadSize.get());
+    }
   }
 
   @GET
@@ -210,8 +211,9 @@ public class StaticFileRestService {
             });
             isDone = true;
           }
-          if (isDone)
+          if (isDone) {
             break;
+          }
         }
       } else {
         logger.warn("Request is not multi part request, returning a bad request.");

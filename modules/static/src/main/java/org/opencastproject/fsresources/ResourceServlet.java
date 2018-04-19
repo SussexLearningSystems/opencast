@@ -90,8 +90,9 @@ public class ResourceServlet extends HttpServlet {
 
     String rootKey = (String) cc.getProperties().get("rootKey");
     if (rootKey != null) {
-      if (root == null)
+      if (root == null) {
         root = (String) cc.getProperties().get(rootKey);
+      }
       if (root == null) {
         logger.warn("No value for key " + rootKey
                 + " found for this service.  Defaulting to value of org.opencastproject.download.directory.");
@@ -106,8 +107,9 @@ public class ResourceServlet extends HttpServlet {
       throw new IllegalStateException("Unable to find root for servlet, please check your config files.");
     }
 
-    if (serverAlias == null)
+    if (serverAlias == null) {
       serverAlias = (String) cc.getProperties().get("alias");
+    }
 
     // Get the interpreted values of the keys.
     props.put("root", root);

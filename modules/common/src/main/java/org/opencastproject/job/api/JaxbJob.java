@@ -137,8 +137,9 @@ public class JaxbJob {
     this.id = job.getId();
     this.jobType = job.getJobType();
     this.operation = job.getOperation();
-    if (job.getArguments() != null)
+    if (job.getArguments() != null) {
       this.arguments = unmodifiableList(job.getArguments());
+    }
     this.status = job.getStatus();
     this.parentJobId = job.getParentJobId();
     this.rootJobId = job.getRootJobId();
@@ -147,8 +148,9 @@ public class JaxbJob {
     this.creator = job.getCreator();
     this.organization = job.getOrganization();
     this.jobLoad = job.getJobLoad();
-    if (job.getBlockedJobIds() != null)
+    if (job.getBlockedJobIds() != null) {
       this.blockedJobIds = unmodifiableList(job.getBlockedJobIds());
+    }
     this.blockingJobId = job.getBlockingJobId();
   }
 
@@ -178,11 +180,13 @@ public class JaxbJob {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
+    }
 
-    if (o == null || getClass() != o.getClass())
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
 
     JaxbJob jaxbJob = (JaxbJob) o;
 

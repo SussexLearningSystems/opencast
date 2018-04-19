@@ -277,8 +277,9 @@ TimelinePreviewsService, ManagedService {
 
     try {
 
-      if (track.getDuration() == null)
+      if (track.getDuration() == null) {
         throw new MediaPackageException("Track " + track + " does not have a duration");
+      }
 
       double duration = track.getDuration() / 1000.0;
       double seconds = duration / (double)(imageCount);
@@ -291,8 +292,9 @@ TimelinePreviewsService, ManagedService {
               duration);
 
 
-      if (composedImage == null)
+      if (composedImage == null) {
         throw new IllegalStateException("Unable to compose image");
+      }
 
       // Set the mimetype
       try {
@@ -426,9 +428,10 @@ TimelinePreviewsService, ManagedService {
       }
     }
 
-    if (exitCode != 0)
+    if (exitCode != 0) {
       throw new TimelinePreviewsException("Generating timeline preview for track " + track.getIdentifier()
               + " failed: ffmpeg process exited abnormally with exit code " + exitCode);
+    }
 
     // put timeline previews image into workspace
     FileInputStream timelinepreviewsFileInputStream = null;

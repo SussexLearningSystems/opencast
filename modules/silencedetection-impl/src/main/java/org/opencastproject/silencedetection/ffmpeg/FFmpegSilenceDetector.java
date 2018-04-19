@@ -254,8 +254,9 @@ public class FFmpegSilenceDetector {
    * @return nonsilent media segments
    */
   public MediaSegments getMediaSegments() {
-    if (segments == null)
+    if (segments == null) {
       return null;
+    }
 
     return new MediaSegments(trackId, filePath, segments);
   }

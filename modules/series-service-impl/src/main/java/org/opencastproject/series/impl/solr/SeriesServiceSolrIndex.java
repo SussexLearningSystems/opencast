@@ -165,8 +165,9 @@ public class SeriesServiceSolrIndex implements SeriesServiceIndex {
   public void activate(ComponentContext cc) {
 
     if (cc == null) {
-      if (solrRoot == null)
+      if (solrRoot == null) {
         throw new IllegalStateException("Storage dir must be set");
+      }
       // default to synchronous indexing
       synchronousIndexing = true;
     } else {
@@ -721,10 +722,12 @@ public class SeriesServiceSolrIndex implements SeriesServiceIndex {
     if (sb.length() > 0) {
       sb.append(" AND ");
     }
-    if (startDate == null)
+    if (startDate == null) {
       startDate = new Date(0);
-    if (endDate == null)
+    }
+    if (endDate == null) {
       endDate = new Date(Long.MAX_VALUE);
+    }
     sb.append(key);
     sb.append(":");
     sb.append(SolrUtils.serializeDateRange(option(startDate), option(endDate)));

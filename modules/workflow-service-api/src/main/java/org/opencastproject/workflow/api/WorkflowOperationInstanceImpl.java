@@ -177,13 +177,15 @@ public class WorkflowOperationInstanceImpl implements WorkflowOperationInstance 
 
     switch (retryStrategy) {
       case RETRY:
-        if (maxAttempts < 2)
+        if (maxAttempts < 2) {
           maxAttempts = 2;
+        }
         break;
       case HOLD:
         // Can hold and retry until max-attempts
-        if (maxAttempts < 2)
+        if (maxAttempts < 2) {
           maxAttempts = 2;
+        }
         break;
       default:
         // Nothing to do
@@ -323,11 +325,13 @@ public class WorkflowOperationInstanceImpl implements WorkflowOperationInstance 
    */
   @Override
   public String getConfiguration(String key) {
-    if (key == null || configurations == null)
+    if (key == null || configurations == null) {
       return null;
+    }
     for (WorkflowConfiguration config : configurations) {
-      if (config.getKey().equals(key))
+      if (config.getKey().equals(key)) {
         return config.getValue();
+      }
     }
     return null;
   }
@@ -339,8 +343,9 @@ public class WorkflowOperationInstanceImpl implements WorkflowOperationInstance 
    */
   @Override
   public void removeConfiguration(String key) {
-    if (key == null || configurations == null)
+    if (key == null || configurations == null) {
       return;
+    }
     for (Iterator<WorkflowConfiguration> configIter = configurations.iterator(); configIter.hasNext();) {
       WorkflowConfiguration config = configIter.next();
       if (config.getKey().equals(key)) {
@@ -357,10 +362,12 @@ public class WorkflowOperationInstanceImpl implements WorkflowOperationInstance 
    */
   @Override
   public void setConfiguration(String key, String value) {
-    if (key == null)
+    if (key == null) {
       return;
-    if (configurations == null)
+    }
+    if (configurations == null) {
       configurations = new TreeSet<WorkflowConfiguration>();
+    }
 
     for (WorkflowConfiguration config : configurations) {
       if (config.getKey().equals(key)) {
@@ -544,8 +551,9 @@ public class WorkflowOperationInstanceImpl implements WorkflowOperationInstance 
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
+    }
     if (o instanceof WorkflowOperationInstance) {
       WorkflowOperationInstance other = (WorkflowOperationInstance) o;
       return other.getTemplate().equals(this.getTemplate()) && other.getPosition() == this.position;

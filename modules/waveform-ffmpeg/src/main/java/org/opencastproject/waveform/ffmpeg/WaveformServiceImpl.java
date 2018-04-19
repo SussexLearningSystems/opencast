@@ -413,8 +413,9 @@ public class WaveformServiceImpl extends AbstractJobProducer implements Waveform
       }
     }
 
-    if (exitCode != 0)
+    if (exitCode != 0) {
       throw new WaveformServiceException("The encoder process exited abnormally with exit code " + exitCode);
+    }
 
     // put waveform image into workspace
     FileInputStream waveformFileInputStream = null;

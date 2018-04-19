@@ -140,8 +140,9 @@ public class AdminUserAndGroupLoader implements OrganizationDirectoryListener {
    *          the organization
    */
   private JpaOrganization fromOrganization(Organization org) {
-    if (org instanceof JpaOrganization)
+    if (org instanceof JpaOrganization) {
       return (JpaOrganization) org;
+    }
     return new JpaOrganization(org.getId(), org.getName(), org.getServers(), org.getAdminRole(), org.getAnonymousRole(),
             org.getProperties());
   }
@@ -285,8 +286,9 @@ public class AdminUserAndGroupLoader implements OrganizationDirectoryListener {
       Stream<String> stream = Stream.$(IOUtils.readLines(rolesIS)).filter(new Fn<String, Boolean>() {
         @Override
         public Boolean apply(String line) {
-          if (StringUtils.trimToEmpty(line).startsWith("#"))
+          if (StringUtils.trimToEmpty(line).startsWith("#")) {
             return false;
+          }
           return true;
         }
       });

@@ -214,8 +214,9 @@ public class EventsLoader {
 
       if (now.after(event.getRecordingDate())) {
         addWorkflowEntry(mediaPackage);
-        if (event.isArchive())
+        if (event.isArchive()) {
           addArchiveEntry(mediaPackage);
+        }
       } else {
         addSchedulerEntry(event, mediaPackage);
       }
@@ -277,8 +278,9 @@ public class EventsLoader {
   }
 
   private void createSeries(EventEntry event) throws SeriesException, UnauthorizedException, NotFoundException {
-    if (event.getSeries().isNone())
+    if (event.getSeries().isNone()) {
       return;
+    }
 
     try {
       // Test if the series already exist, it does not create it.

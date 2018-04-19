@@ -50,12 +50,14 @@ public class SerialIdBuilder implements IdBuilder {
       StringBuffer paddedId = new StringBuffer();
       int i = 0;
       for (i = 0; i < id.length(); i++) {
-        if (id.charAt(i) != '0')
+        if (id.charAt(i) != '0') {
           break;
+        }
         paddedId.append("_");
       }
-      for (int j = i; j < id.length(); j++)
+      for (int j = i; j < id.length(); j++) {
         paddedId.append(id.charAt(j));
+      }
       return new IdImpl(paddedId.toString());
     }
   }
@@ -64,8 +66,9 @@ public class SerialIdBuilder implements IdBuilder {
    * @see org.opencastproject.mediapackage.identifier.IdBuilder#fromString(String)
    */
   public Id fromString(String id) throws IllegalArgumentException {
-    if (id == null)
+    if (id == null) {
       throw new IllegalArgumentException("Argument 'id' is null");
+    }
     try {
       Long.parseLong(id.replace('_', ' '));
     } catch (NumberFormatException e) {

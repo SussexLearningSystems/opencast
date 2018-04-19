@@ -166,9 +166,9 @@ public class SeriesEndpoint {
     } else {
       String ccServerUrl = cc.getBundleContext().getProperty(OpencastConstants.EXTERNAL_API_URL_ORG_PROPERTY);
       logger.debug("Configured server url is {}", ccServerUrl);
-      if (ccServerUrl == null)
+      if (ccServerUrl == null) {
         this.serverUrl = "http://localhost:8080";
-      else {
+      } else {
         this.serverUrl = ccServerUrl;
       }
     }
@@ -355,8 +355,9 @@ public class SeriesEndpoint {
 
   private Response getAllMetadata(String id) throws SearchIndexException {
     Opt<Series> optSeries = indexService.getSeries(id, externalIndex);
-    if (optSeries.isNone())
+    if (optSeries.isNone()) {
       return ApiResponses.notFound("Cannot find a series with id '%s'.", id);
+    }
 
     MetadataList metadataList = new MetadataList();
     List<SeriesCatalogUIAdapter> catalogUIAdapters = indexService.getSeriesCatalogUIAdapters();
@@ -376,8 +377,9 @@ public class SeriesEndpoint {
 
   private Response getMetadataByType(String id, String type) throws SearchIndexException {
     Opt<Series> optSeries = indexService.getSeries(id, externalIndex);
-    if (optSeries.isNone())
+    if (optSeries.isNone()) {
       return ApiResponses.notFound("Cannot find a series with id '%s'.", id);
+    }
 
     // Try the main catalog first as we load it from the index.
     if (typeMatchesSeriesCatalogUIAdapter(type, indexService.getCommonSeriesCatalogUIAdapter())) {
@@ -553,8 +555,9 @@ public class SeriesEndpoint {
     SeriesCatalogUIAdapter adapter = null;
 
     Opt<Series> optSeries = indexService.getSeries(id, externalIndex);
-    if (optSeries.isNone())
+    if (optSeries.isNone()) {
       return ApiResponses.notFound("Cannot find a series with id '%s'.", id);
+    }
 
     MetadataList metadataList = new MetadataList();
 
@@ -640,8 +643,9 @@ public class SeriesEndpoint {
     }
 
     Opt<Series> optSeries = indexService.getSeries(id, externalIndex);
-    if (optSeries.isNone())
+    if (optSeries.isNone()) {
       return ApiResponses.notFound("Cannot find a series with id '%s'.", id);
+    }
 
     try {
       indexService.removeCatalogByFlavor(optSeries.get(), MediaPackageElementFlavor.parseFlavor(type));
@@ -748,8 +752,9 @@ public class SeriesEndpoint {
   public Response createNewSeries(@HeaderParam("Accept") String acceptHeader,
           @FormParam("metadata") String metadataParam, @FormParam("acl") String aclParam,
           @FormParam("theme") String themeIdParam) throws UnauthorizedException, NotFoundException {
-    if (isBlank(metadataParam))
+    if (isBlank(metadataParam)) {
       return R.badRequest("Required parameter 'metadata' is missing or invalid");
+    }
 
     MetadataList metadataList;
     try {
@@ -884,8 +889,9 @@ public class SeriesEndpoint {
                           @RestResponse(description = "The specified series does not exist.", responseCode = HttpServletResponse.SC_NOT_FOUND) })
   public Response updateSeriesAcl(@HeaderParam("Accept") String acceptHeader, @PathParam("seriesId") String seriesID,
           @FormParam("acl") String aclJson) throws NotFoundException, SeriesException, UnauthorizedException {
-    if (isBlank(aclJson))
+    if (isBlank(aclJson)) {
       return R.badRequest("Missing form parameter 'acl'");
+    }
 
     JSONParser parser = new JSONParser();
     JSONArray acl;
@@ -920,8 +926,9 @@ public class SeriesEndpoint {
   public Response updateSeriesProperties(@HeaderParam("Accept") String acceptHeader,
           @PathParam("seriesId") String seriesID, @FormParam("properties") String propertiesJson)
           throws NotFoundException, SeriesException, UnauthorizedException {
-    if (StringUtils.isBlank(propertiesJson))
+    if (StringUtils.isBlank(propertiesJson)) {
       return R.badRequest("Missing form parameter 'acl'");
+    }
 
     JSONParser parser = new JSONParser();
     JSONObject props;

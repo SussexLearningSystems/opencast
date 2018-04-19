@@ -67,11 +67,13 @@ public class WorkflowsListProvider implements ResourceListProvider {
 
     if (query != null) {
 
-      if (query.getLimit().isSome())
+      if (query.getLimit().isSome()) {
         q.withCount(query.getLimit().get());
+      }
 
-      if (query.getOffset().isSome())
+      if (query.getOffset().isSome()) {
         q.withStartPage(query.getOffset().get());
+      }
     }
 
     WorkflowInstance[] workflowInstances;

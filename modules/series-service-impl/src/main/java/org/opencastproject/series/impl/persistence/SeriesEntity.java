@@ -120,10 +120,12 @@ public class SeriesEntity {
    * @param seriesId
    */
   public void setSeriesId(String seriesId) {
-    if (seriesId == null)
+    if (seriesId == null) {
       throw new IllegalArgumentException("Series id can't be null");
-    if (seriesId.length() > 128)
+    }
+    if (seriesId.length() > 128) {
       throw new IllegalArgumentException("Series id can't be longer than 128 characters");
+    }
     this.seriesId = seriesId;
   }
 

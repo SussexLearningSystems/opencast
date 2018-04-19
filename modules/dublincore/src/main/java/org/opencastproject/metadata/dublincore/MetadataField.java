@@ -187,26 +187,32 @@ public class MetadataField<A> {
           Opt<String> collectionID, Fn<Opt<A>, JValue> valueToJSON, Fn<Object, A> jsonToValue, Opt<Integer> order,
           Opt<String> namespace)
                   throws IllegalArgumentException {
-    if (valueToJSON == null)
+    if (valueToJSON == null) {
       throw new IllegalArgumentException("The function 'valueToJSON' must not be null.");
-    if (jsonToValue == null)
+    }
+    if (jsonToValue == null) {
       throw new IllegalArgumentException("The function 'jsonToValue' must not be null.");
-    if (StringUtils.isBlank(inputID))
+    }
+    if (StringUtils.isBlank(inputID)) {
       throw new IllegalArgumentException("The metadata input id must not be null.");
-    if (StringUtils.isBlank(label))
+    }
+    if (StringUtils.isBlank(label)) {
       throw new IllegalArgumentException("The metadata label must not be null.");
-    if (type == null)
+    }
+    if (type == null) {
       throw new IllegalArgumentException("The metadata type must not be null.");
+    }
 
     this.inputID = inputID;
     this.outputID = outputID;
     this.label = label;
     this.readOnly = readOnly;
     this.required = required;
-    if (value == null)
+    if (value == null) {
       this.value = Opt.none();
-    else
+    } else {
       this.value = Opt.some(value);
+    }
     this.translatable = translatable;
     this.type = type;
     this.jsonType = jsonType;
@@ -225,9 +231,9 @@ public class MetadataField<A> {
    *          The option of a limited list of possible values
    */
   public void setCollection(Opt<Map<String, String>> collection) {
-    if (collection == null)
+    if (collection == null) {
       this.collection = Opt.none();
-    else {
+    } else {
       this.collection = collection;
     }
   }
@@ -241,12 +247,14 @@ public class MetadataField<A> {
     values.put(JSON_KEY_READONLY, f(JSON_KEY_READONLY, v(readOnly)));
     values.put(JSON_KEY_REQUIRED, f(JSON_KEY_REQUIRED, v(required)));
 
-    if (collection.isSome())
+    if (collection.isSome()) {
       values.put(JSON_KEY_COLLECTION, f(JSON_KEY_COLLECTION, mapToJSON(collection.get())));
-    else if (collectionID.isSome())
+    } else if (collectionID.isSome()) {
       values.put(JSON_KEY_COLLECTION, f(JSON_KEY_COLLECTION, v(collectionID.get())));
-    if (translatable.isSome())
+    }
+    if (translatable.isSome()) {
       values.put(JSON_KEY_TRANSLATABLE, f(JSON_KEY_TRANSLATABLE, v(translatable.get())));
+    }
     return obj(values);
   }
 
@@ -271,9 +279,9 @@ public class MetadataField<A> {
   }
 
   public void setValue(A value) {
-    if (value == null)
+    if (value == null) {
       this.value = Opt.none();
-    else {
+    } else {
       this.value = Opt.some(value);
       this.updated = true;
     }
@@ -316,9 +324,9 @@ public class MetadataField<A> {
     Fn<Opt<Boolean>, JValue> booleanToJson = new Fn<Opt<Boolean>, JValue>() {
       @Override
       public JValue apply(Opt<Boolean> value) {
-        if (value.isNone())
+        if (value.isNone()) {
           return Jsons.BLANK;
-        else {
+        } else {
           return v(value.get(), Jsons.BLANK);
         }
       }
@@ -456,9 +464,9 @@ public class MetadataField<A> {
     Fn<Opt<Date>, JValue> dateToJSON = new Fn<Opt<Date>, JValue>() {
       @Override
       public JValue apply(Opt<Date> date) {
-        if (date.isNone())
+        if (date.isNone()) {
           return Jsons.BLANK;
-        else {
+        } else {
           return v(dateFormat.format(date.get()), Jsons.BLANK);
         }
       }
@@ -470,8 +478,9 @@ public class MetadataField<A> {
         try {
           String date = (String) value;
 
-          if (StringUtils.isBlank(date))
+          if (StringUtils.isBlank(date)) {
             return null;
+          }
 
           return dateFormat.parse(date);
         } catch (java.text.ParseException e) {
@@ -528,8 +537,9 @@ public class MetadataField<A> {
 
         String duration = (String) value;
         String[] durationParts = duration.split(":");
-        if (durationParts.length < 3)
+        if (durationParts.length < 3) {
           return null;
+        }
         Integer hours = Integer.parseInt(durationParts[0]);
         Integer minutes = Integer.parseInt(durationParts[1]);
         Integer seconds = Integer.parseInt(durationParts[2]);
@@ -570,8 +580,9 @@ public class MetadataField<A> {
     Fn<Opt<Iterable<String>>, JValue> iterableToJSON = new Fn<Opt<Iterable<String>>, JValue>() {
       @Override
       public JValue apply(Opt<Iterable<String>> value) {
-        if (value.isNone())
+        if (value.isNone()) {
           return arr();
+        }
 
         Object val = value.get();
         List<JValue> list = new ArrayList<>();
@@ -580,8 +591,9 @@ public class MetadataField<A> {
           // The value is a string so we need to split it.
           String stringVal = (String) val;
           for (String entry : stringVal.split(",")) {
-            if (StringUtils.isNotBlank(entry))
+            if (StringUtils.isNotBlank(entry)) {
               list.add(v(entry, Jsons.BLANK));
+            }
           }
         } else {
           // The current value is just an iterable string.
@@ -608,8 +620,9 @@ public class MetadataField<A> {
           array = (JSONArray) arrayIn;
         }
 
-        if (array == null)
+        if (array == null) {
           return new ArrayList<>();
+        }
         String[] arrayOut = new String[array.size()];
         for (int i = 0; i < array.size(); i++) {
           arrayOut[i] = (String) array.get(i);
@@ -651,8 +664,9 @@ public class MetadataField<A> {
     Fn<Opt<Iterable<String>>, JValue> iterableToJSON = new Fn<Opt<Iterable<String>>, JValue>() {
       @Override
       public JValue apply(Opt<Iterable<String>> value) {
-        if (value.isNone())
+        if (value.isNone()) {
           return arr();
+        }
 
         Object val = value.get();
         List<JValue> list = new ArrayList<>();
@@ -677,8 +691,9 @@ public class MetadataField<A> {
       @Override
       public Iterable<String> apply(Object arrayIn) {
         JSONArray array = (JSONArray) arrayIn;
-        if (array == null)
+        if (array == null) {
           return null;
+        }
         String[] arrayOut = new String[array.size()];
         for (int i = 0; i < array.size(); i++) {
           arrayOut[i] = (String) array.get(i);
@@ -700,10 +715,11 @@ public class MetadataField<A> {
     Fn<Opt<Long>, JValue> longToJSON = new Fn<Opt<Long>, JValue>() {
       @Override
       public JValue apply(Opt<Long> value) {
-        if (value.isNone())
+        if (value.isNone()) {
           return Jsons.BLANK;
-        else
+        } else {
           return v(value.get().toString());
+        }
       }
     };
 
@@ -746,8 +762,9 @@ public class MetadataField<A> {
       public String apply(Object value) {
         String date = (String) value;
 
-        if (StringUtils.isBlank(date))
+        if (StringUtils.isBlank(date)) {
           return "";
+        }
 
         try {
           dateFormat.parse(date);
@@ -997,8 +1014,9 @@ public class MetadataField<A> {
     Fn<Object, String> jsonToString = new Fn<Object, String>() {
       @Override
       public String apply(Object jsonValue) {
-        if (jsonValue == null)
+        if (jsonValue == null) {
           return "";
+        }
         if (!(jsonValue instanceof String)) {
           logger.warn("Value cannot be parsed as String.");
           return null;

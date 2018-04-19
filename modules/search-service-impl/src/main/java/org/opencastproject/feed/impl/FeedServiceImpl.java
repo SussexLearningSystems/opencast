@@ -130,10 +130,11 @@ public class FeedServiceImpl {
     }
 
     // Set the content type
-    if (feedInfo.getType().equals(Feed.Type.Atom))
+    if (feedInfo.getType().equals(Feed.Type.Atom)) {
       contentType = "application/atom+xml";
-    else if (feedInfo.getType().equals(Feed.Type.RSS))
+    } else if (feedInfo.getType().equals(Feed.Type.RSS)) {
       contentType = "application/rss+xml";
+    }
 
     // Have a feed generator create the requested feed
     Feed feed = null;
@@ -187,12 +188,14 @@ public class FeedServiceImpl {
    */
   private FeedInfo extractFeedInfo(HttpServletRequest request) throws IllegalStateException {
     String path = request.getPathInfo();
-    if (path.startsWith("/"))
+    if (path.startsWith("/")) {
       path = path.substring(1);
+    }
     String[] pathElements = path.split("/");
 
-    if (pathElements.length < 3)
+    if (pathElements.length < 3) {
       throw new IllegalStateException("Cannot extract requested feed parameters.");
+    }
     Feed.Type type = null;
     try {
       type = Feed.Type.parseString(pathElements[0]);
@@ -207,8 +210,9 @@ public class FeedServiceImpl {
     }
     int queryLength = pathElements.length - 2;
     String[] query = new String[queryLength];
-    for (int i = 0; i < queryLength; i++)
+    for (int i = 0; i < queryLength; i++) {
       query[i] = pathElements[i + 2];
+    }
 
     String sizeParam = request.getParameter(PARAM_SIZE);
     if (StringUtils.isNotBlank(sizeParam)) {

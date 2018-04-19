@@ -1075,9 +1075,10 @@ public class WorkflowServiceImplTest {
         throw new WorkflowOperationException("This operation handler fails on the first run on host: "
                 + oldExecutionHost);
       }
-      if (workflowInstance.getCurrentOperation().getExecutionHost().equals(oldExecutionHost))
+      if (workflowInstance.getCurrentOperation().getExecutionHost().equals(oldExecutionHost)) {
         throw new WorkflowOperationException("This operation handler fails on the second run at the same host: "
                 + oldExecutionHost);
+      }
       return createResult(CONTINUE);
     }
 

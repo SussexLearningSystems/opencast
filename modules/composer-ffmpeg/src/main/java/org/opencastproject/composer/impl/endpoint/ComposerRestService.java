@@ -157,13 +157,15 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
   public Response encode(@FormParam("sourceTrack") String sourceTrackAsXml, @FormParam("profileId") String profileId)
           throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceTrackAsXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceTrackAsXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack and profileId must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(sourceTrackAsXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack element must be of type track").build();
+    }
 
     try {
       // Asynchronously encode the specified tracks
@@ -206,8 +208,9 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
 
     // Asynchronously encode the specified tracks
     Job job = composerService.parallelEncode((Track) sourceTrack, profileId);
-    if (job == null)
+    if (job == null) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Encoding failed").build();
+    }
     return Response.ok().entity(new JaxbJob(job)).build();
   }
 
@@ -239,20 +242,23 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
   public Response trim(@FormParam("sourceTrack") String sourceTrackAsXml, @FormParam("profileId") String profileId,
           @FormParam("start") long start, @FormParam("duration") long duration) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceTrackAsXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceTrackAsXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack and profileId must not be null").build();
+    }
 
     // Deserialize the track
     MediaPackageElement sourceElement = MediaPackageElementParser.getFromXml(sourceTrackAsXml);
-    if (!Track.TYPE.equals(sourceElement.getElementType()))
+    if (!Track.TYPE.equals(sourceElement.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack element must be of type track").build();
+    }
 
     // Make sure the trim times make sense
     Track sourceTrack = (Track) sourceElement;
 
-    if (sourceTrack.getDuration() == null)
+    if (sourceTrack.getDuration() == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack element does not have a duration")
               .build();
+    }
 
     if (start < 0) {
       start = 0;
@@ -305,13 +311,15 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
 
     // Deserialize the audio track
     MediaPackageElement audioSourceTrack = MediaPackageElementParser.getFromXml(audioSourceTrackXml);
-    if (!Track.TYPE.equals(audioSourceTrack.getElementType()))
+    if (!Track.TYPE.equals(audioSourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("audioSourceTrack must be of type track").build();
+    }
 
     // Deserialize the video track
     MediaPackageElement videoSourceTrack = MediaPackageElementParser.getFromXml(videoSourceTrackXml);
-    if (!Track.TYPE.equals(videoSourceTrack.getElementType()))
+    if (!Track.TYPE.equals(videoSourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("videoSourceTrack must be of type track").build();
+    }
 
     try {
       // Asynchronously encode the specified tracks
@@ -348,13 +356,15 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
   public Response image(@FormParam("sourceTrack") String sourceTrackXml, @FormParam("profileId") String profileId,
           @FormParam("time") String times, @FormParam("properties") LocalHashMap localMap) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceTrackXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceTrackXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack and profileId must not be null").build();
+    }
 
     // Deserialize the source track
     MediaPackageElement sourceTrack = MediaPackageElementParser.getFromXml(sourceTrackXml);
-    if (!Track.TYPE.equals(sourceTrack.getElementType()))
+    if (!Track.TYPE.equals(sourceTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTrack element must be of type track").build();
+    }
 
     boolean timeBased = false;
     double[] timeArray = null;
@@ -432,15 +442,17 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
           @FormParam("background") @DefaultValue("black") String background) throws Exception {
     // Ensure that the POST parameters are present
     if (StringUtils.isBlank(compositeSizeJson) || StringUtils.isBlank(lowerTrackXml)
-            || StringUtils.isBlank(lowerLayoutJson) || StringUtils.isBlank(profileId))
+            || StringUtils.isBlank(lowerLayoutJson) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("One of the required parameters must not be null")
               .build();
+    }
 
     // Deserialize the source elements
     MediaPackageElement lowerTrack = MediaPackageElementParser.getFromXml(lowerTrackXml);
     Layout lowerLayout = Serializer.layout(JsonObj.jsonObj(lowerLayoutJson));
-    if (!Track.TYPE.equals(lowerTrack.getElementType()))
+    if (!Track.TYPE.equals(lowerTrack.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("lowerTrack element must be of type track").build();
+    }
     LaidOutElement<Track> lowerLaidOutElement = new LaidOutElement<Track>((Track) lowerTrack, lowerLayout);
 
     Option<LaidOutElement<Track>> upperLaidOutElement = Option.<LaidOutElement<Track>> none();
@@ -456,9 +468,10 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
     if (StringUtils.isNotBlank(watermarkAttachmentXml)) {
       Layout watermarkLayout = Serializer.layout(JsonObj.jsonObj(watermarkLayoutJson));
       MediaPackageElement watermarkAttachment = MediaPackageElementParser.getFromXml(watermarkAttachmentXml);
-      if (!Attachment.TYPE.equals(watermarkAttachment.getElementType()))
+      if (!Attachment.TYPE.equals(watermarkAttachment.getElementType())) {
         return Response.status(Response.Status.BAD_REQUEST).entity("watermarkTrack element must be of type track")
                 .build();
+      }
       watermarkLaidOutElement = Option.some(new LaidOutElement<Attachment>((Attachment) watermarkAttachment,
               watermarkLayout));
     }
@@ -503,17 +516,20 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
   public Response concat(@FormParam("sourceTracks") String sourceTracksXml, @FormParam("profileId") String profileId,
           @FormParam("outputDimension") String outputDimension, @FormParam("outputFrameRate") String outputFrameRate) throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceTracksXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceTracksXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceTracks and profileId must not be null").build();
+    }
 
     // Deserialize the source track
     List<? extends MediaPackageElement> tracks = MediaPackageElementParser.getArrayFromXml(sourceTracksXml);
-    if (tracks.size() < 2)
+    if (tracks.size() < 2) {
       return Response.status(Response.Status.BAD_REQUEST).entity("At least two tracks must be set to concat").build();
+    }
 
     for (MediaPackageElement elem : tracks) {
-      if (!Track.TYPE.equals(elem.getElementType()))
+      if (!Track.TYPE.equals(elem.getElementType())) {
         return Response.status(Response.Status.BAD_REQUEST).entity("sourceTracks must be of type track").build();
+      }
     }
     float fps = NumberUtils.toFloat(outputFrameRate, -1.0f);
     try {
@@ -561,9 +577,10 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
           @FormParam("profileId") String profileId, @FormParam("time") @DefaultValue("1") String timeString)
           throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceAttachmentXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceAttachmentXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAttachment and profileId must not be null")
               .build();
+    }
 
     // parse time
     Double time;
@@ -576,9 +593,10 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
 
     // Deserialize the source track
     MediaPackageElement sourceAttachment = MediaPackageElementParser.getFromXml(sourceAttachmentXml);
-    if (!Attachment.TYPE.equals(sourceAttachment.getElementType()))
+    if (!Attachment.TYPE.equals(sourceAttachment.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceAttachment element must be of type attachment")
               .build();
+    }
 
     try {
       // Asynchronously convert the specified attachment to a video
@@ -611,13 +629,15 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
   public Response convertImage(@FormParam("sourceImage") String sourceImageXml, @FormParam("profileId") String profileId)
           throws Exception {
     // Ensure that the POST parameters are present
-    if (StringUtils.isBlank(sourceImageXml) || StringUtils.isBlank(profileId))
+    if (StringUtils.isBlank(sourceImageXml) || StringUtils.isBlank(profileId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceImage and profileId must not be null").build();
+    }
 
     // Deserialize the source track
     MediaPackageElement sourceImage = MediaPackageElementParser.getFromXml(sourceImageXml);
-    if (!Attachment.TYPE.equals(sourceImage.getElementType()))
+    if (!Attachment.TYPE.equals(sourceImage.getElementType())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("sourceImage element must be of type track").build();
+    }
 
     try {
       // Asynchronously convert the specified image
@@ -649,8 +669,9 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
           @RestResponse(description = "If profile has not been found", responseCode = HttpServletResponse.SC_NOT_FOUND) }, returnDescription = "")
   public Response getProfile(@PathParam("id") String profileId) throws NotFoundException {
     EncodingProfileImpl profile = (EncodingProfileImpl) composerService.getProfile(profileId);
-    if (profile == null)
+    if (profile == null) {
       throw new NotFoundException();
+    }
     return Response.ok(profile).build();
   }
 
@@ -661,10 +682,11 @@ public class ComposerRestService extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (composerService instanceof JobProducer)
+    if (composerService instanceof JobProducer) {
       return (JobProducer) composerService;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

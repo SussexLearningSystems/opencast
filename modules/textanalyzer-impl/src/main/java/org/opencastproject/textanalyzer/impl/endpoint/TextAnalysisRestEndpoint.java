@@ -91,12 +91,14 @@ public class TextAnalysisRestEndpoint extends AbstractJobProducerEndpoint {
           @RestResponse(description = "The argument cannot be parsed into a media package element.", responseCode = HttpServletResponse.SC_BAD_REQUEST),
           @RestResponse(description = "The service is unavailable at the moment.", responseCode = HttpServletResponse.SC_SERVICE_UNAVAILABLE) }, returnDescription = "The receipt to use when polling for the resulting mpeg7 catalog.")
   public Response analyze(@FormParam("image") String image) {
-    if (service == null)
+    if (service == null) {
       throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
+    }
     try {
       MediaPackageElement element = MediaPackageElementParser.getFromXml(image);
-      if (!(element instanceof Attachment))
+      if (!(element instanceof Attachment)) {
         throw new WebApplicationException(Status.BAD_REQUEST);
+      }
       Job job = service.extract((Attachment) element);
       return Response.ok(new JaxbJob(job)).build();
     } catch (Exception e) {
@@ -132,10 +134,11 @@ public class TextAnalysisRestEndpoint extends AbstractJobProducerEndpoint {
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

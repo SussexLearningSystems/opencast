@@ -181,10 +181,11 @@ public class WowzaAdaptiveStreamingDistributionRestService extends AbstractJobPr
    */
   @Override
   public JobProducer getService() {
-    if (service instanceof JobProducer)
+    if (service instanceof JobProducer) {
       return (JobProducer) service;
-    else
+    } else {
       return null;
+    }
   }
 
   /**

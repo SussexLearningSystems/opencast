@@ -87,8 +87,9 @@ public class SigningMediaPackageSerializer implements MediaPackageSerializer, Ma
    */
   @Override
   public URI encodeURI(URI uri) throws URISyntaxException {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument uri is null");
+    }
     return uri;
   }
 
@@ -99,8 +100,9 @@ public class SigningMediaPackageSerializer implements MediaPackageSerializer, Ma
    */
   @Override
   public URI decodeURI(URI uri) throws URISyntaxException {
-    if (uri == null)
+    if (uri == null) {
       throw new IllegalArgumentException("Argument uri is null");
+    }
     return sign(uri);
   }
 

@@ -55,8 +55,9 @@ public final class EqualsUtil {
   public static boolean eqListUnsorted(List<?> as, List<?> bs) {
     if (as != null && bs != null && as.size() == bs.size()) {
       for (Object a : as) {
-        if (!bs.contains(a))
+        if (!bs.contains(a)) {
           return false;
+        }
       }
       return true;
     } else {
@@ -74,8 +75,9 @@ public final class EqualsUtil {
       final Iterator<?> asi = as.iterator();
       final Iterator<?> bsi = bs.iterator();
       while (asi.hasNext() && bsi.hasNext()) {
-        if (!asi.next().equals(bsi.next()))
+        if (!asi.next().equals(bsi.next())) {
           return false;
+        }
       }
       return true;
     } else {
@@ -91,8 +93,9 @@ public final class EqualsUtil {
   public static boolean eqMap(Map<?, ?> as, Map<?, ?> bs) {
     for (Map.Entry<?, ?> ae : as.entrySet()) {
       final Object bv = bs.get(ae.getKey());
-      if (bv == null || !eqObj(ae.getValue(), bv))
+      if (bv == null || !eqObj(ae.getValue(), bv)) {
         return false;
+      }
     }
     return true;
   }
@@ -115,14 +118,16 @@ public final class EqualsUtil {
    * Algorithm adapted from "Programming in Scala, Second Edition", p670.
    */
   public static int hash(Object... as) {
-    if (as == null)
+    if (as == null) {
       return 0;
+    }
     int hash = 0;
     for (Object a : as) {
-      if (hash != 0)
+      if (hash != 0) {
         hash = 41 * hash + hash1(a);
-      else
+      } else {
         hash = 41 + hash1(a);
+      }
     }
     return hash;
   }

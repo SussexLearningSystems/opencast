@@ -81,28 +81,34 @@ public class Activator implements BundleActivator {
     pooledDataSource.setJdbcUrl(jdbcUrl);
     pooledDataSource.setUser(jdbcUser);
     pooledDataSource.setPassword(jdbcPass);
-    if (minPoolSize != null)
+    if (minPoolSize != null) {
       pooledDataSource.setMinPoolSize(minPoolSize);
-    if (maxPoolSize != null)
+    }
+    if (maxPoolSize != null) {
       pooledDataSource.setMaxPoolSize(maxPoolSize);
-    if (acquireIncrement != null)
+    }
+    if (acquireIncrement != null) {
       pooledDataSource.setAcquireIncrement(acquireIncrement);
-    if (maxStatements != null)
+    }
+    if (maxStatements != null) {
       pooledDataSource.setMaxStatements(maxStatements);
-    if (loginTimeout != null)
+    }
+    if (loginTimeout != null) {
       pooledDataSource.setLoginTimeout(loginTimeout);
+    }
 
     // maxIdleTime should not be zero, otherwise the connection pool will hold on to stale connections
     // that have been closed by the database.
-    if (maxIdleTime != null)
+    if (maxIdleTime != null) {
       pooledDataSource.setMaxIdleTime(maxIdleTime);
-    else if (pooledDataSource.getMaxIdleTime() == 0) {
+    } else if (pooledDataSource.getMaxIdleTime() == 0) {
         logger.debug("Setting database connection pool max.idle.time to default of {}", DEFAULT_MAX_IDLE_TIME);
         pooledDataSource.setMaxIdleTime(DEFAULT_MAX_IDLE_TIME);
     }
 
-    if (maxConnectionAge != null)
+    if (maxConnectionAge != null) {
       pooledDataSource.setMaxConnectionAge(maxConnectionAge);
+    }
 
     Connection connection = null;
     try {
@@ -116,8 +122,9 @@ public class Activator implements BundleActivator {
       logger.error("Exception: ", e);
       throw e;
     } finally {
-      if (connection != null)
+      if (connection != null) {
         connection.close();
+      }
     }
 
     logger.info("Database connection pool established at {}", jdbcUrl);
@@ -128,8 +135,9 @@ public class Activator implements BundleActivator {
   @Override
   public void stop(BundleContext context) throws Exception {
     logger.info("Shutting down database");
-    if (datasourceRegistration != null)
+    if (datasourceRegistration != null) {
       datasourceRegistration.unregister();
+    }
     logger.info("Shutting down connection pool");
     DataSources.destroy(pooledDataSource);
   }

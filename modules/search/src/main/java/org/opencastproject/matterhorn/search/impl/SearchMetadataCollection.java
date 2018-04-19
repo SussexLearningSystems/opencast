@@ -115,10 +115,12 @@ public class SearchMetadataCollection implements Collection<SearchMetadata<?>> {
    */
   @SuppressWarnings("unchecked")
   public void addField(String fieldName, Object fieldValue, boolean addToText) {
-    if (fieldName == null)
+    if (fieldName == null) {
       throw new IllegalArgumentException("Field name cannot be null");
-    if (fieldValue == null)
+    }
+    if (fieldValue == null) {
       return;
+    }
 
     SearchMetadata<Object> m = (SearchMetadata<Object>) metadata.get(fieldName);
     if (m == null) {
@@ -209,8 +211,9 @@ public class SearchMetadataCollection implements Collection<SearchMetadata<?>> {
    */
   public boolean containsAll(Collection<?> c) {
     for (Object o : c) {
-      if (!metadata.values().contains(o))
+      if (!metadata.values().contains(o)) {
         return false;
+      }
     }
     return true;
   }
@@ -251,8 +254,9 @@ public class SearchMetadataCollection implements Collection<SearchMetadata<?>> {
    */
   public boolean removeAll(Collection<?> c) {
     boolean removed = false;
-    for (Object o : c)
+    for (Object o : c) {
       removed |= metadata.remove(o) != null;
+    }
     return removed;
   }
 

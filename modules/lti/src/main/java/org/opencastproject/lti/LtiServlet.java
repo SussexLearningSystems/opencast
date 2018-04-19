@@ -204,8 +204,9 @@ public class LtiServlet extends HttpServlet {
     try {
       URI toolUri = new URI(StringUtils.trimToEmpty(req.getParameter(LTI_CUSTOM_TOOL)));
 
-      if (toolUri.getPath().isEmpty())
+      if (toolUri.getPath().isEmpty()) {
         throw new URISyntaxException(toolUri.toString(), "Provided 'custom_tool' has an empty path");
+      }
 
       // Make sure that the URI path starts with '/'. Otherwise, UriBuilder handles URIs incorrectly
       if (!toolUri.isOpaque() && !toolUri.getPath().startsWith("/")) {

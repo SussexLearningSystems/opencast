@@ -156,20 +156,23 @@ public class ExecuteOnceWorkflowOperationHandler extends AbstractWorkflowOperati
 
     // Unmarshall target flavor
     MediaPackageElementFlavor targetFlavor = null;
-    if (targetFlavorStr != null)
+    if (targetFlavorStr != null) {
       targetFlavor = MediaPackageElementFlavor.parseFlavor(targetFlavorStr);
+    }
 
     // Unmarshall expected mediapackage element type
     MediaPackageElement.Type expectedType = null;
     if (expectedTypeStr != null) {
-      for (MediaPackageElement.Type type : MediaPackageElement.Type.values())
+      for (MediaPackageElement.Type type : MediaPackageElement.Type.values()) {
         if (type.toString().equalsIgnoreCase(expectedTypeStr)) {
           expectedType = type;
           break;
         }
+      }
 
-      if (expectedType == null)
+      if (expectedType == null) {
         throw new WorkflowOperationException("'" + expectedTypeStr + "' is not a valid element type");
+      }
     }
 
     // Process the result element
@@ -181,8 +184,9 @@ public class ExecuteOnceWorkflowOperationHandler extends AbstractWorkflowOperati
       WorkflowOperationResult result = null;
 
       // Wait for all jobs to be finished
-      if (!waitForStatus(job).isSuccess())
+      if (!waitForStatus(job).isSuccess()) {
         throw new WorkflowOperationException("Execute operation failed");
+      }
 
       if (StringUtils.isNotBlank(job.getPayload())) {
 
@@ -224,18 +228,20 @@ public class ExecuteOnceWorkflowOperationHandler extends AbstractWorkflowOperati
           resultElement.setURI(uri);
 
           // Set new flavor
-          if (targetFlavor != null)
+          if (targetFlavor != null) {
             resultElement.setFlavor(targetFlavor);
+          }
 
           // Set new tags
           if (targetTags != null) {
             // Assume the tags starting with "-" means we want to eliminate such tags form the result element
             for (String tag : asList(targetTags)) {
-              if (tag.startsWith("-"))
+              if (tag.startsWith("-")) {
                 // We remove the tag resulting from stripping all the '-' characters at the beginning of the tag
                 resultElement.removeTag(tag.replaceAll("^-+", ""));
-              else
+              } else {
                 resultElement.addTag(tag);
+              }
             }
           }
           result = createResult(mediaPackage, Action.CONTINUE, job.getQueueTime());

@@ -60,8 +60,9 @@ public final class PathSupport {
     } else {
       safeString = safeBaseName + "." + urlExtension;
     }
-    if (safeString.length() < 255)
+    if (safeString.length() < 255) {
       return safeString;
+    }
     String random = UUID.randomUUID().toString();
     if (!"".equals(urlExtension)) {
       random = random.concat(".").concat(urlExtension);
@@ -76,20 +77,24 @@ public final class PathSupport {
    * @return the concatenated url of the two arguments
    */
   public static String concat(String prefix, String suffix) {
-    if (prefix == null)
+    if (prefix == null) {
       throw new IllegalArgumentException("Argument prefix is null");
-    if (suffix == null)
+    }
+    if (suffix == null) {
       throw new IllegalArgumentException("Argument suffix is null");
+    }
 
     prefix = adjustSeparator(prefix);
     suffix = adjustSeparator(suffix);
     prefix = removeDoubleSeparator(prefix);
     suffix = removeDoubleSeparator(suffix);
 
-    if (!prefix.endsWith(File.separator) && !suffix.startsWith(File.separator))
+    if (!prefix.endsWith(File.separator) && !suffix.startsWith(File.separator)) {
       prefix += File.separator;
-    if (prefix.endsWith(File.separator) && suffix.startsWith(File.separator))
+    }
+    if (prefix.endsWith(File.separator) && suffix.startsWith(File.separator)) {
       suffix = suffix.substring(1);
+    }
 
     prefix += suffix;
     return prefix;
@@ -103,10 +108,12 @@ public final class PathSupport {
    * @return the concatenated path
    */
   public static String concat(String[] parts) {
-    if (parts == null)
+    if (parts == null) {
       throw new IllegalArgumentException("Argument parts is null");
-    if (parts.length == 0)
+    }
+    if (parts.length == 0) {
       throw new IllegalArgumentException("Array parts is empty");
+    }
     String path = removeDoubleSeparator(adjustSeparator(parts[0]));
     for (int i = 1; i < parts.length; i++) {
       path = concat(path, removeDoubleSeparator(adjustSeparator(parts[i])));
@@ -123,8 +130,9 @@ public final class PathSupport {
    */
   private static String adjustSeparator(String path) {
     String sp = File.separator;
-    if ("\\".equals(sp))
+    if ("\\".equals(sp)) {
       sp = "\\\\";
+    }
     return path.replaceAll("/", sp);
   }
 

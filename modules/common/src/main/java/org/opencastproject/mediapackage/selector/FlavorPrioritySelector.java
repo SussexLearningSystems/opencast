@@ -54,8 +54,9 @@ public class FlavorPrioritySelector<T extends MediaPackageElement> extends Abstr
     // Have the super implementation match type, flavor and tags
     candidates.addAll(super.select(mediaPackage, withTagsAndFlavors));
 
-    if (flavors.isEmpty())
+    if (flavors.isEmpty()) {
       return candidates;
+    }
 
     // Return the first element based on the flavor
     buildResult: for (MediaPackageElementFlavor flavor : flavors) {

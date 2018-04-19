@@ -61,8 +61,9 @@ public final class OsgiUtil {
    */
   public static String getContextProperty(ComponentContext cc, String key) {
     String p = cc.getBundleContext().getProperty(key);
-    if (StringUtils.isBlank(p))
+    if (StringUtils.isBlank(p)) {
       throw new RuntimeException("Please provide context property " + key);
+    }
     return StringUtils.trimToEmpty(p);
   }
 
@@ -84,8 +85,9 @@ public final class OsgiUtil {
    */
   public static String getComponentContextProperty(ComponentContext cc, String key) {
     String p = (String) cc.getProperties().get(key);
-    if (StringUtils.isBlank(p))
+    if (StringUtils.isBlank(p)) {
       throw new RuntimeException("Please provide context property " + key);
+    }
     return StringUtils.trimToEmpty(p);
   }
 
@@ -97,11 +99,13 @@ public final class OsgiUtil {
    */
   public static String getCfg(Dictionary d, String key) throws ConfigurationException {
     Object p = d.get(key);
-    if (p == null)
+    if (p == null) {
       throw new ConfigurationException(key, "does not exist");
+    }
     String ps = p.toString();
-    if (StringUtils.isBlank(ps))
+    if (StringUtils.isBlank(ps)) {
       throw new ConfigurationException(key, "is blank");
+    }
     return StringUtils.trimToEmpty(ps);
   }
 
@@ -162,8 +166,9 @@ public final class OsgiUtil {
    */
   public static boolean getCfgAsBoolean(Dictionary d, String key) throws ConfigurationException {
     Object p = d.get(key);
-    if (p == null)
+    if (p == null) {
       throw new ConfigurationException(key, "does not exist");
+    }
     return BooleanUtils.toBoolean(p.toString());
   }
 

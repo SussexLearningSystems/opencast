@@ -138,25 +138,28 @@ public class AnnotationRestService {
           @QueryParam("day") String day, @QueryParam("limit") int limit, @QueryParam("offset") int offset) {
 
     // Are the values of offset and limit valid?
-    if (offset < 0 || limit < 0)
+    if (offset < 0 || limit < 0) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
 
     // Set default value of limit (max result value)
-    if (limit == 0)
+    if (limit == 0) {
       limit = 10;
+    }
 
-    if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(type))
+    if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(type)) {
       return Response.ok(annotationService.getAnnotationsByTypeAndMediapackageId(type, id, offset, limit)).build();
-    else if (!StringUtils.isEmpty(id))
+    } else if (!StringUtils.isEmpty(id)) {
       return Response.ok(annotationService.getAnnotationsByMediapackageId(id, offset, limit)).build();
-    else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(day))
+    } else if (!StringUtils.isEmpty(type) && !StringUtils.isEmpty(day)) {
       return Response.ok(annotationService.getAnnotationsByTypeAndDay(type, day, offset, limit)).build();
-    else if (!StringUtils.isEmpty(type))
+    } else if (!StringUtils.isEmpty(type)) {
       return Response.ok(annotationService.getAnnotationsByType(type, offset, limit)).build();
-    else if (!StringUtils.isEmpty(day))
+    } else if (!StringUtils.isEmpty(day)) {
       return Response.ok(annotationService.getAnnotationsByDay(day, offset, limit)).build();
-    else
+    } else {
       return Response.ok(annotationService.getAnnotations(offset, limit)).build();
+    }
   }
 
   /**

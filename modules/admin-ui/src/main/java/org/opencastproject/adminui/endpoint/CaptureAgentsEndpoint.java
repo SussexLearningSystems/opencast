@@ -123,10 +123,12 @@ public class CaptureAgentsEndpoint {
 
     Map<String, String> filters = RestUtils.parseFilter(filter);
     for (String name : filters.keySet()) {
-      if (AgentsListQuery.FILTER_NAME_NAME.equals(name))
+      if (AgentsListQuery.FILTER_NAME_NAME.equals(name)) {
         filterName = Option.some(filters.get(name));
-      if (AgentsListQuery.FILTER_STATUS_NAME.equals(name))
+      }
+      if (AgentsListQuery.FILTER_STATUS_NAME.equals(name)) {
         filterStatus = Option.some(filters.get(name));
+      }
       if (AgentsListQuery.FILTER_LAST_UPDATED.equals(name)) {
         try {
           filterLastUpdated = Option.some(Long.parseLong(filters.get(name)));
@@ -135,8 +137,9 @@ public class CaptureAgentsEndpoint {
           return Response.status(Status.BAD_REQUEST).build();
         }
       }
-      if (AgentsListQuery.FILTER_TEXT_NAME.equals(name) && StringUtils.isNotBlank(filters.get(name)))
+      if (AgentsListQuery.FILTER_TEXT_NAME.equals(name) && StringUtils.isNotBlank(filters.get(name))) {
         filterText = Option.some(filters.get(name));
+      }
     }
 
     // Filter agents by filter criteria
@@ -148,8 +151,9 @@ public class CaptureAgentsEndpoint {
       if ((filterName.isSome() && !filterName.get().equals(agent.getName()))
               || (filterStatus.isSome() && !filterStatus.get().equals(agent.getState()))
               || (filterLastUpdated.isSome() && filterLastUpdated.get() != agent.getLastHeardFrom())
-              || (filterText.isSome() && !TextFilter.match(filterText.get(), agent.getName(), agent.getState())))
+              || (filterText.isSome() && !TextFilter.match(filterText.get(), agent.getName(), agent.getState()))) {
         continue;
+      }
       filteredAgents.add(agent);
     }
     int total = filteredAgents.size();
@@ -164,16 +168,19 @@ public class CaptureAgentsEndpoint {
             Order order = criterion.getOrder();
             switch (criterion.getFieldName()) {
               case "status":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return agent2.getState().compareTo(agent1.getState());
+                }
                 return agent1.getState().compareTo(agent2.getState());
               case "name":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return agent2.getName().compareTo(agent1.getName());
+                }
                 return agent1.getName().compareTo(agent2.getName());
               case "updated":
-                if (order.equals(Order.Descending))
+                if (order.equals(Order.Descending)) {
                   return agent2.getLastHeardFrom().compareTo(agent1.getLastHeardFrom());
+                }
                 return agent1.getLastHeardFrom().compareTo(agent2.getLastHeardFrom());
               default:
                 logger.info("Unknown sort type: {}", criterion.getFieldName());
@@ -204,8 +211,9 @@ public class CaptureAgentsEndpoint {
           @RestResponse(description = "{agentName} removed", responseCode = HttpServletResponse.SC_OK),
           @RestResponse(description = "The agent {agentname} does not exist", responseCode = HttpServletResponse.SC_NOT_FOUND) }, returnDescription = "")
   public Response removeAgent(@PathParam("name") String agentName) throws NotFoundException {
-    if (service == null)
+    if (service == null) {
       return Response.serverError().status(Response.Status.SERVICE_UNAVAILABLE).build();
+    }
 
     service.removeAgent(agentName);
 

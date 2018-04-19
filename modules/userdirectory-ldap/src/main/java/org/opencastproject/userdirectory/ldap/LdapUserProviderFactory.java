@@ -169,20 +169,25 @@ public class LdapUserProviderFactory implements ManagedServiceFactory {
   public void updated(String pid, Dictionary properties) throws ConfigurationException {
     logger.debug("Updating LdapUserProviderFactory");
     String organization = (String) properties.get(ORGANIZATION_KEY);
-    if (StringUtils.isBlank(organization))
+    if (StringUtils.isBlank(organization)) {
       throw new ConfigurationException(ORGANIZATION_KEY, "is not set");
+    }
     String searchBase = (String) properties.get(SEARCH_BASE_KEY);
-    if (StringUtils.isBlank(searchBase))
+    if (StringUtils.isBlank(searchBase)) {
       throw new ConfigurationException(SEARCH_BASE_KEY, "is not set");
+    }
     String searchFilter = (String) properties.get(SEARCH_FILTER_KEY);
-    if (StringUtils.isBlank(searchFilter))
+    if (StringUtils.isBlank(searchFilter)) {
       throw new ConfigurationException(SEARCH_FILTER_KEY, "is not set");
+    }
     String url = (String) properties.get(LDAP_URL_KEY);
-    if (StringUtils.isBlank(url))
+    if (StringUtils.isBlank(url)) {
       throw new ConfigurationException(LDAP_URL_KEY, "is not set");
+    }
     String instanceId = (String) properties.get(INSTANCE_ID_KEY);
-    if (StringUtils.isBlank(instanceId))
+    if (StringUtils.isBlank(instanceId)) {
       throw new ConfigurationException(INSTANCE_ID_KEY, "is not set");
+    }
     String userDn = (String) properties.get(SEARCH_USER_DN);
     String password = (String) properties.get(SEARCH_PASSWORD);
     String roleAttributes = (String) properties.get(ROLE_ATTRIBUTES_KEY);
@@ -283,10 +288,12 @@ public class LdapUserProviderFactory implements ManagedServiceFactory {
         }
       }
     } finally {
-      if (providerRegistration != null)
+      if (providerRegistration != null) {
         providerRegistration.unregister();
-      if (authoritiesPopulatorRegistration != null)
+      }
+      if (authoritiesPopulatorRegistration != null) {
         authoritiesPopulatorRegistration.unregister();
+      }
     }
   }
 

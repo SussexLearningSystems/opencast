@@ -165,8 +165,9 @@ public class EncoderEngine implements AutoCloseable {
           throws EncoderException {
     // Fist, update the parameters
     Map<String, String> params = new HashMap<>();
-    if (properties != null)
+    if (properties != null) {
       params.putAll(properties);
+    }
     // build command
     if (source.isEmpty()) {
       throw new IllegalArgumentException("At least one track must be specified.");
@@ -311,8 +312,9 @@ public class EncoderEngine implements AutoCloseable {
    *      EncodingProfile, long, long, Map)
    */
   File trim(File mediaSource, EncodingProfile format, long start, long duration, Map<String, String> properties) throws EncoderException {
-    if (properties == null)
+    if (properties == null) {
       properties = new HashMap<>();
+    }
     double startD = (double) start / 1000;
     double durationD = (double) duration / 1000;
     DecimalFormatSymbols ffmpegFormat = new DecimalFormatSymbols();
@@ -358,8 +360,9 @@ public class EncoderEngine implements AutoCloseable {
    */
   private void handleEncoderOutput(List<File> output, String message) {
     message = message.trim();
-    if ("".equals(message))
+    if ("".equals(message)) {
       return;
+    }
 
     // Others go to trace logging
     if (startsWithAny(message.toLowerCase(),

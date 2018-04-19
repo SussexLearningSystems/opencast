@@ -121,12 +121,14 @@ public class DublinCoreCatalogService implements CatalogService<DublinCoreCatalo
           metadata.setDate(period.getStart());
         } else {
           // ...and only if started date is not available the created date
-          if (dc.hasValue(DublinCore.PROPERTY_CREATED))
+          if (dc.hasValue(DublinCore.PROPERTY_CREATED)) {
             metadata.setDate(EncodingSchemeUtils.decodeDate(dc.get(DublinCore.PROPERTY_CREATED).get(0)));
+          }
         }
         // Series id
-        if (dc.hasValue(DublinCore.PROPERTY_IS_PART_OF))
+        if (dc.hasValue(DublinCore.PROPERTY_IS_PART_OF)) {
           metadata.setSeriesIdentifier(dc.get(DublinCore.PROPERTY_IS_PART_OF).get(0).getValue());
+        }
 
         // Creator
         if (dc.hasValue(DublinCore.PROPERTY_CREATOR)) {
@@ -175,8 +177,9 @@ public class DublinCoreCatalogService implements CatalogService<DublinCoreCatalo
   public static final Comparator<Catalog> COMPARE_BY_FLAVOR = new Comparator<Catalog>() {
     @Override
     public int compare(Catalog c1, Catalog c2) {
-      if (MediaPackageElements.EPISODE.equals(c1.getFlavor()))
+      if (MediaPackageElements.EPISODE.equals(c1.getFlavor())) {
         return 1;
+      }
       return -1;
     }
   };
@@ -189,8 +192,9 @@ public class DublinCoreCatalogService implements CatalogService<DublinCoreCatalo
    */
   @Override
   public DublinCoreCatalog load(InputStream in) throws IOException {
-    if (in == null)
+    if (in == null) {
       throw new IllegalArgumentException("Stream must not be null");
+    }
     return DublinCores.read(in);
   }
 
@@ -201,8 +205,9 @@ public class DublinCoreCatalogService implements CatalogService<DublinCoreCatalo
    */
   @Override
   public boolean accepts(Catalog catalog) {
-    if (catalog == null)
+    if (catalog == null) {
       throw new IllegalArgumentException("Catalog must not be null");
+    }
     MediaPackageElementFlavor flavor = catalog.getFlavor();
     return flavor != null && (flavor.equals(DublinCoreCatalog.ANY_DUBLINCORE));
   }

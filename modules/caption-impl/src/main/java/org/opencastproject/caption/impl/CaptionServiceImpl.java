@@ -147,12 +147,15 @@ public class CaptionServiceImpl extends AbstractJobProducer implements CaptionSe
           throws UnsupportedCaptionFormatException,
           CaptionConverterException, MediaPackageException {
 
-    if (input == null)
+    if (input == null) {
       throw new IllegalArgumentException("Input catalog can't be null");
-    if (StringUtils.isBlank(inputFormat))
+    }
+    if (StringUtils.isBlank(inputFormat)) {
       throw new IllegalArgumentException("Input format is null");
-    if (StringUtils.isBlank(outputFormat))
+    }
+    if (StringUtils.isBlank(outputFormat)) {
       throw new IllegalArgumentException("Output format is null");
+    }
 
     try {
       return serviceRegistry.createJob(JOB_TYPE, Operation.Convert.toString(),
@@ -172,14 +175,18 @@ public class CaptionServiceImpl extends AbstractJobProducer implements CaptionSe
   public Job convert(MediaPackageElement input, String inputFormat, String outputFormat, String language)
           throws UnsupportedCaptionFormatException, CaptionConverterException, MediaPackageException {
 
-    if (input == null)
+    if (input == null) {
       throw new IllegalArgumentException("Input catalog can't be null");
-    if (StringUtils.isBlank(inputFormat))
+    }
+    if (StringUtils.isBlank(inputFormat)) {
       throw new IllegalArgumentException("Input format is null");
-    if (StringUtils.isBlank(outputFormat))
+    }
+    if (StringUtils.isBlank(outputFormat)) {
       throw new IllegalArgumentException("Output format is null");
-    if (StringUtils.isBlank(language))
+    }
+    if (StringUtils.isBlank(language)) {
       throw new IllegalArgumentException("Language format is null");
+    }
 
     try {
       return serviceRegistry.createJob(JOB_TYPE, Operation.ConvertWithLanguage.toString(),
@@ -200,12 +207,15 @@ public class CaptionServiceImpl extends AbstractJobProducer implements CaptionSe
     try {
 
       // check parameters
-      if (input == null)
+      if (input == null) {
         throw new IllegalArgumentException("Input element can't be null");
-      if (StringUtils.isBlank(inputFormat))
+      }
+      if (StringUtils.isBlank(inputFormat)) {
         throw new IllegalArgumentException("Input format is null");
-      if (StringUtils.isBlank(outputFormat))
+      }
+      if (StringUtils.isBlank(outputFormat)) {
         throw new IllegalArgumentException("Output format is null");
+      }
 
       // get input file
       File captionsFile;
@@ -250,8 +260,9 @@ public class CaptionServiceImpl extends AbstractJobProducer implements CaptionSe
         String[] mimetype = FileTypeMap.getDefaultFileTypeMap().getContentType(exported.getPath()).split("/");
         mpe.setMimeType(mimeType(mimetype[0], mimetype[1]));
       }
-      if (language != null)
+      if (language != null) {
         mpe.addTag("lang:" + language);
+      }
 
       return mpe;
 
@@ -357,8 +368,9 @@ public class CaptionServiceImpl extends AbstractJobProducer implements CaptionSe
       logger.warn("No caption format available for {}.", formatName);
       return null;
     }
-    if (ref.length > 1)
+    if (ref.length > 1) {
       logger.warn("Multiple references for caption format {}! Returning first service reference.", formatName);
+    }
     CaptionConverter converter = (CaptionConverter) componentContext.getBundleContext().getService(ref[0]);
     return converter;
   }

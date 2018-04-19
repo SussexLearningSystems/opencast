@@ -58,10 +58,11 @@ public class UrlSigningEndpoint {
   @Path("accepts")
   @RestQuery(name = "accepts", description = "Checks if the signing service accepts to sign the URL", restParameters = { @RestParameter(name = "baseUrl", isRequired = true, description = "The URL to sign", type = STRING) }, reponses = { @RestResponse(description = "'true' or 'false'", responseCode = 200) }, returnDescription = "")
   public Response accepts(@QueryParam("baseUrl") final String baseUrl) {
-    if (signingService.accepts(baseUrl))
+    if (signingService.accepts(baseUrl)) {
       return Response.ok(Boolean.TRUE.toString()).build();
-    else
+    } else {
       return Response.ok(Boolean.FALSE.toString()).build();
+    }
   }
 
   @GET

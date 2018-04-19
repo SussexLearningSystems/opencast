@@ -319,8 +319,9 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
    */
   @Override
   public Job retract(String channelId, MediaPackage mediaPackage, Set<String> elementIds) throws DistributionException {
-    if (locations.isNone())
+    if (locations.isNone()) {
       return null;
+    }
 
     RequireUtil.notNull(mediaPackage, "mediaPackage");
     RequireUtil.notNull(elementIds, "elementId");
@@ -488,8 +489,9 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
 
     // Check if root path exists, if not you're file system has not been migrated to the new distribution service yet
     // and does not support this function
-    if (!Files.exists(rootPath))
+    if (!Files.exists(rootPath)) {
       return source;
+    }
 
     // Find matching mediapackage directories
     List<Path> mediaPackageDirectories = new ArrayList<>();
@@ -502,8 +504,9 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
       }
     }
 
-    if (mediaPackageDirectories.isEmpty())
+    if (mediaPackageDirectories.isEmpty()) {
       return source;
+    }
 
     final long size = Files.size(source.toPath());
 
@@ -514,24 +517,28 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           // Walk through files only
-          if (Files.isDirectory(file))
+          if (Files.isDirectory(file)) {
             return FileVisitResult.CONTINUE;
+          }
 
           // Check for same file size
-          if (size != attrs.size())
+          if (size != attrs.size()) {
             return FileVisitResult.CONTINUE;
+          }
 
           // If size less than 4096 bytes use readAllBytes method which performs better
           if (size < 4096) {
-            if (!Arrays.equals(Files.readAllBytes(source.toPath()), Files.readAllBytes(file)))
+            if (!Arrays.equals(Files.readAllBytes(source.toPath()), Files.readAllBytes(file))) {
               return FileVisitResult.CONTINUE;
+            }
 
           } else {
             // Otherwise compare file input stream
             try (InputStream is1 = Files.newInputStream(source.toPath());
                     InputStream is2 = Files.newInputStream(file)) {
-              if (!IOUtils.contentEquals(is1, is2))
+              if (!IOUtils.contentEquals(is1, is2)) {
                 return FileVisitResult.CONTINUE;
+              }
             }
           }
 
@@ -542,13 +549,15 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
       });
 
       // A duplicate has already been found, no further file walking is needed
-      if (result[0] != null)
+      if (result[0] != null) {
         break;
+      }
     }
 
     // Return found duplicate otherwise source
-    if (result[0] != null)
+    if (result[0] != null) {
       return result[0];
+    }
 
     return source;
   }
@@ -702,8 +711,9 @@ public class StreamingDistributionServiceImpl extends AbstractDistributionServic
         String tag = ext + ":";
 
         // removes the tag for flv files, but keeps it for all others (mp4 needs it)
-        if (flvCompatibilityMode && "flv:".equals(tag))
+        if (flvCompatibilityMode && "flv:".equals(tag)) {
           tag = "";
+        }
 
         return URI.create(concat(getBaseUri(), tag + orgId, channelId, mpId, mpeId, fileName));
       } else {

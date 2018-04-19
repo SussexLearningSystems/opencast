@@ -48,8 +48,9 @@ public class Mpeg7CatalogService implements CatalogService<Mpeg7Catalog> {
    */
   @Override
   public boolean accepts(Catalog catalog) {
-    if (catalog == null)
+    if (catalog == null) {
       throw new IllegalArgumentException("Catalog must not be null");
+    }
     MediaPackageElementFlavor flavor = catalog.getFlavor();
     return flavor != null && (flavor.equals(Mpeg7Catalog.ANY_MPEG7));
   }
@@ -79,8 +80,9 @@ public class Mpeg7CatalogService implements CatalogService<Mpeg7Catalog> {
    */
   @Override
   public Mpeg7Catalog load(InputStream in) throws IOException {
-    if (in == null)
+    if (in == null) {
       throw new IllegalArgumentException("Stream must not be null");
+    }
     return new Mpeg7CatalogImpl(in);
   }
 

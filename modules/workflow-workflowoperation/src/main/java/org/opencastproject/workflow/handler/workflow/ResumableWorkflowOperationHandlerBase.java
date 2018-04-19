@@ -79,8 +79,9 @@ public class ResumableWorkflowOperationHandlerBase extends AbstractWorkflowOpera
    * overwriting this class.
    */
   public void deactivate() {
-    if (staticResourceRegistration != null)
+    if (staticResourceRegistration != null) {
       staticResourceRegistration.unregister();
+    }
   }
 
   /**
@@ -89,8 +90,9 @@ public class ResumableWorkflowOperationHandlerBase extends AbstractWorkflowOpera
    * @see org.opencastproject.workflow.api.ResumableWorkflowOperationHandler#getHoldStateUserInterfaceURL(org.opencastproject.workflow.api.WorkflowInstance)
    */
   public String getHoldStateUserInterfaceURL(WorkflowInstance workflowInstance) throws WorkflowOperationException {
-    if (staticResource == null)
+    if (staticResource == null) {
       return null;
+    }
     return staticResource.getDefaultUrl();
   }
 
@@ -126,8 +128,9 @@ public class ResumableWorkflowOperationHandlerBase extends AbstractWorkflowOpera
    */
   protected String registerHoldStateUserInterface(final String resourcePath) {
     String alias = "/workflow/hold/" + getClass().getName().toLowerCase();
-    if (resourcePath == null)
+    if (resourcePath == null) {
       throw new IllegalArgumentException("Classpath must not be null");
+    }
     String path = FilenameUtils.getPathNoEndSeparator(resourcePath);
     String welcomeFile = FilenameUtils.getName(resourcePath);
     staticResource = new StaticResource(getClass().getClassLoader(), path, alias, welcomeFile);

@@ -142,8 +142,9 @@ public abstract class SimpleServicePublisher implements ManagedService {
         @Override
         protected void run() {
           logger.info("[{}] Unregister service", self.getClass().getName());
-          for (ServiceRegistration reg : registrations.getServiceRegistrations())
+          for (ServiceRegistration reg : registrations.getServiceRegistrations()) {
             reg.unregister();
+          }
           mlist(registrations.getOnShutdown()).each(run);
         }
       };
@@ -159,8 +160,9 @@ public abstract class SimpleServicePublisher implements ManagedService {
    */
   public static ServiceRegistration registerService(ComponentContext cc, Object o, Class serviceClass,
           String serviceDescription) {
-    if (!serviceClass.isAssignableFrom(o.getClass()))
+    if (!serviceClass.isAssignableFrom(o.getClass())) {
       throw new Error("Service " + o + " is not of type " + serviceClass);
+    }
     final Dictionary props = dict(tuple(SERVICE_PID, o.getClass().getName()),
             tuple(SERVICE_DESCRIPTION, serviceDescription));
     return cc.getBundleContext().registerService(serviceClass.getName(), o, props);

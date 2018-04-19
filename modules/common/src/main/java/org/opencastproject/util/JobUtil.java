@@ -251,8 +251,9 @@ public final class JobUtil {
       case FINISHED:
         return new JobBarrier.Result(map(tuple(job, status)));
       default:
-        for (Long t : timeout)
+        for (Long t : timeout) {
           return waitForJobs(waiter, reg, t, job);
+        }
         return waitForJobs(waiter, reg, job);
     }
   }

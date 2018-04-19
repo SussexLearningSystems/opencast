@@ -388,12 +388,14 @@ public class CaptureNowProlongingService implements ManagedService {
 
     List<MediaPackage> events = schedulerService.findConflictingEvents(agentId, period.getStart(), prolongedEndDate);
     for (MediaPackage conflictMediaPackage : events) {
-      if (eventId.equals(conflictMediaPackage.getIdentifier().compact()))
+      if (eventId.equals(conflictMediaPackage.getIdentifier().compact())) {
         continue;
+      }
 
       Opt<DublinCoreCatalog> conflictingDc = DublinCoreUtil.loadEpisodeDublinCore(workspace, conflictMediaPackage);
-      if (conflictingDc.isNone())
+      if (conflictingDc.isNone()) {
         continue;
+      }
 
       Date conflictingStartDate = EncodingSchemeUtils
               .decodeMandatoryPeriod(conflictingDc.get().getFirst(DublinCore.PROPERTY_TEMPORAL)).getStart();

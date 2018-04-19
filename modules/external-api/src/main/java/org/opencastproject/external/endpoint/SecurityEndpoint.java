@@ -121,8 +121,9 @@ public class SecurityEndpoint implements ManagedService {
   public Response signUrl(@HeaderParam("Accept") String acceptHeader, @FormParam("url") String url,
           @FormParam("valid-until") String validUntilUtc, @FormParam("valid-source") String validSource) {
 
-    if (isBlank(url))
+    if (isBlank(url)) {
       return R.badRequest("Query parameter 'url' is mandatory");
+    }
 
     final DateTime validUntil;
     if (isNotBlank(validUntilUtc)) {

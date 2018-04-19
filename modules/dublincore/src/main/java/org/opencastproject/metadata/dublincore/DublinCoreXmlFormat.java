@@ -225,8 +225,9 @@ public final class DublinCoreXmlFormat extends DefaultHandler {
 
     for (CatalogEntry mergeEntry: mergeEntries) {
       // ignore root entry
-      if ((mergeEntry.getEName()).equals(intoCatalog.getRootTag()))
+      if ((mergeEntry.getEName()).equals(intoCatalog.getRootTag())) {
         continue;
+      }
 
       // if language is provided, only overwrite existing of same language
       String lang = mergeEntry.getAttribute(XMLCatalogImpl.XML_LANG_ATTR);

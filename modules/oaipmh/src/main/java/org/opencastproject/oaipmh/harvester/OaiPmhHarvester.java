@@ -116,8 +116,9 @@ public class OaiPmhHarvester implements ManagedService {
       final String urlsRaw = getCfg(properties, CFG_URLS);
       final String[] urls = urlsRaw.split("\\s*,\\s*");
       // shutdown currently running tasks
-      if (scheduler != null)
+      if (scheduler != null) {
         scheduler.shutdown();
+      }
       scheduler = Executors.newSingleThreadScheduledExecutor();
       logger.info("Schedule harvesting " + urlsRaw + " at " + initialDelay + ", " + period + " (minutes)");
       final Function0<Void> secConf = createSecurityConfigurator(properties, componentContext);
@@ -185,7 +186,7 @@ public class OaiPmhHarvester implements ManagedService {
    */
   public synchronized void deactivate() {
     logger.info("Deactivate");
-    if (scheduler != null)
+    if (scheduler != null) {
       shutdownAndAwaitTermination(scheduler, 60, new Function0<Void>() {
         @Override
         public Void apply() {
@@ -193,8 +194,10 @@ public class OaiPmhHarvester implements ManagedService {
           return null;
         }
       });
-    if (penv != null)
+    }
+    if (penv != null) {
       penv.close();
+    }
   }
 
   static class Worker implements Runnable {

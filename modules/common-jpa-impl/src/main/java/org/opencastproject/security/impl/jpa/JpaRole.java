@@ -165,8 +165,9 @@ public final class JpaRole implements Role {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Role))
+    if (!(obj instanceof Role)) {
       return false;
+    }
     Role other = (Role) obj;
     return name.equals(other.getName()) && organization.equals(other.getOrganization());
   }

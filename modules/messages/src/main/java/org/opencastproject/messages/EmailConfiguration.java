@@ -217,10 +217,12 @@ public class EmailConfiguration {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     EmailConfiguration config = (EmailConfiguration) o;
     return transport.equals(config.getTransport()) && server.equals(config.getServer()) && port == config.getPort()
             && userName.equals(config.getUserName()) && password.equals(config.getPassword()) && ssl == config.isSsl();

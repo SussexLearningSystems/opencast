@@ -83,8 +83,9 @@ public final class PersistenceUtil {
           // propagate exception
           throw (e);
         } finally {
-          if (em != null)
+          if (em != null) {
             em.close();
+          }
         }
       }
 

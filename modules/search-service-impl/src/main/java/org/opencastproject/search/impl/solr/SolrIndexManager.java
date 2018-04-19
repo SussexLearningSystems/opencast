@@ -280,8 +280,9 @@ public class SolrIndexManager {
       Schema.setOcModified(episodeDocument, now);
 
       SolrInputDocument seriesDocument = createSeriesInputDocument(sourceMediaPackage.getSeries(), acl);
-      if (seriesDocument != null)
+      if (seriesDocument != null) {
         Schema.enrich(episodeDocument, seriesDocument);
+      }
 
       // If neither an episode nor a series was contained, there is no point in trying to update
       if (episodeDocument == null && seriesDocument == null) {
@@ -290,10 +291,12 @@ public class SolrIndexManager {
       }
 
       // Post everything to the search index
-      if (episodeDocument != null)
+      if (episodeDocument != null) {
         solrServer.add(episodeDocument);
-      if (seriesDocument != null)
+      }
+      if (seriesDocument != null) {
         solrServer.add(seriesDocument);
+      }
       solrServer.commit();
       return true;
     } catch (Exception e) {
@@ -325,12 +328,14 @@ public class SolrIndexManager {
       SolrInputDocument episodeDocument = createEpisodeInputDocument(sourceMediaPackage, acl);
 
       SolrInputDocument seriesDocument = createSeriesInputDocument(sourceMediaPackage.getSeries(), acl);
-      if (seriesDocument != null)
+      if (seriesDocument != null) {
         Schema.enrich(episodeDocument, seriesDocument);
+      }
 
       Schema.setOcModified(episodeDocument, modificationDate);
-      if (deletionDate != null)
+      if (deletionDate != null) {
         Schema.setOcDeleted(episodeDocument, deletionDate);
+      }
 
       solrServer.add(episodeDocument);
       solrServer.add(seriesDocument);
@@ -381,8 +386,9 @@ public class SolrIndexManager {
     // /
     // Add standard dublin core fields
     // naive approach. works as long as only setters, not adders are available in the schema
-    for (StaticMetadata md : getMetadata(mdServices, mediaPackage))
+    for (StaticMetadata md : getMetadata(mdServices, mediaPackage)) {
       addEpisodeMetadata(doc, md);
+    }
 
     // /
     // Add mpeg7
@@ -708,8 +714,9 @@ public class SolrIndexManager {
   private SolrInputDocument createSeriesInputDocument(String seriesId, AccessControlList acl) throws IOException,
           UnauthorizedException {
 
-    if (seriesId == null)
+    if (seriesId == null) {
       return null;
+    }
     DublinCoreCatalog dc = null;
     try {
       dc = seriesService.getSeries(seriesId);
@@ -966,11 +973,12 @@ public class SolrIndexManager {
         @Override
         public int compare(TextAnnotation a1, TextAnnotation a2) {
           if ((RELEVANCE_BOOST * a1.getRelevance() + a1.getConfidence()) > (RELEVANCE_BOOST * a2.getRelevance() + a2
-                  .getConfidence()))
+                  .getConfidence())) {
             return -1;
-          else if ((RELEVANCE_BOOST * a1.getRelevance() + a1.getConfidence()) < (RELEVANCE_BOOST * a2.getRelevance() + a2
-                  .getConfidence()))
+          } else if ((RELEVANCE_BOOST * a1.getRelevance() + a1.getConfidence()) < (RELEVANCE_BOOST * a2.getRelevance() + a2
+                  .getConfidence())) {
             return 1;
+          }
           return 0;
         }
       });
@@ -987,8 +995,9 @@ public class SolrIndexManager {
       for (Iterator<?> iterator = multimediaContent.elements(); iterator.hasNext();) {
 
         MultimediaContentType type = (MultimediaContentType) iterator.next();
-        if (!(type instanceof Video) && !(type instanceof AudioVisual))
+        if (!(type instanceof Video) && !(type instanceof AudioVisual)) {
           continue;
+        }
 
         // for every segment in the current multimedia content track
 
@@ -1004,8 +1013,9 @@ public class SolrIndexManager {
           SpatioTemporalDecomposition spt = segment.getSpatioTemporalDecomposition();
           if (spt != null) {
             for (VideoText videoText : spt.getVideoText()) {
-              if (segmentText.length() > 0)
+              if (segmentText.length() > 0) {
                 segmentText.append(" ");
+              }
               segmentText.append(videoText.getText().getText());
               // TODO: Add hint on bounding box
             }
@@ -1018,8 +1028,9 @@ public class SolrIndexManager {
             Iterator<?> kwIter = textAnnotation.keywordAnnotations();
             while (kwIter.hasNext()) {
               KeywordAnnotation keywordAnnotation = (KeywordAnnotation) kwIter.next();
-              if (segmentText.length() > 0)
+              if (segmentText.length() > 0) {
                 segmentText.append(" ");
+              }
               segmentText.append(keywordAnnotation.getKeyword());
             }
           }
@@ -1030,8 +1041,9 @@ public class SolrIndexManager {
             Iterator<FreeTextAnnotation> freeTextIter = freeIter.next().freeTextAnnotations();
             while (freeTextIter.hasNext()) {
               FreeTextAnnotation freeTextAnnotation = freeTextIter.next();
-              if (segmentText.length() > 0)
+              if (segmentText.length() > 0) {
                 segmentText.append(" ");
+              }
               segmentText.append(freeTextAnnotation.getText());
             }
           }
@@ -1143,8 +1155,9 @@ public class SolrIndexManager {
       importance.remove(maxKeyword);
 
       // append keyword to string
-      if (buf.length() > 0)
+      if (buf.length() > 0) {
         buf.append(" ");
+      }
       buf.append(maxKeyword);
     }
 

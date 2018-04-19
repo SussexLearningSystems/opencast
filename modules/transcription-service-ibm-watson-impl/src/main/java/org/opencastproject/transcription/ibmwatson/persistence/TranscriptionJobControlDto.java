@@ -156,8 +156,9 @@ public final class TranscriptionJobControlDto {
   public static List<TranscriptionJobControlDto> findByStatus(EntityManager em, final String... status)
           throws TranscriptionDatabaseException {
     Collection<String> statusCol = new HashSet<String>();
-    for (String st : status)
+    for (String st : status) {
       statusCol.add(st);
+    }
     Query query = null;
     try {
       query = em.createNamedQuery("TranscriptionJobControl.findByStatus");
@@ -171,15 +172,17 @@ public final class TranscriptionJobControlDto {
   /** Update job status */
   public static void updateStatus(EntityManager em, String jobId, String status) throws TranscriptionDatabaseException {
     TranscriptionJobControlDto dto = findByJob(em, jobId);
-    if (dto == null)
+    if (dto == null) {
       throw new TranscriptionDatabaseException("Job not found in database: " + jobId);
+    }
 
     EntityTransaction tx = em.getTransaction();
     try {
       tx.begin();
       dto.setStatus(status);
-      if (TranscriptionJobControl.Status.TranscriptionComplete.name().equals(status))
+      if (TranscriptionJobControl.Status.TranscriptionComplete.name().equals(status)) {
         dto.setDateCompleted(new Date());
+      }
       em.merge(dto);
       tx.commit();
     } catch (Exception e) {
@@ -194,8 +197,9 @@ public final class TranscriptionJobControlDto {
 
   public static void delete(EntityManager em, String jobId) throws TranscriptionDatabaseException {
     TranscriptionJobControlDto dto = findByJob(em, jobId);
-    if (dto == null)
+    if (dto == null) {
       return;
+    }
 
     EntityTransaction tx = em.getTransaction();
     try {

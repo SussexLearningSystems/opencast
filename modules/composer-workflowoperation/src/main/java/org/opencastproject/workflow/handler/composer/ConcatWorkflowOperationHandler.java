@@ -181,26 +181,31 @@ public class ConcatWorkflowOperationHandler extends AbstractWorkflowOperationHan
     List<String> targetTags = asList(targetTagsOption);
 
     // Target flavor
-    if (targetFlavorOption == null)
+    if (targetFlavorOption == null) {
       throw new WorkflowOperationException("Target flavor must be set!");
+    }
 
     // Find the encoding profile
-    if (encodingProfile == null)
+    if (encodingProfile == null) {
       throw new WorkflowOperationException("Encoding profile must be set!");
+    }
 
     EncodingProfile profile = composerService.getProfile(encodingProfile);
-    if (profile == null)
+    if (profile == null) {
       throw new WorkflowOperationException("Encoding profile '" + encodingProfile + "' was not found");
+    }
 
     // Output resolution
-    if (outputResolution == null)
+    if (outputResolution == null) {
       throw new WorkflowOperationException("Output resolution must be set!");
+    }
 
     Dimension outputDimension = null;
     if (outputResolution.startsWith(OUTPUT_PART_PREFIX)) {
       if (!trackSelectors.keySet().contains(
-              Integer.parseInt(outputResolution.substring(OUTPUT_PART_PREFIX.length()))))
+              Integer.parseInt(outputResolution.substring(OUTPUT_PART_PREFIX.length())))) {
         throw new WorkflowOperationException("Output resolution part not set!");
+      }
     } else {
       try {
         String[] outputResolutionArray = StringUtils.split(outputResolution, "x");
@@ -234,8 +239,9 @@ public class ConcatWorkflowOperationHandler extends AbstractWorkflowOperationHan
     MediaPackageElementFlavor targetFlavor = null;
     try {
       targetFlavor = MediaPackageElementFlavor.parseFlavor(targetFlavorOption);
-      if ("*".equals(targetFlavor.getType()) || "*".equals(targetFlavor.getSubtype()))
+      if ("*".equals(targetFlavor.getType()) || "*".equals(targetFlavor.getSubtype())) {
         throw new WorkflowOperationException("Target flavor must have a type and a subtype, '*' are not allowed!");
+      }
     } catch (IllegalArgumentException e) {
       throw new WorkflowOperationException("Target flavor '" + targetFlavorOption + "' is malformed");
     }
@@ -307,8 +313,9 @@ public class ConcatWorkflowOperationHandler extends AbstractWorkflowOperationHan
     }
 
     // Wait for the jobs to return
-    if (!waitForStatus(concatJob).isSuccess())
+    if (!waitForStatus(concatJob).isSuccess()) {
       throw new WorkflowOperationException("The concat job did not complete successfully");
+    }
 
     if (concatJob.getPayload().length() > 0) {
 
@@ -363,8 +370,9 @@ public class ConcatWorkflowOperationHandler extends AbstractWorkflowOperationHan
                 Integer.toString(number)).concat(MANDATORY_SUFFIX)));
       }
 
-      if (number < 0)
+      if (number < 0) {
         continue;
+      }
 
       Tuple<TrackSelector, Boolean> selectorTuple = trackSelectors.get(number);
       if (selectorTuple == null) {

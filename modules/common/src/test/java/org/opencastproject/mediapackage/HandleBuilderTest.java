@@ -154,8 +154,9 @@ public class HandleBuilderTest {
         failCount -= 1;
       }
     }
-    if (failCount != 0)
+    if (failCount != 0) {
       fail(failCount + " not failed");
+    }
   }
 
   /**

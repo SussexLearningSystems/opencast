@@ -263,8 +263,9 @@ public class WorkflowStatisticsTest {
 
     @Override
     public void stateChanged(WorkflowInstance workflow) {
-      if (workflow.getId() != id)
+      if (workflow.getId() != id) {
         return;
+      }
       synchronized (IndividualWorkflowListener.this) {
         WorkflowState state = workflow.getState();
         if (state.equals(WorkflowState.PAUSED) || state.equals(WorkflowState.SUCCEEDED)) {

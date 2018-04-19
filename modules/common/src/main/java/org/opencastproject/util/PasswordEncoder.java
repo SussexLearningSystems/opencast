@@ -46,8 +46,9 @@ public final class PasswordEncoder {
    *           if clearText or salt are null
    */
   public static String encode(String clearText, Object salt) throws IllegalArgumentException {
-    if (clearText == null || salt == null)
+    if (clearText == null || salt == null) {
       throw new IllegalArgumentException("clearText and salt must not be null");
+    }
     return DigestUtils.md5Hex(clearText + "{" + salt.toString() + "}");
   }
 
