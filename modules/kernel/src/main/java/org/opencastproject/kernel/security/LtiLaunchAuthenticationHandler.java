@@ -197,7 +197,6 @@ public class LtiLaunchAuthenticationHandler
         context = customContextId;
       }
     }
-    logger.debug("Context id: {}", context);
     try {
       userDetails = userDetailsService.loadUserByUsername(userIdFromConsumer);
 
