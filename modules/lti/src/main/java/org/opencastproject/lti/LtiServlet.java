@@ -223,10 +223,11 @@ public class LtiServlet extends HttpServlet {
       builder = UriBuilder.fromPath(TOOLS_URL);
     }
 
+    String customContextIdParam = (String) req.getAttribute("custom-context-id-param");
     // We need to add the custom params to the outgoing request
     for (String key : req.getParameterMap().keySet()) {
       logger.debug("Found query parameter '{}'", key);
-      if (key.startsWith(LTI_CUSTOM_PREFIX) && (!LTI_CUSTOM_TOOL.equals(key))) {
+      if (key.startsWith(LTI_CUSTOM_PREFIX) && !LTI_CUSTOM_TOOL.equals(key) && !customContextIdParam.equals(key)) {
         String paramValue = req.getParameter(key);
         // we need to remove the prefix custom_
         String paramName = key.substring(LTI_CUSTOM_PREFIX.length());
@@ -267,6 +268,15 @@ public class LtiServlet extends HttpServlet {
       String value = StringUtils.trimToNull(req.getParameter(key));
       if (value != null) {
         ltiValues.put(key, value);
+      }
+    }
+    // Override the context_id if custom_context_id_param attribute is set
+    String customContextIdParam = (String) req.getAttribute("custom-context-id-param");
+    if (StringUtils.isNotBlank(customContextIdParam)) {
+      String customContextId = req.getParameter(customContextIdParam);
+      if (StringUtils.isNotBlank(customContextId)) {
+        logger.debug("Replacing context id: {}, with: {}", CONTEXT_ID, customContextId);
+        ltiValues.replace(CONTEXT_ID, customContextId);
       }
     }
     return ltiValues;

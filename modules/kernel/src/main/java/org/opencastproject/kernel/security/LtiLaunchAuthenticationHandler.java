@@ -92,6 +92,9 @@ public class LtiLaunchAuthenticationHandler
   /** list of keys that will be highly */
   protected List<String> highlyTrustedKeys = new ArrayList<String>();
 
+  /** The name of the LTI parameter holding the value to use as the context ID */
+  private String customContextIdParam = null;
+
   /**
    * Constructs a new LTI authentication handler, using the supplied user details service for performing user lookups.
    *
@@ -106,6 +109,7 @@ public class LtiLaunchAuthenticationHandler
    * Full constructor for a LTI authentication handler that includes a list of highly trusted keys
    *
    * @param userDetailsService
+   * @param securityService
    * @param highlyTrustedkeys
    */
   public LtiLaunchAuthenticationHandler(UserDetailsService userDetailsService, SecurityService securityService,
@@ -113,6 +117,22 @@ public class LtiLaunchAuthenticationHandler
     this.userDetailsService = userDetailsService;
     this.securityService = securityService;
     this.highlyTrustedKeys = highlyTrustedkeys;
+  }
+
+  /**
+   * Full constructor for a LTI authentication handler that includes a list of highly trusted keys and an override context ID parameter
+   *
+   * @param userDetailsService
+   * @param securityService
+   * @param highlyTrustedkeys
+   * @param customContextIdParam
+   */
+  public LtiLaunchAuthenticationHandler(UserDetailsService userDetailsService, SecurityService securityService,
+          List<String> highlyTrustedkeys, String customContextIdParam) {
+    this.userDetailsService = userDetailsService;
+    this.securityService = securityService;
+    this.highlyTrustedKeys = highlyTrustedkeys;
+    this.customContextIdParam = customContextIdParam;
   }
 
   /**
@@ -164,6 +184,20 @@ public class LtiLaunchAuthenticationHandler
 
     UserDetails userDetails = null;
     Collection<GrantedAuthority> userAuthorities = null;
+    String roles = request.getParameter(ROLES);
+    String context = request.getParameter(CONTEXT_ID);
+    // Override the context_id with value of LTI parameter defined as this.customContextIdParam
+    if (StringUtils.isNotBlank(this.customContextIdParam)) {
+      logger.debug("Using custom context ID parameter: {}", this.customContextIdParam);
+      String customContextId = request.getParameter(this.customContextIdParam);
+      // Set attribute to pass on to LtiServlet
+      request.setAttribute("custom-context-id-param", this.customContextIdParam);
+      if (StringUtils.isNotBlank(customContextId)) {
+        logger.debug("Setting context_id to value of custom context id parameter: {}", customContextId);
+        context = customContextId;
+      }
+    }
+    logger.debug("Context id: {}", context);
     try {
       userDetails = userDetailsService.loadUserByUsername(userIdFromConsumer);
 
@@ -175,15 +209,11 @@ public class LtiLaunchAuthenticationHandler
       userAuthorities = new HashSet<GrantedAuthority>(userDetails.getAuthorities());
 
       // we still need to enrich this user with the LTI Roles
-      String roles = request.getParameter(ROLES);
-      String context = request.getParameter(CONTEXT_ID);
       enrichRoleGrants(roles, context, userAuthorities);
     } catch (UsernameNotFoundException e) {
       // This user is known to the tool consumer, but not to Opencast. Create a user "on the fly"
       userAuthorities = new HashSet<GrantedAuthority>();
       // We should add the authorities passed in from the tool consumer?
-      String roles = request.getParameter(ROLES);
-      String context = request.getParameter(CONTEXT_ID);
       enrichRoleGrants(roles, context, userAuthorities);
 
       logger.info("Returning user with {} authorities", userAuthorities.size());
