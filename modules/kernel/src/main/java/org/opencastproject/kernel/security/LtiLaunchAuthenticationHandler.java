@@ -129,9 +129,7 @@ public class LtiLaunchAuthenticationHandler
    */
   public LtiLaunchAuthenticationHandler(UserDetailsService userDetailsService, SecurityService securityService,
           List<String> highlyTrustedkeys, String customContextIdParam) {
-    this.userDetailsService = userDetailsService;
-    this.securityService = securityService;
-    this.highlyTrustedKeys = highlyTrustedkeys;
+    this(userDetailsService, securityService, highlyTrustedkeys);
     this.customContextIdParam = customContextIdParam;
   }
 
