@@ -296,6 +296,8 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
         if (r.endsWith(LTI_INSTRUCTOR_ROLE))
           isInstructor = true;
       }
+      // Profile tool role
+      roles.add(new JaxbRole(email.toLowerCase() + "_Instructor", jaxbOrganization, "Canvas external role", Role.Type.EXTERNAL));
 
       // Group role for all Canvas users
       roles.add(new JaxbRole(Group.ROLE_PREFIX + "CANVAS", jaxbOrganization, "Canvas Users", Role.Type.EXTERNAL_GROUP));
