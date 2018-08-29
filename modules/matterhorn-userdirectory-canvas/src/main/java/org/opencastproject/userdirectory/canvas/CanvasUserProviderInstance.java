@@ -322,7 +322,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
   /*
    ** Verify that the user exists
-   ** Query with /api/v1/users/sis_user_id:userId
+   ** Query with /api/v1/users/lti_user_id:{userId}
    */
   private boolean verifyCanvasUser(String userId) {
       logger.debug("verifyCanvasUser({})", userId);
@@ -338,8 +338,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
       int code;
       try {
-          // This webservice does not require authentication
-          URL url = new URL(canvasUrl + "/api/v1/users/" + userId);
+          URL url = new URL(canvasUrl + "/api/v1/users/lti_user_id:" + userId);
           logger.info("Verifying user: {} using API: {}", url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
@@ -358,7 +357,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
   /*
    ** Verify that the course exists
-   ** Query with /api/v1/courses/sis_course_id:{courseId}
+   ** Query with /api/v1/courses/{courseId}
    */
   private boolean verifyCanvasCourse(String courseId) {
       // We could additionally cache positive and negative courseId lookup results here
@@ -375,7 +374,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
       int code;
       try {
-          URL url = new URL(canvasUrl + "/api/v1/courses/sis_course_id:" + courseId);
+          URL url = new URL(canvasUrl + "/api/v1/courses/" + courseId);
           logger.info("Verifying course: {} using API: {}", courseId, url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
@@ -400,7 +399,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
     List<String> roleList = new ArrayList<String>();
 
     try {
-      String nextPage = canvasUrl + "/api/v1/users/" + userId + "/courses";
+      String nextPage = canvasUrl + "/api/v1/users/lti_user_id:" + userId + "/courses";
       while (StringUtils.isNotBlank(nextPage)) {
         URL url = new URL(nextPage);
         logger.info("Requesting courses for user:{}, using API: {}", userId, url.toString());
@@ -417,11 +416,11 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
         JsonArray courses = new JsonParser().parse(json).getAsJsonArray();
         for (JsonElement courseElement : courses) {
           JsonObject course = courseElement.getAsJsonObject();
-          JsonElement jsonCourseId = course.get("sis_course_id");
+          JsonElement jsonCourseId = course.get("id");
           if (jsonCourseId.isJsonNull()) {
             continue;
           }
-          String courseId = course.get("sis_course_id").getAsString();
+          String courseId = course.get("id").getAsString();
           if (StringUtils.isNotBlank(courseId)) {
             JsonArray enrollments = course.get("enrollments").getAsJsonArray();
             for (JsonElement enrollmentElement : enrollments) {
@@ -484,7 +483,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       }
       JsonObject user = new JsonParser().parse(json).getAsJsonObject();
 
-      String canvasID = user.get("id").getAsString();
+      String canvasID = eid;
       String canvasEmail = user.get("primary_email").getAsString();
       String canvasDisplayName = user.get("name").getAsString();
 
