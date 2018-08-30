@@ -119,6 +119,10 @@
               !joptsimple,
               !org.aspectj.*,
               !net.sf.cglib.proxy,
+              javax.xml.namespace;version=0.0.0,
+              javax.xml.parsers;version=0.0.0,
+              javax.xml.transform;version=0.0.0,
+              javax.xml.transform.sax;version=0.0.0,
               *
             </Import-Package>
             <Service-Component>
