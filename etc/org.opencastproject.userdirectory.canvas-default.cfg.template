@@ -18,5 +18,6 @@ org.opencastproject.userdirectory.canvas.cache.expiration=60
 # Optional regexp for matching Canvas course IDs
 #org.opencastproject.userdirectory.canvas.course.pattern=^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
 
-# Optional comma-separated list of Canvas roles which are mapped to Instructor role suffix in Opencast
-org.opencastproject.userdirectory.canvas.instructor.roles=TeacherEnrollment
+# Optional comma-separated list of Canvas enrollment types and/or roles which are mapped to Instructor role suffix in Opencast
+# Enrollment types (parents) and/or enrollment roles (children) can be used, e.g. teacher,TeacherEnrollment
+org.opencastproject.userdirectory.canvas.instructor.roles=teacher
