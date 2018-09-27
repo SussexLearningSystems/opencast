@@ -425,9 +425,23 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
             JsonArray enrollments = course.get("enrollments").getAsJsonArray();
             for (JsonElement enrollmentElement : enrollments) {
               JsonObject enrollment = enrollmentElement.getAsJsonObject();
+              /*
+              Canvas enrollment `type` is a parent/base type that roles are created from.
+              We allow the specifying of parent types and/or a child roles in configuration
+              (these are mutually exclusive in Canvas, you can't have a child role with the
+              same name as any parent type).
+              This provides the ability to use any parent type to grant the LTI
+              instructor roles for any child role created from it now or in the future, and/or
+              specific set of child roles.
+              The can be multiple enrollments for a user for a given course, adding them all to
+              the roleList is ok because the roleList is converted to a Set later on.
+              */
+              String type = enrollment.get("type").getAsString();
               String role = enrollment.get("role").getAsString();
-              String opencastRole = buildOpencastRole(courseId, role);
-              roleList.add(opencastRole);
+              String opencastRoleFromCanvasType = buildOpencastRole(courseId, type);
+              roleList.add(opencastRoleFromCanvasType);
+              String opencastRoleFromCanvasRole = buildOpencastRole(courseId, role);
+              roleList.add(opencastRoleFromCanvasRole);
             }
           }
         }
