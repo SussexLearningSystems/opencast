@@ -172,7 +172,7 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
       String trimmedRoles = StringUtils.trim(instructorRoleList);
       String[] roles = trimmedRoles.split(",");
       instructorRoles = new HashSet<String>(Arrays.asList(roles));
-      logger.info("Canvas instructor roles: {}", Arrays.toString(roles));
+      logger.debug("Canvas instructor roles: {}", Arrays.toString(roles));
     } else {
       // Default instructor roles
       instructorRoles = new HashSet<String>();
