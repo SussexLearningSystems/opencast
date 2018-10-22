@@ -148,7 +148,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
     JaxbOrganization jaxbOrganization = JaxbOrganization.fromOrganization(organization);
 
-    logger.info("Creating new CanvasUserProviderInstance(pid={}, url={}, cacheSize={}, cacheExpiration={})",
+    logger.debug("Creating new CanvasUserProviderInstance(pid={}, url={}, cacheSize={}, cacheExpiration={})",
                  pid, url, cacheSize, cacheExpiration);
 
     // Setup the caches
@@ -339,7 +339,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       int code;
       try {
           URL url = new URL(canvasUrl + "/api/v1/users/lti_user_id:" + userId);
-          logger.info("Verifying user: {} using API: {}", url.toString());
+          logger.debug("Verifying user: {} using API: {}", url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
           connection.setRequestProperty("Authorization", "Bearer " + canvasToken);
@@ -375,7 +375,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       int code;
       try {
           URL url = new URL(canvasUrl + "/api/v1/courses/" + courseId);
-          logger.info("Verifying course: {} using API: {}", courseId, url.toString());
+          logger.debug("Verifying course: {} using API: {}", courseId, url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
           connection.setRequestProperty("Authorization", "Bearer " + canvasToken);
@@ -402,7 +402,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       String nextPage = canvasUrl + "/api/v1/users/lti_user_id:" + userId + "/courses";
       while (StringUtils.isNotBlank(nextPage)) {
         URL url = new URL(nextPage);
-        logger.info("Requesting courses for user:{}, using API: {}", userId, url.toString());
+        logger.debug("Requesting courses for user:{}, using API: {}", userId, url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setDoOutput(true);
@@ -412,7 +412,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
         String json = IOUtils.toString(new BufferedInputStream(connection.getInputStream()));
         logger.debug(json);
 
-        logger.info("Response code for API: {}, is: {}", url.toString(), connection.getResponseCode());
+        logger.debug("Response code for API: {}, is: {}", url.toString(), connection.getResponseCode());
         JsonArray courses = new JsonParser().parse(json).getAsJsonArray();
         for (JsonElement courseElement : courses) {
           JsonObject course = courseElement.getAsJsonObject();
@@ -449,10 +449,10 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
         String linkHeader = connection.getHeaderField("link");
         Matcher matcher = pattern.matcher(linkHeader);
         if (matcher.find()) {
-          logger.info("Link header contains a next page so there are more courses to fetch: {}", linkHeader);
+          logger.debug("Link header contains a next page so there are more courses to fetch: {}", linkHeader);
           nextPage = matcher.group(1);
         } else {
-          logger.info("No more courses to find for user: {}", userId);
+          logger.debug("No more courses to find for user: {}", userId);
           nextPage = null;
         }
       }
@@ -482,7 +482,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
     logger.debug("getCanvasUser({})", eid);
     try {
       URL url = new URL(canvasUrl + "/api/v1/users/lti_user_id:" + eid + "/profile");
-      logger.info("Requesting user: {}, using API: {}", eid, url.toString());
+      logger.debug("Requesting user: {}, using API: {}", eid, url.toString());
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("GET");
       connection.setDoOutput(true);
