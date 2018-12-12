@@ -41,7 +41,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-//import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +72,11 @@ import javax.management.ObjectName;
 
 /**
  * A UserProvider that reads user roles from Canvas.
+ * 
+ * Opencast currently prefers the lis_person_sourcedid LTI parameter (for
+ * trusted consumers) as the user's id, Canvas populates lis_person_sourcedid
+ * with the value of sis_user_id from a Canvas user's profile therefore all
+ * Canvas API calls are made against the sis_user_id.
  */
 public class CanvasUserProviderInstance implements UserProvider, RoleProvider, CachingUserProviderMXBean {
 
@@ -102,10 +106,10 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   /** A token to store in the miss cache */
   protected Object nullToken = new Object();
 
-  /** The URL of the Canvas instance */
+  /** The URL of the Canvas server */
   private String canvasUrl = null;
 
-  /** The token used to call Canvas REST webservices */
+  /** Token used to call the Canvas API */
   private String canvasToken = null;
 
   /** Regular expression for matching valid courses */
@@ -114,34 +118,29 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   /** Regular expression for matching valid users */
   private String userPattern;
 
-  /** A map of roles which are regarded as Instructor roles */
+  /** A set of strings representing instructor roles */
   private Set<String> instructorRoles;
 
   /**
    * Constructs an Canvas user provider with the needed settings.
    *
-   * @param pid
-   *          the pid of this service
-   * @param organization
-   *          the organization
-   * @param url
-   *          the url of the Canvas server
-   * @param userName
-   *          the user to authenticate as
-   * @param password
-   *          the user credentials
-   * @param cacheSize
-   *          the number of users to cache
-   * @param cacheExpiration
-   *          the number of minutes to cache users
+   * @param pid The pid of this service
+   * @param organization The organization
+   * @param canvasUrl The url of the Canvas server
+   * @param canvasToken The token used to call the Canvas API
+   * @param coursePattern Regular expression for matching valid courses
+   * @param userPattern Regular expression for matching valid users
+   * @param instructorRoles A set of strings representing instructor roles
+   * @param cacheSize The number of users to cache
+   * @param cacheExpiration The number of minutes to cache users
    */
-  public CanvasUserProviderInstance(String pid, Organization organization, String url, String token,
+  public CanvasUserProviderInstance(String pid, Organization organization, String canvasUrl, String canvasToken,
           String coursePattern, String userPattern, Set<String> instructorRoles, int cacheSize,
           int cacheExpiration) {
 
     this.organization = organization;
-    this.canvasUrl = url;
-    this.canvasToken = token;
+    this.canvasUrl = canvasUrl;
+    this.canvasToken = canvasToken;
     this.coursePattern = coursePattern;
     this.userPattern = userPattern;
     this.instructorRoles = instructorRoles;
@@ -149,7 +148,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
     JaxbOrganization jaxbOrganization = JaxbOrganization.fromOrganization(organization);
 
     logger.debug("Creating new CanvasUserProviderInstance(pid={}, url={}, cacheSize={}, cacheExpiration={})",
-                 pid, url, cacheSize, cacheExpiration);
+                 pid, canvasUrl, cacheSize, cacheExpiration);
 
     // Setup the caches
     cache = CacheBuilder.newBuilder().maximumSize(cacheSize).expireAfterWrite(cacheExpiration, TimeUnit.MINUTES)
@@ -173,7 +172,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
    * Registers an MXBean.
    */
   protected void registerMBean(String pid) {
-    // register with jmx
+    // Register with jmx
     requests = new AtomicLong();
     canvasLoads = new AtomicLong();
     try {
@@ -188,7 +187,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       }
       mbs.registerMBean(mbean, name);
     } catch (Exception e) {
-      logger.error("Unable to register {} as an mbean: {}", this, e);
+      logger.error("Exception while registering {} as an mbean: {}", this, e);
     }
   }
 
@@ -210,23 +209,23 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
    * @see org.opencastproject.security.api.UserProvider#loadUser(java.lang.String)
    */
   @Override
-  public User loadUser(String userName) {
-    logger.debug("loaduser({})", userName);
+  public User loadUser(String userId) {
+    logger.debug("loadUser({})", userId);
     requests.incrementAndGet();
     try {
-      Object user = cache.getUnchecked(userName);
+      Object user = cache.getUnchecked(userId);
       if (user == nullToken) {
         logger.debug("Returning null user from cache");
         return null;
       } else {
-        logger.debug("Returning user " + userName + " from cache");
+        logger.debug("Returning user " + userId + " from cache");
         return (JaxbUser) user;
       }
     } catch (ExecutionError e) {
-      logger.warn("Exception while loading user {}", userName, e);
+      logger.warn("Exception while loading user {}: {}", userId, e);
       return null;
     } catch (UncheckedExecutionException e) {
-      logger.warn("Exception while loading user {}", userName, e);
+      logger.warn("Exception while loading user {}: {}", userId, e);
       return null;
     }
   }
@@ -234,57 +233,54 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   /**
    * Loads a user from Canvas.
    * 
-   * @param userName
-   *          the username
-   * @return the user
+   * @param userId
+   * @return The user
    */
-  protected User loadUserFromCanvas(String userName) {
+  protected User loadUserFromCanvas(String userId) {
     if (cache == null) {
       throw new IllegalStateException("The Canvas user detail service has not yet been configured");
     }
 
     // Don't answer for admin, anonymous or empty user
-    if ("admin".equals(userName) || "".equals(userName) || "anonymous".equals(userName)) {
-      cache.put(userName, nullToken);
-      logger.debug("We don't answer for: " + userName);
+    if ("admin".equals(userId) || "".equals(userId) || "anonymous".equals(userId)) {
+      cache.put(userId, nullToken);
+      logger.debug("We don't answer for: " + userId);
       return null;
     }
 
-    logger.debug("In loadUserFromCanvas, currently processing user : {}", userName);
+    logger.debug("In loadUserFromCanvas, currently processing user : {}", userId);
 
     JaxbOrganization jaxbOrganization = JaxbOrganization.fromOrganization(organization);
 
-    // update cache statistics
+    // Update cache statistics
     canvasLoads.incrementAndGet();
 
     Thread currentThread = Thread.currentThread();
     ClassLoader originalClassloader = currentThread.getContextClassLoader();
     try {
-
       // Canvas userId (internal id), email address and display name
-      String[] canvasUser = getCanvasUser(userName);
+      String[] canvasUser = getCanvasUser(userId);
 
       if (canvasUser == null) {
-        // user not known to this provider
-        logger.debug("User {} not found in Canvas system", userName);
-        cache.put(userName, nullToken);
+        // User not known to this provider
+        logger.debug("User {} not found in Canvas system", userId);
+        cache.put(userId, nullToken);
         return null;
       }
 
-      String userId = canvasUser[0];
-      String email = canvasUser[1];
-      String displayName = canvasUser[2];
+      String email = canvasUser[0];
+      String displayName = canvasUser[1];
 
       // Get the set of Canvas roles for the user
       String[] canvasRoles = getRolesFromCanvas(userId);
 
-      // if Canvas doesn't know about this user we need to return
+      // If Canvas doesn't know about this user we need to return
       if (canvasRoles == null) {
-        cache.put(userName, nullToken);
+        cache.put(userId, nullToken);
         return null;
       }
 
-      logger.debug("Canvas roles for eid " + userName + " id " + userId + ": " + Arrays.toString(canvasRoles));
+      logger.debug("Canvas roles for user " + userId + ": " + Arrays.toString(canvasRoles));
 
       Set<JaxbRole> roles = new HashSet<JaxbRole>();
 
@@ -306,11 +302,11 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
       logger.debug("Returning JaxbRoles: " + roles);
 
-      // JaxbUser(String userName, String password, String name, String email, String provider, boolean canLogin, JaxbOrganization organization, Set<JaxbRole> roles)
-      User user = new JaxbUser(userName, null, displayName, email, PROVIDER_NAME, true, jaxbOrganization, roles);
+      // JaxbUser(String userId, String password, String name, String email, String provider, boolean canLogin, JaxbOrganization organization, Set<JaxbRole> roles)
+      User user = new JaxbUser(userId, null, displayName, email, PROVIDER_NAME, true, jaxbOrganization, roles);
 
-      cache.put(userName, user);
-      logger.debug("Returning user {}", userName);
+      cache.put(userId, user);
+      logger.debug("Returning user {}", userId);
 
       return user;
 
@@ -320,9 +316,11 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
   }
 
-  /*
-   ** Verify that the user exists
-   ** Query with /api/v1/users/sis_user_id:{userId}
+  /**
+   * Verify that the user exists
+   * Query with /api/v1/users/sis_user_id:{userId}
+   *
+   * @param userId
    */
   private boolean verifyCanvasUser(String userId) {
       logger.debug("verifyCanvasUser({})", userId);
@@ -332,14 +330,16 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
           return false;
         }
       } catch (PatternSyntaxException e) {
-        logger.warn("Invalid regular expression for user pattern {} - disabling checks", userPattern);
+        logger.warn("Invalid regular expression for user pattern {} - disabling checks, exception: {}", userPattern, e);
         userPattern = null;
       }
 
       int code;
+
+      String urlString = canvasUrl + "/api/v1/users/sis_user_id:" + userId;
       try {
-          URL url = new URL(canvasUrl + "/api/v1/users/sis_user_id:" + userId);
-          logger.debug("Verifying user: {} using API: {}", url.toString());
+          URL url = new URL(urlString);
+          logger.debug("Verifying user: {} using API: {}", url);
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
           connection.setRequestProperty("Authorization", "Bearer " + canvasToken);
@@ -348,16 +348,18 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
           connection.connect();
           code = connection.getResponseCode();
       } catch (Exception e) {
-          logger.warn("Exception verifying Canvas user " + userId + " at " + canvasUrl + ": " + e.getMessage());
+          logger.warn("Exception verifying Canvas user {} at {}: {}", userId, urlString, e);
           return false;
       }
       // HTTP OK 200 for course exists, return false for everything else (typically 404 not found)
       return (code == 200);
   }
 
-  /*
-   ** Verify that the course exists
-   ** Query with /api/v1/courses/{courseId}
+  /**
+   * Verify that the course exists
+   * Query with /api/v1/courses/{courseId}
+   *
+   * @param courseId
    */
   private boolean verifyCanvasCourse(String courseId) {
       // We could additionally cache positive and negative courseId lookup results here
@@ -368,13 +370,14 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
           return false;
         }
       } catch (PatternSyntaxException e) {
-        logger.warn("Invalid regular expression for course pattern {} - disabling checks", coursePattern);
+        logger.warn("Invalid regular expression for course pattern {} - disabling checks, exception: {}", coursePattern, e);
         coursePattern = null;
       }
 
       int code;
+      String urlString = canvasUrl + "/api/v1/courses/" + courseId;
       try {
-          URL url = new URL(canvasUrl + "/api/v1/courses/" + courseId);
+          URL url = new URL(urlString);
           logger.debug("Verifying course: {} using API: {}", courseId, url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
@@ -384,13 +387,20 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
           connection.connect();
           code = connection.getResponseCode();
       } catch (Exception e) {
-          logger.warn("Exception verifying Canvas course " + courseId + " at " + canvasUrl + ": " + e.getMessage());
+          logger.warn("Exception verifying Canvas course {} at {}: {}", courseId, urlString, e);
           return false;
       }
       // HTTP OK 200 for course exists, return false for everything else (typically 404 not found)
       return (code == 200);
   }
 
+  /**
+   * Get user roles from Canvas
+   * Query with /api/v1/users/sis_user_id:{userId}/courses and traverse
+   * pagination
+   *
+   * @param courseId
+   */
   private String[] getRolesFromCanvas(String userId) {
     logger.debug("getRolesFromCanvas({})", userId);
     String nextLinkRegex = "(?:.*)<(.+)>; rel=\"next\"";
@@ -398,8 +408,8 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
     List<String> roleList = new ArrayList<String>();
 
+    String nextPage = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/courses";
     try {
-      String nextPage = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/courses";
       while (StringUtils.isNotBlank(nextPage)) {
         URL url = new URL(nextPage);
         logger.debug("Requesting courses for user:{}, using API: {}", userId, url.toString());
@@ -433,7 +443,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
               This provides the ability to use any parent type to grant the LTI
               instructor roles for any child role created from it now or in the future, and/or
               specific set of child roles.
-              The can be multiple enrollments for a user for a given course, adding them all to
+              There can be multiple enrollments for a user for a given course, adding them all to
               the roleList is ok because the roleList is converted to a Set later on.
               */
               String type = enrollment.get("type").getAsString();
@@ -463,10 +473,9 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       return roleList.toArray(new String[0]);
 
     } catch (FileNotFoundException fnf) {
-      // if the return is 404 it means the user wasn't found
-      logger.debug("User id " + userId + " not found on " + canvasUrl);
+      logger.debug("Course listing for user {} not found at {}: {}", userId, nextPage, fnf);
     } catch (Exception e) {
-      logger.warn("Exception getting course/role membership for Canvas user {} at {}: {}", userId, canvasUrl, e.getMessage());
+      logger.warn("Exception getting course/role membership for Canvas user {} at {}: {}", userId, nextPage, e);
     }
 
     return null;
@@ -475,14 +484,16 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   /**
    * Get the internal Canvas user Id for the supplied user. If the user exists, set the user's email address.
    * 
-   * @param eid
+   * @param userId
    * @return
    */
-  private String[] getCanvasUser(String eid) {
-    logger.debug("getCanvasUser({})", eid);
+  private String[] getCanvasUser(String userId) {
+    logger.debug("getCanvasUser({})", userId);
+    String urlString = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/profile";
+
     try {
-      URL url = new URL(canvasUrl + "/api/v1/users/sis_user_id:" + eid + "/profile");
-      logger.debug("Requesting user: {}, using API: {}", eid, url.toString());
+      URL url = new URL(urlString);
+      logger.debug("Requesting user: {}, using API: {}", userId, url.toString());
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("GET");
       connection.setDoOutput(true);
@@ -497,16 +508,15 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       }
       JsonObject user = new JsonParser().parse(json).getAsJsonObject();
 
-      String canvasID = eid;
       String canvasEmail = user.get("primary_email").getAsString();
       String canvasDisplayName = user.get("name").getAsString();
 
-      return new String[]{canvasID, canvasEmail, canvasDisplayName};
+      return new String[]{canvasEmail, canvasDisplayName};
 
     } catch (FileNotFoundException fnf) {
-      logger.debug("User {} does not exist on Canvas system: {}", eid, fnf);
+      logger.debug("User {} does not exist in Canvas: {}", userId, fnf);
     } catch (Exception e) {
-      logger.warn("Exception getting Canvas user information for user {} at {}: {}", eid, canvasUrl, e);
+      logger.warn("Exception getting Canvas user information for user {} at {}: {}", userId, urlString, e);
     }
 
     return null;
@@ -526,15 +536,15 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   }
 
   /**
-   * Build a Opencast role "foo_user" from the given Canvas locations
+   * Build a Opencast role for course
    * 
-   * @param canvasLocationReference
+   * @param courseId
    * @param canvasRole
    * @return
    */
   private String buildOpencastRole(String courseId, String canvasRole) {
 
-    // map Canvas role to LTI role
+    // Map Canvas role to LTI role
     String ltiRole = instructorRoles.contains(canvasRole) ? LTI_INSTRUCTOR_ROLE : LTI_LEARNER_ROLE;
 
     return courseId + "_" + ltiRole;
@@ -575,8 +585,8 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   }
 
   @Override
-  public void invalidate(String userName) {
-    cache.invalidate(userName);
+  public void invalidate(String userId) {
+    cache.invalidate(userId);
   }
 
   @Override
@@ -595,23 +605,23 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
    }
 
    @Override
-   public List<Role> getRolesForUser(String userName) {
-      logger.debug("getRolesForUser({})", userName);
+   public List<Role> getRolesForUser(String userId) {
+      logger.debug("getRolesForUser({})", userId);
       List<Role> roles = new LinkedList<Role>();
       // Don't answer for admin, anonymous or empty user
-      if ("admin".equals(userName) || "".equals(userName) || "anonymous".equals(userName)) {
-         logger.debug("We don't answer for: " + userName);
+      if ("admin".equals(userId) || "".equals(userId) || "anonymous".equals(userId)) {
+         logger.debug("We don't answer for: " + userId);
          return roles;
       }
 
-      User user = loadUser(userName);
+      User user = loadUser(userId);
       if (user != null) {
-        logger.debug("Returning cached roleset for {}", userName);
+        logger.debug("Returning cached roleset for {}", userId);
         return new ArrayList<Role>(user.getRoles());
       }
 
      // Not found
-     logger.debug("Return empty roleset for {} - not found on Canvas");
+     logger.debug("Return empty roleset for {} - not found in Canvas");
      return new LinkedList<Role>();
    }
 
