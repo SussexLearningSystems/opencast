@@ -322,7 +322,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
   /*
    ** Verify that the user exists
-   ** Query with /api/v1/users/lti_user_id:{userId}
+   ** Query with /api/v1/users/sis_user_id:{userId}
    */
   private boolean verifyCanvasUser(String userId) {
       logger.debug("verifyCanvasUser({})", userId);
@@ -338,7 +338,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
       int code;
       try {
-          URL url = new URL(canvasUrl + "/api/v1/users/lti_user_id:" + userId);
+          URL url = new URL(canvasUrl + "/api/v1/users/sis_user_id:" + userId);
           logger.debug("Verifying user: {} using API: {}", url.toString());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.setRequestMethod("GET");
@@ -399,7 +399,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
     List<String> roleList = new ArrayList<String>();
 
     try {
-      String nextPage = canvasUrl + "/api/v1/users/lti_user_id:" + userId + "/courses";
+      String nextPage = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/courses";
       while (StringUtils.isNotBlank(nextPage)) {
         URL url = new URL(nextPage);
         logger.debug("Requesting courses for user:{}, using API: {}", userId, url.toString());
@@ -481,7 +481,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   private String[] getCanvasUser(String eid) {
     logger.debug("getCanvasUser({})", eid);
     try {
-      URL url = new URL(canvasUrl + "/api/v1/users/lti_user_id:" + eid + "/profile");
+      URL url = new URL(canvasUrl + "/api/v1/users/sis_user_id:" + eid + "/profile");
       logger.debug("Requesting user: {}, using API: {}", eid, url.toString());
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestMethod("GET");
