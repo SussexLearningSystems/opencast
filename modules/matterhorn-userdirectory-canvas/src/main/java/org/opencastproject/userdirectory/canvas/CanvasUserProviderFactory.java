@@ -70,6 +70,9 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
   /** The key to look up the regular expression used to validate users */
   private static final String USER_PATTERN_KEY = "org.opencastproject.userdirectory.canvas.user.pattern";
 
+  /** The property in a Canvas user's profile to use as their display name */
+  private static final String USER_NAME_PROPERTY_KEY = "org.opencastproject.userdirectory.canvas.user.name.property";
+
   /** The key to look up the number of user records to cache */
   private static final String CACHE_SIZE = "org.opencastproject.userdirectory.canvas.cache.size";
 
@@ -139,6 +142,11 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
     String coursePattern = (String) properties.get(COURSE_PATTERN_KEY);
     String userPattern = (String) properties.get(USER_PATTERN_KEY);
 
+    String userNameProperty = (String) properties.get(USER_NAME_PROPERTY_KEY);
+    if (!"name".equals(userNameProperty) && !"short_name".equals(userNameProperty)) {
+      userNameProperty = "short_name";
+    }
+
     int cacheSize = 1000;
     try {
       if (properties.get(CACHE_SIZE) != null) {
@@ -195,7 +203,7 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
 
     logger.debug("Creating new CanvasUserProviderInstance for pid=" + pid);
     CanvasUserProviderInstance provider = new CanvasUserProviderInstance(pid, org, url, token, coursePattern,
-        userPattern, instructorRoles, cacheSize, cacheExpiration);
+        userPattern, userNameProperty, instructorRoles, cacheSize, cacheExpiration);
 
     providerRegistrations.put(pid, bundleContext.registerService(UserProvider.class.getName(), provider, null));
     providerRegistrations.put(pid, bundleContext.registerService(RoleProvider.class.getName(), provider, null));
