@@ -118,6 +118,9 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
   /** Regular expression for matching valid users */
   private String userPattern;
 
+  /** Canvas user property containing display name to be used */
+  private String userNameProperty;
+
   /** A set of strings representing instructor roles */
   private Set<String> instructorRoles;
 
@@ -130,12 +133,13 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
    * @param canvasToken The token used to call the Canvas API
    * @param coursePattern Regular expression for matching valid courses
    * @param userPattern Regular expression for matching valid users
+   * @param userNameProperty Canvas user property containing display name to be used
    * @param instructorRoles A set of strings representing instructor roles
    * @param cacheSize The number of users to cache
    * @param cacheExpiration The number of minutes to cache users
    */
   public CanvasUserProviderInstance(String pid, Organization organization, String canvasUrl, String canvasToken,
-          String coursePattern, String userPattern, Set<String> instructorRoles, int cacheSize,
+          String coursePattern, String userPattern, String userNameProperty, Set<String> instructorRoles, int cacheSize,
           int cacheExpiration) {
 
     this.organization = organization;
@@ -143,12 +147,13 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
     this.canvasToken = canvasToken;
     this.coursePattern = coursePattern;
     this.userPattern = userPattern;
+    this.userNameProperty = userNameProperty;
     this.instructorRoles = instructorRoles;
 
     JaxbOrganization jaxbOrganization = JaxbOrganization.fromOrganization(organization);
 
-    logger.debug("Creating new CanvasUserProviderInstance(pid={}, url={}, cacheSize={}, cacheExpiration={})",
-                 pid, canvasUrl, cacheSize, cacheExpiration);
+    logger.debug("Creating new CanvasUserProviderInstance(pid={}, url={}, coursePattern={}, userPattern={}, userNameProperty={}, instructorRoles=[{}], cacheSize={}, cacheExpiration={})",
+      pid, canvasUrl, coursePattern, userPattern, userNameProperty, String.join(", ", instructorRoles), cacheSize, cacheExpiration);
 
     // Setup the caches
     cache = CacheBuilder.newBuilder().maximumSize(cacheSize).expireAfterWrite(cacheExpiration, TimeUnit.MINUTES)
@@ -509,7 +514,7 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
       JsonObject user = new JsonParser().parse(json).getAsJsonObject();
 
       String canvasEmail = user.get("primary_email").getAsString();
-      String canvasDisplayName = user.get("name").getAsString();
+      String canvasDisplayName = user.get(userNameProperty).getAsString();
 
       return new String[]{canvasEmail, canvasDisplayName};
 
