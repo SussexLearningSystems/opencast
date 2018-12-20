@@ -64,6 +64,9 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
   /** The key to look up the user DN to use for performing searches. */
   private static final String CANVAS_TOKEN_KEY = "org.opencastproject.userdirectory.canvas.token";
 
+  /** The property of a Canvas course to use for ACL Instructor/Learner roles */
+  private static final String COURSE_IDENTIFIER_PROPERTY_KEY = "org.opencastproject.userdirectory.canvas.course.identifier.property";
+
   /** The key to look up the regular expression used to validate courses */
   private static final String COURSE_PATTERN_KEY = "org.opencastproject.userdirectory.canvas.course.pattern";
 
@@ -139,11 +142,18 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
     String token = (String) properties.get(CANVAS_TOKEN_KEY);
     if (StringUtils.isBlank(token)) throw new ConfigurationException(CANVAS_TOKEN_KEY, "is not set");
 
+    String courseIdentifierProperty = (String) properties.get(COURSE_IDENTIFIER_PROPERTY_KEY);
+    if (!"id".equals(courseIdentifierProperty) && !"uuid".equals(courseIdentifierProperty) && !"sis_course_id".equals(courseIdentifierProperty)) {
+      // Default to using `id`
+      courseIdentifierProperty = "id";
+    }
+
     String coursePattern = (String) properties.get(COURSE_PATTERN_KEY);
     String userPattern = (String) properties.get(USER_PATTERN_KEY);
 
     String userNameProperty = (String) properties.get(USER_NAME_PROPERTY_KEY);
     if (!"name".equals(userNameProperty) && !"short_name".equals(userNameProperty)) {
+      // Default to using `short_name`
       userNameProperty = "short_name";
     }
 
@@ -202,12 +212,11 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
     }
 
     logger.debug("Creating new CanvasUserProviderInstance for pid=" + pid);
-    CanvasUserProviderInstance provider = new CanvasUserProviderInstance(pid, org, url, token, coursePattern,
-        userPattern, userNameProperty, instructorRoles, cacheSize, cacheExpiration);
+    CanvasUserProviderInstance provider = new CanvasUserProviderInstance(pid, org, url, token, courseIdentifierProperty,
+      coursePattern, userPattern, userNameProperty, instructorRoles, cacheSize, cacheExpiration);
 
     providerRegistrations.put(pid, bundleContext.registerService(UserProvider.class.getName(), provider, null));
     providerRegistrations.put(pid, bundleContext.registerService(RoleProvider.class.getName(), provider, null));
-
   }
 
   /**
@@ -241,5 +250,4 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
   public static final ObjectName getObjectName(String pid) throws MalformedObjectNameException, NullPointerException {
     return new ObjectName(pid + ":type=CanvasRequests");
   }
-
 }
