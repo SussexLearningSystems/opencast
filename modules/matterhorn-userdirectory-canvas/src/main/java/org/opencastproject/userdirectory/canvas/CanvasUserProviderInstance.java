@@ -417,7 +417,13 @@ public class CanvasUserProviderInstance implements UserProvider, RoleProvider, C
 
     List<String> roleList = new ArrayList<String>();
 
-    String nextPage = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/courses";
+    /*
+    Official Canvas documentation on API pagination states that the maximum result set per page
+    is 10 by default. A 'per_page' querystring can be added to yield more results, however the
+    maximums aren't documentated, Unofficially it appears that the courses API returns a maximum
+    of 100 results. Link response headers for navigation are returned when more results are available.
+    */
+    String nextPage = canvasUrl + "/api/v1/users/sis_user_id:" + userId + "/courses?per_page=100";
     try {
       while (StringUtils.isNotBlank(nextPage)) {
         URL url = new URL(nextPage);
