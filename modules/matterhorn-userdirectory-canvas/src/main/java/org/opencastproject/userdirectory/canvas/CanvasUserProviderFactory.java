@@ -143,7 +143,7 @@ public class CanvasUserProviderFactory implements ManagedServiceFactory {
     if (StringUtils.isBlank(token)) throw new ConfigurationException(CANVAS_TOKEN_KEY, "is not set");
 
     String courseIdentifierProperty = (String) properties.get(COURSE_IDENTIFIER_PROPERTY_KEY);
-    if (!"id".equals(courseIdentifierProperty) && !"uuid".equals(courseIdentifierProperty) && !"sis_course_id".equals(courseIdentifierProperty)) {
+    if (!"id".equals(courseIdentifierProperty) && !"sis_course_id".equals(courseIdentifierProperty)) {
       // Default to using `id`
       courseIdentifierProperty = "id";
     }
