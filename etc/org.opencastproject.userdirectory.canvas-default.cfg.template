@@ -15,13 +15,16 @@ org.opencastproject.userdirectory.canvas.token=
 # The maximum number of minutes to cache a user
 org.opencastproject.userdirectory.canvas.cache.expiration=60
 
+# Optional identifier property of a Canvas course for generating Instructor/Learner ACL roles (default: "id", "sis_course_id")
+#org.opencastproject.userdirectory.canvas.course.identifier.property=id
+
 # Optional regexp for matching Canvas course IDs
 #org.opencastproject.userdirectory.canvas.course.pattern=^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
 
 # Optional regexp for matching Canvas user IDs
 #org.opencastproject.userdirectory.canvas.user.pattern=
 
-# Optional name property of a Canvas user profile to use as the display name (default: "short_name")
+# Optional name property of a Canvas user profile to use as the display name (default: "short_name", "name")
 #org.opencastproject.userdirectory.canvas.user.name.property=short_name
 
 # Optional comma-separated list of Canvas enrollment types and/or roles which are mapped to Instructor role suffix in Opencast
