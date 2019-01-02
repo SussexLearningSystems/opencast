@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>matterhorn-userdirectory-canvas</artifactId>
-  <name>matterhorn-userdirectory-canvas</name>
+  <artifactId>opencast-userdirectory-canvas</artifactId>
+  <name>Opencast :: userdirectory-canvas</name>
   <packaging>bundle</packaging>
   <parent>
     <groupId>org.opencastproject</groupId>
     <artifactId>base</artifactId>
-    <version>4.5</version>
+    <version>7-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <properties>
-    <matterhorn.basedir>${project.basedir}/../..</matterhorn.basedir>
+    <opencast.basedir>${project.basedir}/../..</opencast.basedir>
     <checkstyle.skip>false</checkstyle.skip>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.opencastproject</groupId>
-      <artifactId>matterhorn-common</artifactId>
+      <artifactId>opencast-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.opencastproject</groupId>
-      <artifactId>matterhorn-userdirectory</artifactId>
+      <artifactId>opencast-userdirectory</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
